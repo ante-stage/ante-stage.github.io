@@ -460,3 +460,13 @@ footer.ft .upd{display:block;margin:2px auto 12px;padding:8px 18px;border-radius
 #sl{--sy:50%;position:fixed;inset:0;z-index:45;pointer-events:none;
   background:radial-gradient(ellipse 70% 42% at 50% var(--sy),rgba(255,236,190,.10),rgba(255,236,190,0) 70%),radial-gradient(ellipse 130% 95% at 50% var(--sy),rgba(6,4,10,0) 38%,rgba(6,4,10,.5) 100%)}
 body[data-page="home"] #sl{background:radial-gradient(ellipse 70% 42% at 50% var(--sy),rgba(255,236,190,.07),rgba(255,236,190,0) 70%),radial-gradient(ellipse 130% 95% at 50% var(--sy),rgba(6,4,10,0) 45%,rgba(6,4,10,.4) 100%)}
+/* ===== オープニング: 絵の輪郭を背景に溶かす(マスク) ===== */
+@property --fx{syntax:"<percentage>";inherits:true;initial-value:12%}
+@property --fy{syntax:"<percentage>";inherits:true;initial-value:14%}
+@property --fl{syntax:"<percentage>";inherits:true;initial-value:7%}
+#opening .fig{--fx:13%;--fy:15%;--fl:7%;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 var(--fl),#000 calc(100% - var(--fx)),transparent 100%),linear-gradient(180deg,transparent 0,#000 var(--fy),#000 calc(100% - var(--fy)),transparent 100%);
+  mask-image:linear-gradient(90deg,transparent 0,#000 var(--fl),#000 calc(100% - var(--fx)),transparent 100%),linear-gradient(180deg,transparent 0,#000 var(--fy),#000 calc(100% - var(--fy)),transparent 100%);
+  -webkit-mask-composite:source-in;mask-composite:intersect}
+#opening .fig::after{display:none}
+#opening.land .fig{--fx:0%;--fy:0%;--fl:0%;transition:box-shadow .9s ease,border-radius .9s ease,--fx .9s ease,--fy .9s ease,--fl .9s ease}
