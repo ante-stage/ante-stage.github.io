@@ -93,7 +93,7 @@ function transitions(){
 
 /* ---------- 見出しの飾り（矢の刺さるハート） ---------- */
 var ORN='<img class="orn" src="img/logo-gold.png" alt="" width="900" height="438" loading="lazy">';
-var VER='20261015d';
+var VER='20261015e';
 function autoUpdate(){
   function chk(){try{fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
     if(!j||!j.v||j.v===VER)return;var k='verTry';if(ss(k)===j.v)return;ss(k,j.v);
@@ -162,9 +162,9 @@ function opening(){
   function out(){if(phase>1)return;phase=2;
     var fig=$('#opening .fig'),ph=$('.hero .photo');
     if(reduce||!fig||!ph){fin();return;}
-    try{op.classList.add('land');setTimeout(function(){document.body.classList.add('reveal');},300);setTimeout(fin,950);
+    try{op.classList.add('land');setTimeout(function(){document.body.classList.add('reveal');},60);setTimeout(fin,900);
     }catch(e){fin();}}
-  function go(){if(phase)return;phase=1;op.classList.add('go');setTimeout(out,1900);}
+  function go(){if(phase)return;phase=1;op.classList.add('go');setTimeout(out,950);}
   if(ss('opened')==='1'||document.documentElement.classList.contains('pt-in')||reduce){op.style.display='none';done=true;document.body.classList.remove('lock');document.body.classList.add('reveal');return;}
   document.body.classList.add('lock');
   op.addEventListener('click',go);setTimeout(go,7000);
