@@ -85,7 +85,14 @@ function transitions(){
 
 /* ---------- 見出しの飾り（矢の刺さるハート） ---------- */
 var ORN='<img class="orn" src="img/logo-gold.png" alt="" width="900" height="438" loading="lazy">';
-var VER='20261014m';
+var VER='20261014n';
+function autoUpdate(){
+  function chk(){try{fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
+    if(!j||!j.v||j.v===VER)return;var k='verTry';if(ss(k)===j.v)return;ss(k,j.v);
+    location.replace(location.pathname+'?r='+Date.now()+(location.hash||''));
+  }).catch(function(){});}catch(e){}}
+  chk();document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')chk();});addEventListener('pageshow',function(e){if(e.persisted)chk();});
+}
 function updater(){var b=$('#updBtn');if(!b)return;b.addEventListener('click',function(){b.textContent='更新中…';b.disabled=true;var go=function(){try{sessionStorage.removeItem('antedata');}catch(e){}var u=location.pathname+'?r='+Date.now()+(location.hash||'');location.replace(u);};try{var jobs=[];if(window.caches&&caches.keys)jobs.push(caches.keys().then(function(k){return Promise.all(k.map(function(x){return caches.delete(x);}));}));if(navigator.serviceWorker&&navigator.serviceWorker.getRegistrations)jobs.push(navigator.serviceWorker.getRegistrations().then(function(r){return Promise.all(r.map(function(x){return x.unregister();}));}));Promise.all(jobs).then(go,go);}catch(e){go();}});}
 function decorate(){
   $$('.h').forEach(function(h){h.insertAdjacentHTML('beforeend',ORN);});
@@ -265,7 +272,7 @@ P.news=function(){
 };
 
 /* ---------- 起動 ---------- */
-chrome();updater();decorate();transitions();opening();
+chrome();updater();autoUpdate();decorate();transitions();opening();
 if(P[page])P[page]();
 fx();lightbox();reveal();
 load();
