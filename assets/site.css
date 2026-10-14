@@ -444,3 +444,11 @@ footer.ft .upd{display:block;margin:2px auto 12px;padding:8px 18px;border-radius
 @keyframes swB{0%,12%{transform:rotate(-22deg);opacity:.35}42%,62%{transform:rotate(15deg);opacity:.5}92%,100%{transform:rotate(-22deg);opacity:.35}}
 @media(min-width:1024px){.vis .sw{width:70%}.vis .sw.a{left:-16%}.vis .sw.b{right:-16%}}
 @media(prefers-reduced-motion:reduce){.vis .sw{animation:none}.vis .sw.a{transform:rotate(-15deg)}.vis .sw.b{transform:rotate(15deg)}}
+/* ===== オープニング: 絵の矩形を目立たせない ===== */
+#opening .spot{background:linear-gradient(180deg,rgba(255,244,214,.9) 0,rgba(243,220,156,.4) 14%,rgba(243,220,156,0) 30%)}
+#opening .fig::after{background:
+  linear-gradient(180deg,#06040a 0,rgba(6,4,10,0) 16%,rgba(6,4,10,0) 78%,#06040a 100%),
+  linear-gradient(90deg,#06040a 0,rgba(6,4,10,0) 4%,rgba(6,4,10,0) 88%,#06040a 100%);opacity:1}
+#opening .pool{opacity:0!important;animation:none!important}
+#opening .fig::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;mix-blend-mode:soft-light;background:radial-gradient(ellipse 70% 55% at 50% 38%,rgba(255,244,214,.55),rgba(255,244,214,0) 70%);transition:opacity .9s}
+#opening.land .fig::before{opacity:0}
