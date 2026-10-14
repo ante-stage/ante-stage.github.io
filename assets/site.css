@@ -595,8 +595,8 @@ body[data-page="home"].reveal .topnav{animation:barDown .8s cubic-bezier(.22,1,.
 #sl,.vis .sw{transition:opacity .5s}
 /* ===== ON(全灯): ライト演出なし・暗いところなし / OFF: 暗がりにスポットライト演出 ===== */
 body.lights-lit .vis .sw,body.lights-lit #sl::before,body.lights-lit #sl::after{display:none!important}
-body.lights-lit #sl,body.lights-lit[data-page="home"] #sl{mix-blend-mode:screen;background:linear-gradient(rgba(255,226,175,.2),rgba(255,226,175,.2))}
-body.lights-lit #ltBtn{color:#fff6cf;background:rgba(232,84,107,.75);box-shadow:0 0 22px rgba(255,236,160,.8)}
+body.lights-lit #sl,body.lights-lit[data-page="home"] #sl{background:none}
+body.lights-lit #ltBtn{color:#fff;background:#e8546b;box-shadow:0 0 0 2px #d9b25f inset}
 #ltBtn{color:#c9bfd6}
 /* PC: 名前の文字つぶれ対策(太すぎる書体をやめ、字間と影を調整) */
 @media(min-width:1024px){
