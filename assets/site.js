@@ -84,7 +84,7 @@ function transitions(){
 
 /* ---------- 見出しの飾り（矢の刺さるハート） ---------- */
 var ORN='<img class="orn" src="img/logo-gold.png" alt="" width="900" height="438" loading="lazy">';
-var VER='20261014a';
+var VER='20261014b';
 function updater(){var b=$('#updBtn');if(!b)return;b.addEventListener('click',function(){b.textContent='更新中…';b.disabled=true;var go=function(){try{sessionStorage.removeItem('antedata');}catch(e){}var u=location.pathname+'?r='+Date.now()+(location.hash||'');location.replace(u);};try{var jobs=[];if(window.caches&&caches.keys)jobs.push(caches.keys().then(function(k){return Promise.all(k.map(function(x){return caches.delete(x);}));}));if(navigator.serviceWorker&&navigator.serviceWorker.getRegistrations)jobs.push(navigator.serviceWorker.getRegistrations().then(function(r){return Promise.all(r.map(function(x){return x.unregister();}));}));Promise.all(jobs).then(go,go);}catch(e){go();}});}
 function decorate(){
   $$('.h').forEach(function(h){h.insertAdjacentHTML('beforeend',ORN);});
@@ -138,7 +138,8 @@ function opening(){
   var fxb=$('#fx'),g=['♡','♛','✦','♥','✧'];
   for(var i=0;i<16;i++){var e=document.createElement('i');e.textContent=g[i%g.length];e.style.left=(Math.random()*96)+'%';e.style.fontSize=(12+Math.random()*16)+'px';e.style.animationDuration=(4+Math.random()*4)+'s';e.style.animationDelay=(Math.random()*5)+'s';fxb.appendChild(e);}
   var done=false;
-  function go(){if(done)return;done=true;op.classList.add('go');document.body.classList.add('reveal');setTimeout(function(){document.body.classList.remove('lock');},900);ss('opened','1');}
+  var phase=0;function out(){if(phase>1)return;phase=2;op.classList.add('out');document.body.classList.add('reveal');setTimeout(function(){document.body.classList.remove('lock');},700);ss('opened','1');}
+  function go(){if(phase===1){out();return;}if(phase)return;phase=1;op.classList.add('go');setTimeout(out,4600);}
   if(ss('opened')==='1'||document.documentElement.classList.contains('pt-in')||reduce){op.style.display='none';done=true;document.body.classList.remove('lock');document.body.classList.add('reveal');return;}
   document.body.classList.add('lock');
   op.addEventListener('click',go);setTimeout(go,7000);
