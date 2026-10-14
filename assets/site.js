@@ -53,7 +53,7 @@ function chrome(){
   '<nav class="tabbar" aria-label="メインメニュー">'+NAV.map(function(n){return '<a href="'+n[0]+'"'+(n[0]===curFile()?' aria-current="page"':'')+'><i aria-hidden="true">'+n[3]+'</i>'+n[2]+'</a>';}).join('')+'</nav>';
   b.insertAdjacentHTML('afterbegin',nav);
   b.insertAdjacentHTML('beforeend',
-   '<footer class="ft"><img src="img/logo-gold.png" alt="あんて｡ ロゴ"><nav aria-label="フッター">'+NAV.map(function(n){return '<a href="'+n[0]+'">'+n[2]+'</a>';}).join('')+'</nav><small>© ANTE OFFICIAL STAGE</small></footer>'+
+   '<footer class="ft"><img src="img/logo-gold.png" alt="あんて｡ ロゴ"><nav aria-label="フッター">'+NAV.map(function(n){return '<a href="'+n[0]+'">'+n[2]+'</a>';}).join('')+'</nav><button type="button" class="upd" id="updBtn">↻ 最新版に更新</button><small>© ANTE OFFICIAL STAGE ・ v'+VER+'</small></footer>'+
    '<div class="toast" id="toast" role="status" aria-live="polite"></div><div id="lb" aria-hidden="true"><img alt=""></div>');
 }
 function curFile(){var f=location.pathname.split('/').pop();return f===''?'index.html':f;}
@@ -84,6 +84,8 @@ function transitions(){
 
 /* ---------- 見出しの飾り（矢の刺さるハート） ---------- */
 var ORN='<img class="orn" src="img/logo-gold.png" alt="" width="900" height="438" loading="lazy">';
+var VER='20261014a';
+function updater(){var b=$('#updBtn');if(!b)return;b.addEventListener('click',function(){b.textContent='更新中…';b.disabled=true;var go=function(){try{sessionStorage.removeItem('antedata');}catch(e){}var u=location.pathname+'?r='+Date.now()+(location.hash||'');location.replace(u);};try{var jobs=[];if(window.caches&&caches.keys)jobs.push(caches.keys().then(function(k){return Promise.all(k.map(function(x){return caches.delete(x);}));}));if(navigator.serviceWorker&&navigator.serviceWorker.getRegistrations)jobs.push(navigator.serviceWorker.getRegistrations().then(function(r){return Promise.all(r.map(function(x){return x.unregister();}));}));Promise.all(jobs).then(go,go);}catch(e){go();}});}
 function decorate(){
   $$('.h').forEach(function(h){h.insertAdjacentHTML('beforeend',ORN);});
 }
@@ -252,7 +254,7 @@ P.news=function(){
 };
 
 /* ---------- 起動 ---------- */
-chrome();decorate();transitions();opening();
+chrome();updater();decorate();transitions();opening();
 if(P[page])P[page]();
 fx();lightbox();reveal();
 load();
