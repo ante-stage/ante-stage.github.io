@@ -470,3 +470,23 @@ body[data-page="home"] #sl{background:radial-gradient(ellipse 70% 42% at 50% var
   -webkit-mask-composite:source-in;mask-composite:intersect}
 #opening .fig::after{display:none}
 #opening.land .fig{--fx:0%;--fy:0%;--fl:0%;transition:box-shadow .9s ease,border-radius .9s ease,--fx .9s ease,--fy .9s ease,--fl .9s ease}
+
+/* ===== オープニング: 点灯後の見せ場 ===== */
+#opening .pname{position:fixed;z-index:6;text-align:center;pointer-events:none;display:block}
+#opening .pname .k{display:block;font-style:normal;font-family:var(--ff-deco);font-size:11px;letter-spacing:.34em;color:var(--gold);text-shadow:0 2px 8px #000;opacity:0;height:var(--nlh)}
+#opening .pname b{display:flex;justify-content:center;font-family:var(--ff-title);font-weight:400;font-size:var(--nfs);line-height:1.1;letter-spacing:.04em;color:#fff;text-shadow:0 0 16px var(--red),3px 3px 0 var(--red-d)}
+#opening .pname span{display:inline-block;opacity:0;transform:translateY(-70px) scale(1.7);filter:blur(6px)}
+#opening.go .pname .k{animation:fade .6s ease 2.5s forwards}
+#opening.go .pname span{animation:slam .5s cubic-bezier(.2,1.6,.4,1) forwards}
+#opening.go .pname span:nth-child(1){animation-delay:2.7s}#opening.go .pname span:nth-child(2){animation-delay:2.85s}
+#opening.go .pname span:nth-child(3){animation-delay:3s}#opening.go .pname span:nth-child(4){animation-delay:3.15s}
+@keyframes slam{60%{transform:translateY(4px) scale(.96);filter:blur(0)}to{opacity:1;transform:none;filter:blur(0)}}
+#opening.land .pname{opacity:0;transition:opacity .9s ease .2s}
+#opening .gl{position:absolute;z-index:3;font-style:normal;color:#fff;font-size:34px;line-height:1;text-shadow:0 0 14px #fff,0 0 26px var(--gold-l);opacity:0;transform:scale(0) rotate(0);pointer-events:none}
+#opening .gl.g1{left:16%;top:17%}#opening .gl.g2{left:54%;top:25%;font-size:26px}#opening .gl.g3{left:70%;top:12%;font-size:20px}
+#opening.go .gl{animation:glint 1s ease-out forwards}
+#opening.go .g1{animation-delay:2.4s}#opening.go .g2{animation-delay:3.2s}#opening.go .g3{animation-delay:3.9s}
+@keyframes glint{0%{opacity:0;transform:scale(0) rotate(0)}35%{opacity:1;transform:scale(1.4) rotate(45deg)}100%{opacity:0;transform:scale(.4) rotate(90deg)}}
+#opening.go .spot{animation:spotOn1 1.1s ease-out 1.2s forwards,spotBeat 1.3s ease-in-out 2.5s 2}
+@keyframes spotBeat{0%,100%{opacity:1}30%{opacity:.62}55%{opacity:1}75%{opacity:.8}}
+#opening.land .gl{display:none}

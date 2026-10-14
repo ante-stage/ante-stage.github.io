@@ -85,7 +85,7 @@ function transitions(){
 
 /* ---------- 見出しの飾り（矢の刺さるハート） ---------- */
 var ORN='<img class="orn" src="img/logo-gold.png" alt="" width="900" height="438" loading="lazy">';
-var VER='20261014n';
+var VER='20261014o';
 function autoUpdate(){
   function chk(){try{fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
     if(!j||!j.v||j.v===VER)return;var k='verTry';if(ss(k)===j.v)return;ss(k,j.v);
@@ -147,7 +147,8 @@ function opening(){
   for(var i=0;i<16;i++){var e=document.createElement('i');e.textContent=g[i%g.length];e.style.left=(Math.random()*96)+'%';e.style.fontSize=(12+Math.random()*16)+'px';e.style.animationDuration=(4+Math.random()*4)+'s';e.style.animationDelay=(Math.random()*5)+'s';fxb.appendChild(e);}
   var done=false;
   var phase=0;
-  function place(){var fig=$('#opening .fig'),ph=$('.hero .photo');if(!fig||!ph||phase)return;var R=ph.getBoundingClientRect();if(!R.width)return;fig.style.cssText='position:fixed;left:'+R.left+'px;top:'+R.top+'px;width:'+R.width+'px;height:'+R.height+'px;max-width:none;aspect-ratio:auto';}
+  function place(){var fig=$('#opening .fig'),ph=$('.hero .photo');if(!fig||!ph||phase)return;var R=ph.getBoundingClientRect();if(!R.width)return;var nm=$('.hero .name'),kk=$('.hero .kick'),pn=$('#opening .pname');if(nm&&kk&&pn){var N=nm.getBoundingClientRect(),K=kk.getBoundingClientRect(),cs=getComputedStyle(nm);pn.style.cssText='left:'+N.left+'px;width:'+N.width+'px;top:'+K.top+'px;--nfs:'+cs.fontSize+';--nls:'+cs.letterSpacing+';--nlh:'+(N.top-K.top)+'px';}
+  fig.style.cssText='position:fixed;left:'+R.left+'px;top:'+R.top+'px;width:'+R.width+'px;height:'+R.height+'px;max-width:none;aspect-ratio:auto';}
   place();addEventListener('resize',place);addEventListener('load',place);
   function fin(){op.classList.add('out');document.body.classList.add('reveal');setTimeout(function(){document.body.classList.remove('lock');},500);ss('opened','1');}
   function out(){if(phase>1)return;phase=2;
@@ -155,7 +156,7 @@ function opening(){
     if(reduce||!fig||!ph){fin();return;}
     try{op.classList.add('land');setTimeout(fin,1150);
     }catch(e){fin();}}
-  function go(){if(phase)return;phase=1;op.classList.add('go');setTimeout(out,4600);}
+  function go(){if(phase)return;phase=1;op.classList.add('go');setTimeout(out,5400);}
   if(ss('opened')==='1'||document.documentElement.classList.contains('pt-in')||reduce){op.style.display='none';done=true;document.body.classList.remove('lock');document.body.classList.add('reveal');return;}
   document.body.classList.add('lock');
   op.addEventListener('click',go);setTimeout(go,7000);
