@@ -93,7 +93,7 @@ function transitions(){
 
 /* ---------- 見出しの飾り（矢の刺さるハート） ---------- */
 var ORN='<img class="orn" src="img/logo-gold.png" alt="" width="900" height="438" loading="lazy">';
-var VER='20261015n';
+var VER='20261015o';
 function autoUpdate(){
   function chk(){try{fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
     if(!j||!j.v||j.v===VER)return;var k='verTry';if(ss(k)===j.v)return;ss(k,j.v);
@@ -171,14 +171,14 @@ function opening(){
 }
 
 /* ---------- データ ---------- */
-var DATA={schedule:CONFIG.schedule,songs:CONFIG.songs,posts:CONFIG.posts,requestOpen:true,live:false};
+var DATA={schedule:CONFIG.schedule,songs:CONFIG.songs,posts:CONFIG.posts,news:[],requestOpen:true,live:false};
 var subs=[];
 function load(){
   var cached=null;try{cached=JSON.parse(ss('antedata')||'null');}catch(e){}
   if(cached&&Date.now()-cached.t<45000){apply(cached.d);return Promise.resolve();}
   return rpc('ante_public').then(function(d){if(!d){subs.forEach(function(f){f();});return;}ss('antedata',JSON.stringify({t:Date.now(),d:d}));apply(d);}).catch(function(){subs.forEach(function(f){f();});});
 }
-function apply(d){DATA.schedule=d.schedule||[];DATA.songs=d.songs||[];DATA.posts=d.posts||[];DATA.requestOpen=d.request_open!==false;DATA.live=true;subs.forEach(function(f){f();});}
+function apply(d){DATA.schedule=d.schedule||[];DATA.songs=d.songs||[];DATA.posts=d.posts||[];DATA.news=d.news||[];DATA.requestOpen=d.request_open!==false;DATA.live=true;subs.forEach(function(f){f();});}
 function ymd(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
 var WK=['日','月','火','水','木','金','土'];
 function upcoming(){var t=ymd(new Date());return DATA.schedule.filter(function(s){return s.date>=t;}).sort(function(a,b){return (a.date+(a.time||'')).localeCompare(b.date+(b.time||''));});}
@@ -191,6 +191,7 @@ function schedItem(s){var d=new Date(s.date+'T00:00:00'),w=d.getDay(),k=ymd(new 
     (off?'<span class="ww">おやすみ 💤</span>':'<span class="wt">'+esc(s.time||'--:--')+'</span><span class="ww">'+esc(s.title)+(s.note?'<em>'+esc(s.note)+'</em>':'')+'</span>')+'</li>';}
 function weekRange(){var t=new Date();t.setHours(0,0,0,0);var e=new Date(t);e.setDate(t.getDate()+6);return (t.getMonth()+1)+'/'+t.getDate()+'〜'+(e.getMonth()+1)+'/'+e.getDate();}
 
+function newsRows(list){return list.map(function(n){var d=new Date(n.date+'T00:00:00');return '<li class="nw"><time datetime="'+esc(n.date)+'">'+d.getFullYear()+'.'+('0'+(d.getMonth()+1)).slice(-2)+'.'+('0'+d.getDate()).slice(-2)+'</time><p>'+esc(n.body)+'</p></li>';}).join('');}
 /* ---------- ページごと ---------- */
 var P={};
 P.home=function(){
@@ -201,6 +202,7 @@ P.home=function(){
     if(m)$('#ytFrame').src='https://www.youtube-nocookie.com/embed/'+m[1]+'?rel=0&playsinline=1';else $('#ytBox').style.display='none';}
   subs.push(function(){
     var u=schedRows().slice(0,4);
+    var nb=$('#homeNews');if(nb){var nn=DATA.news.slice(0,3);$('#newsHome').hidden=!nn.length;nb.innerHTML=newsRows(nn);}
     $('#homeSched').innerHTML=u.length?u.map(schedItem).join(''):'<li class="empty" style="display:block;border:0">配信予定は準備中です。Xをチェックしてね♡</li>';
     $('#songCount').textContent=DATA.live?DATA.songs.length:'—';
     $('#reqNote').textContent=DATA.live&&!DATA.requestOpen?'いまはリクエストをお休み中です':'聴きたい曲を、そっと送ってね';
@@ -270,6 +272,7 @@ P.songs=function(){
   subs.push(draw);draw();
 };
 P.news=function(){
+  subs.push(function(){var l=$('#newsList');if(!l)return;l.innerHTML=DATA.news.length?newsRows(DATA.news):'<li class="empty" style="display:block;border:0">お知らせはまだありません。更新をお待ちください。</li>';});
   var pk=CONFIG.pickup;if(pk){$('#pickCard').href=pk.url;$('#pickTitle').textContent=pk.title;$('#pickSub').textContent=pk.sub;
     var m=String(pk.url).match(/(?:youtu\.be\/|[?&]v=|embed\/|shorts\/)([\w-]{11})/);
     if(m)$('#ytFrame').src='https://www.youtube-nocookie.com/embed/'+m[1]+'?rel=0&playsinline=1';else $('#ytBox').style.display='none';}
