@@ -51,6 +51,15 @@ function chrome(){
   if(!$('#pl')&&!reduce){var pl=document.createElement('div');pl.id='pl';pl.setAttribute('aria-hidden','true');var cs=['#ffe9a8','#ff8fa6','#fff6dc','#f3dc9c','#ff6f8a'];
     for(var q=0;q<(innerWidth<700?14:26);q++){var d=document.createElement('i'),sz=3+Math.random()*6,c=cs[q%cs.length];d.style.cssText='left:'+(Math.random()*100)+'%;width:'+sz+'px;height:'+sz+'px;background:'+c+';box-shadow:0 0 '+(sz*2.2)+'px '+(sz*.6)+'px '+c+';animation-duration:'+(16+Math.random()*16)+'s,'+(2+Math.random()*3)+'s;animation-delay:-'+(Math.random()*28)+'s,-'+(Math.random()*4)+'s;--dx:'+((Math.random()*80-40)|0)+'px';pl.appendChild(d);}
     b.appendChild(pl);}
+  /* ライブ会場演出: ムービングライト・客席ペンライト・スモーク */
+  if(!$('#mh')&&!reduce){var mh=document.createElement('div');mh.id='mh';mh.setAttribute('aria-hidden','true');
+    var mc=['255,111,138','255,226,150','255,150,190','255,236,190','255,90,120'],mn=innerWidth<700?3:5;
+    for(var m=0;m<mn;m++){var s=document.createElement('i');s.style.cssText='left:'+(8+m*(84/(mn-1)))+'%;--c:'+mc[m%mc.length]+';animation-duration:'+(7+m*1.7)+'s;animation-delay:-'+(m*2.3)+'s;--a:'+(m%2?-1:1);mh.appendChild(s);}
+    b.appendChild(mh);}
+  if(!$('#cr')){var cr=document.createElement('div');cr.id='cr';cr.setAttribute('aria-hidden','true');
+    var pc=['#ff6f8a','#ffe9a8','#ff8fa6','#fff6dc','#e8546b','#f3dc9c'],cn=innerWidth<700?16:34,h='<u class="sm"></u>';
+    for(var k=0;k<cn;k++){var cl=pc[(Math.random()*pc.length)|0],hh=26+Math.random()*20;h+='<i style="left:'+((k+.5)*(100/cn)+(Math.random()*2-1))+'%;--c:'+cl+';--h:'+hh+'px;animation-duration:'+(1.4+Math.random()*1.4)+'s;animation-delay:-'+(Math.random()*3)+'s"></i>';}
+    cr.innerHTML=h+'<u class="hd"></u>';b.appendChild(cr);}
   var nav='<a class="skip" href="#main">本文へ</a>'+
   '<header class="topnav"><div class="pg in"><a class="brand" href="index.html"><img src="img/logo-gold.png" alt="">あんて｡</a><nav aria-label="メインメニュー"><ul>'+
   NAV.map(function(n){return '<li><a href="'+n[0]+'"'+(n[0]===curFile()?' aria-current="page"':'')+'><small>'+n[1]+'</small>'+n[2]+'</a></li>';}).join('')+'</ul></nav></div></header>'+
@@ -96,7 +105,7 @@ function transitions(){
 
 /* ---------- 見出しの飾り（矢の刺さるハート） ---------- */
 var ORN='<img class="orn" src="img/logo-gold.png" alt="" width="900" height="438" loading="lazy">';
-var VER='20261015w';
+var VER='20261015x';
 function autoUpdate(){
   function chk(){try{fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
     if(!j||!j.v||j.v===VER)return;var k='verTry';if(ss(k)===j.v)return;ss(k,j.v);
@@ -152,6 +161,9 @@ function lightbox(){
 }
 
 /* ---------- オープニング（HOMEの初回のみ） ---------- */
+function kamifubuki(){var c=document.createElement('div');c.id='cf';c.setAttribute('aria-hidden','true');var cs=['#e8546b','#d9b25f','#fff6dc','#ff8fa6','#f3dc9c'];
+  for(var i=0;i<(innerWidth<700?36:70);i++){var e=document.createElement('i');e.style.cssText='left:'+(Math.random()*100)+'%;background:'+cs[i%cs.length]+';width:'+(5+Math.random()*7)+'px;height:'+(9+Math.random()*9)+'px;animation-duration:'+(2.6+Math.random()*2.4)+'s;animation-delay:'+(Math.random()*1.1)+'s;--dx:'+((Math.random()*160-80)|0)+'px;--r:'+((Math.random()*720)|0)+'deg';c.appendChild(e);}
+  document.body.appendChild(c);setTimeout(function(){c.remove();},6500);}
 function opening(){
   var op=$('#opening');if(!op)return;
   var fxb=$('#fx'),g=['♡','♛','✦','♥','✧'];
@@ -162,7 +174,7 @@ function opening(){
   op.style.setProperty('--fx',(R.left+R.width/2)+'px');op.style.setProperty('--fw',R.width+'px');op.style.setProperty('--fb',(R.bottom)+'px');
   fig.style.cssText='position:fixed;left:'+R.left+'px;top:'+R.top+'px;width:'+R.width+'px;height:'+R.height+'px;max-width:none;aspect-ratio:auto';}
   place();addEventListener('resize',place);addEventListener('load',place);
-  function fin(){op.classList.add('out');document.body.classList.add('reveal');setTimeout(function(){document.body.classList.remove('lock');},500);ss('opened','1');}
+  function fin(){if(!reduce)kamifubuki();op.classList.add('out');document.body.classList.add('reveal');setTimeout(function(){document.body.classList.remove('lock');},500);ss('opened','1');}
   function out(){if(phase>1)return;phase=2;
     var fig=$('#opening .fig'),ph=$('.hero .photo');
     if(reduce||!fig||!ph){fin();return;}
