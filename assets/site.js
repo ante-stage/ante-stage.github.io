@@ -93,7 +93,7 @@ function transitions(){
 
 /* ---------- 見出しの飾り（矢の刺さるハート） ---------- */
 var ORN='<img class="orn" src="img/logo-gold.png" alt="" width="900" height="438" loading="lazy">';
-var VER='20261015j';
+var VER='20261015k';
 function autoUpdate(){
   function chk(){try{fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
     if(!j||!j.v||j.v===VER)return;var k='verTry';if(ss(k)===j.v)return;ss(k,j.v);
@@ -268,7 +268,9 @@ P.songs=function(){
   subs.push(draw);draw();
 };
 P.news=function(){
-  var pk=CONFIG.pickup;if(pk){$('#pickCard').href=pk.url;$('#pickTitle').textContent=pk.title;$('#pickSub').textContent=pk.sub;}
+  var pk=CONFIG.pickup;if(pk){$('#pickCard').href=pk.url;$('#pickTitle').textContent=pk.title;$('#pickSub').textContent=pk.sub;
+    var m=String(pk.url).match(/(?:youtu\.be\/|[?&]v=|embed\/|shorts\/)([\w-]{11})/);
+    if(m)$('#ytFrame').src='https://www.youtube-nocookie.com/embed/'+m[1]+'?rel=0&playsinline=1';else $('#ytBox').style.display='none';}
   $('#tags').innerHTML=CONFIG.hashtags.map(function(t){return '<button class="chip" data-t="'+esc(t)+'">'+esc(t)+'</button>';}).join('');
   copyTags('#tags');links('#links');
   var tw=false;
