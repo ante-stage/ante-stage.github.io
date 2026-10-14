@@ -690,3 +690,34 @@ body.lights-lit .card{box-shadow:0 0 0 4px var(--black-d),0 0 0 6px var(--red),0
   .hero .name{font-size:112px}
   .hero .tagline{font-size:19px}
 }
+
+/* ===== 左右のライト: 中心へ集まる向き・大きめ (20261015v) ===== */
+@keyframes cvA{0%,100%{transform:rotate(-12deg);opacity:.6}50%{transform:rotate(-27deg);opacity:.9}}
+@keyframes cvB{0%,100%{transform:rotate(12deg);opacity:.9}50%{transform:rotate(27deg);opacity:.6}}
+@keyframes cvhA{0%,100%{transform:rotate(-8deg);opacity:.5}50%{transform:rotate(-24deg);opacity:.8}}
+@keyframes cvhB{0%,100%{transform:rotate(8deg);opacity:.8}50%{transform:rotate(24deg);opacity:.5}}
+/* ヒーロー内のビーム */
+.vis .sw{width:88%;height:calc(100% + 60px);filter:blur(9px);
+  background:linear-gradient(180deg,rgba(255,240,200,.62),rgba(255,236,190,.22) 55%,rgba(255,236,190,0) 95%)}
+.vis .sw.a{left:-22%;animation:cvhA 10s ease-in-out infinite}
+.vis .sw.b{right:-22%;animation:cvhB 12s ease-in-out infinite}
+@media(min-width:1024px){.vis .sw{width:110%}.vis .sw.a{left:-40%}.vis .sw.b{right:-40%}}
+/* 画面固定のビーム(PC・全ページ) */
+@media(min-width:1024px){
+  #sl::before,#sl::after,body:not([data-page="home"]) #sl::before,body:not([data-page="home"]) #sl::after{top:0;width:96vw;height:125vh;filter:blur(18px);
+    clip-path:polygon(43% 0,57% 0,100% 100%,0 100%);
+    background:linear-gradient(180deg,rgba(255,238,196,.34),rgba(255,230,170,.13) 55%,rgba(255,230,170,0) 96%)}
+  #sl::before,body:not([data-page="home"]) #sl::before{left:-34vw;animation:cvA 12s ease-in-out infinite}
+  #sl::after,body:not([data-page="home"]) #sl::after{right:-34vw;animation:cvB 14s ease-in-out infinite}
+}
+/* スマホ/iPad: ホーム以外 */
+@media(max-width:1023px){
+  body:not([data-page="home"]) #sl::before,body:not([data-page="home"]) #sl::after{width:120vw;height:95vh;filter:blur(14px);
+    background:linear-gradient(180deg,rgba(255,238,196,.27),rgba(255,230,170,.1) 55%,rgba(255,230,170,0) 95%)}
+  body:not([data-page="home"]) #sl::before{left:-52vw;animation:cvA 12s ease-in-out infinite}
+  body:not([data-page="home"]) #sl::after{right:-52vw;animation:cvB 14s ease-in-out infinite}
+}
+@media(prefers-reduced-motion:reduce){
+  #sl::before,#sl::after,.vis .sw{animation:none!important}
+  #sl::before,.vis .sw.a{transform:rotate(-18deg)}#sl::after,.vis .sw.b{transform:rotate(18deg)}
+}
