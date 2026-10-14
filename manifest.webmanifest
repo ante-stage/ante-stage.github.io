@@ -11,19 +11,19 @@
  "lang": "ja",
  "icons": [
   {
-   "src": "icon-192.png?v=20261015q",
+   "src": "icon-192.png?v=20261015r",
    "sizes": "192x192",
    "type": "image/png",
    "purpose": "any"
   },
   {
-   "src": "icon-512.png?v=20261015q",
+   "src": "icon-512.png?v=20261015r",
    "sizes": "512x512",
    "type": "image/png",
    "purpose": "any"
   },
   {
-   "src": "icon-maskable-512.png?v=20261015q",
+   "src": "icon-maskable-512.png?v=20261015r",
    "sizes": "512x512",
    "type": "image/png",
    "purpose": "maskable"

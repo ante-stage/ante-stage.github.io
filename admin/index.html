@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="ja">
 <head>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@700&display=swap" rel="stylesheet">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
@@ -140,6 +141,17 @@ details.more>summary::-webkit-details-marker{display:none}
     </div>
     <button class="btn full" id="wSave" type="button">この内容でHPに載せる</button>
     <p class="msg" id="wMsg" role="status"></p>
+    <div class="card" style="margin-top:36px">
+      <h2>予定表の画像</h2>
+      <p class="hint">上の入力から、Xに投稿できる予定表の画像を作ります。HPに載せる操作とは別です。</p>
+      <button class="btn sub full" id="schMake" type="button" style="box-shadow:none;width:100%">予定表の画像をつくる</button>
+      <div id="schOut" hidden style="margin-top:20px">
+        <img id="schImg" alt="予定表の画像" style="display:block;width:100%;height:auto;border-radius:12px;border:1.5px solid var(--gold)">
+        <div class="row" style="margin-top:14px"><button class="btn sub" id="schAgain" type="button" style="box-shadow:none">直す</button><button class="btn" id="schShare" type="button">保存・Xに投稿</button></div>
+        <p class="hint">画像を長押ししても保存できます。入力した内容を変えたら、もう一度「予定表の画像をつくる」を押してください。</p>
+      </div>
+      <p class="msg" id="schMsg" role="status"></p>
+    </div>
 
     <details class="more">
       <summary>1件ずつ追加する・登録済みの予定を見る</summary>
@@ -307,6 +319,62 @@ $('wSave').onclick=function(){
   saveSchW().then(function(){say($('wMsg'),'HPに載せました。まもなく反映されます','ok');}).catch(function(){});
 };
 function saveSchW(){return guard(rpc('ante_save_schedule',{p_items:S.sch}),$('wMsg')).then(load);}
+
+/* ---- 予定表の画像 ---- */
+(function(){
+  var blob=null,url='';
+  function readRows(){var out=[];[].forEach.call($('wRows').querySelectorAll('.schRow'),function(r){out.push({k:r.dataset.k,t:r.querySelector('.wt').value.trim(),w:r.querySelector('.wtt').value.trim(),o:r.querySelector('.wo').checked});});return out;}
+  function img(src){return new Promise(function(ok){var i=new Image();i.onload=function(){ok(i);};i.onerror=function(){ok(null);};i.src=src;});}
+  function rr(x,X,Y,W,H,r){x.beginPath();x.moveTo(X+r,Y);x.arcTo(X+W,Y,X+W,Y+H,r);x.arcTo(X+W,Y+H,X,Y+H,r);x.arcTo(X,Y+H,X,Y,r);x.arcTo(X,Y,X+W,Y,r);x.closePath();}
+  function fit(x,txt,max){var t=txt;while(t.length>1&&x.measureText(t).width>max)t=t.slice(0,-1);return t===txt?t:t.slice(0,-1)+'…';}
+  function draw(){
+    var F='"Zen Maru Gothic","Hiragino Maru Gothic ProN","Hiragino Sans",sans-serif';
+    var fl=(document.fonts&&document.fonts.load)?document.fonts.load('700 40px "Zen Maru Gothic"','予定あ').catch(function(){}):Promise.resolve();
+    return Promise.all([fl,img('../img/logo-gold.png')]).then(function(res){
+      var logo=res[1],W=1080,H=1350,c=document.createElement('canvas'),x=c.getContext('2d');c.width=W;c.height=H;
+      var g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#2f2a3a');g.addColorStop(1,'#1c1824');x.fillStyle=g;x.fillRect(0,0,W,H);
+      // チェック柄
+      x.fillStyle='rgba(232,84,107,.22)';for(var i=-1;i<9;i++){x.fillRect(i*150+20,0,64,H);x.fillRect(0,i*150+20,W,64);}
+      x.fillStyle='rgba(217,178,95,.28)';for(var j=-1;j<9;j++){x.fillRect(j*150+20,0,3,H);x.fillRect(j*150+81,0,3,H);x.fillRect(0,j*150+20,W,3);x.fillRect(0,j*150+81,W,3);}
+      var v=x.createRadialGradient(W/2,H/2,300,W/2,H/2,900);v.addColorStop(0,'rgba(28,24,36,0)');v.addColorStop(1,'rgba(28,24,36,.75)');x.fillStyle=v;x.fillRect(0,0,W,H);
+      if(logo){var lw=330,lh=logo.height*lw/logo.width;x.drawImage(logo,56,60,lw,lh);}
+      var rows=readRows(),a=rows[0],b=rows[rows.length-1];
+      x.textAlign='right';x.fillStyle='#f3dc9c';x.font='700 64px Georgia,"Times New Roman",serif';x.fillText('WEEKLY',W-64,128);x.fillText('SCHEDULE',W-64,198);
+      x.fillStyle='#fff8f1';x.font='700 36px '+F;
+      if(a){var da=new Date(a.k+'T00:00:00'),db=new Date(b.k+'T00:00:00');x.fillText((da.getMonth()+1)+'/'+da.getDate()+' 〜 '+(db.getMonth()+1)+'/'+db.getDate(),W-64,252);}
+      var top=300,rh=112,gap=12,X=56,RW=W-112;
+      rows.forEach(function(r,i){
+        var d=new Date(r.k+'T00:00:00'),w=d.getDay(),y=top+i*(rh+gap);
+        rr(x,X,y,RW,rh,22);x.fillStyle='rgba(28,24,36,.86)';x.fill();x.lineWidth=3;x.strokeStyle='#d9b25f';x.stroke();
+        rr(x,X+14,y+14,128,rh-28,14);x.fillStyle=r.o?'#3a3447':'#e8546b';x.fill();
+        x.textAlign='center';x.fillStyle='#fff';x.font='700 38px '+F;x.fillText((d.getMonth()+1)+'/'+d.getDate(),X+78,y+55);
+        x.font='700 24px '+F;x.fillStyle=w===6?'#bfe0ff':w===0?'#ffd0da':'#ffe9b8';x.fillText(wk[w],X+78,y+87);
+        x.textAlign='left';
+        if(r.o){x.fillStyle='rgba(255,248,241,.55)';x.font='700 38px '+F;x.fillText('おやすみ',X+176,y+72);}
+        else if(r.w){
+          if(r.t){x.fillStyle='#f3dc9c';x.font='700 38px '+F;x.fillText(fit(x,r.t,190),X+176,y+72);}
+          x.fillStyle='#fff8f1';x.font='700 40px '+F;var off=r.t?X+176+Math.min(x.measureText(r.t).width,190)+26:X+176;x.fillText(fit(x,r.w,X+RW-24-off),off,y+73);
+        }else{x.fillStyle='rgba(255,248,241,.28)';x.font='700 34px '+F;x.fillText('—',X+176,y+70);}
+      });
+      var nt=$('wNote').value.trim(),fy=top+7*(rh+gap)+10;
+      if(nt){x.textAlign='center';x.fillStyle='#f3dc9c';x.font='700 36px '+F;x.fillText(fit(x,nt,W-140),W/2,fy+38);}
+      x.textAlign='center';x.fillStyle='rgba(255,248,241,.7)';x.font='700 28px '+F;x.fillText('@antevx_  ・  ante-stage.github.io',W/2,H-34);
+      return new Promise(function(ok){c.toBlob(function(bl){ok(bl);},'image/png');});
+    });
+  }
+  $('schMake').onclick=function(){
+    if(!wDates().length){say($('schMsg'),'はじまりの日をお選びください','err');return;}
+    say($('schMsg'),'作っています…');
+    draw().then(function(bl){blob=bl;if(url)URL.revokeObjectURL(url);url=URL.createObjectURL(bl);$('schImg').src=url;$('schOut').hidden=false;say($('schMsg'),'');$('schOut').scrollIntoView({behavior:'smooth',block:'center'});})
+      .catch(function(){say($('schMsg'),'画像を作れませんでした。もう一度お試しください','err');});
+  };
+  $('schAgain').onclick=function(){$('schOut').hidden=true;$('wRows').scrollIntoView({behavior:'smooth',block:'start'});};
+  $('schShare').onclick=function(){
+    if(!blob)return;var f=new File([blob],'ante-schedule.png',{type:'image/png'});
+    if(navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],text:'今週の配信予定です #あんて'}).catch(function(){});return;}
+    var a=document.createElement('a');a.href=url;a.download='ante-schedule.png';document.body.appendChild(a);a.click();a.remove();
+  };
+})();
 
 /* ---- 歌える曲 ---- */
 function parseLine(l){
