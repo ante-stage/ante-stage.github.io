@@ -456,3 +456,4 @@ footer.ft .upd{display:block;margin:2px auto 12px;padding:8px 18px;border-radius
 #opening .fig::after{background:
   linear-gradient(180deg,#06040a 0,rgba(6,4,10,.55) 8%,rgba(6,4,10,0) 24%,rgba(6,4,10,0) 74%,#06040a 100%),
   linear-gradient(90deg,#06040a 0,rgba(6,4,10,0) 9%,rgba(6,4,10,0) 84%,#06040a 100%)}
+.h.noorn .orn{display:none}
