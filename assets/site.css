@@ -398,7 +398,7 @@ footer.ft .upd{display:block;margin:2px auto 12px;padding:8px 18px;border-radius
 }
 #opening.land{background:transparent;transition:background 1s ease}
 #opening.land .spot,#opening.land .pool,#opening.land .tap,#opening.land .fx,#opening.land .flash{animation:none!important;opacity:0!important;transition:opacity .6s}
-#opening.land .fig{animation:none;filter:brightness(1);transform-origin:50% 50%;transition:transform 1.05s cubic-bezier(.65,0,.25,1),box-shadow .8s,border-radius .8s;box-shadow:0 0 0 0 transparent,0 0 0 transparent}
+#opening.land .fig{animation:none;filter:brightness(1);transform-origin:50% 50%;transition:transform 1.05s cubic-bezier(.65,0,.25,1),box-shadow .8s,border-radius .8s}
 #opening.land.out{transition:opacity .35s}
 /* ===== ホーム整地(モバイル/タブレット) ===== */
 @media(max-width:1023px){
@@ -422,3 +422,13 @@ footer.ft .upd{display:block;margin:2px auto 12px;padding:8px 18px;border-radius
   .hero .txt{margin-top:-74px}
   .hero .tagline{margin-top:16px}
 }
+/* ===== オープニング: 点灯1回・枠なし ===== */
+#opening.go .spot{animation:spotOn1 1.1s ease-out 1.2s forwards}
+#opening.go .fig{animation:lit1 1.1s ease-out 1.2s forwards}
+@keyframes spotOn1{from{opacity:0}to{opacity:1}}
+@keyframes lit1{from{filter:brightness(0)}to{filter:brightness(1)}}
+#opening .fig{width:min(100vw,calc(78svh * .667));max-width:560px;border:0;border-radius:0;box-shadow:inset 0 0 0 0 transparent,0 0 0 0 transparent;overflow:hidden}
+#opening .fig::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,#06040a 0,transparent 14%,transparent 80%,#06040a 100%);opacity:.9;transition:opacity .9s}
+#opening.land .fig{border-radius:22px;box-shadow:inset 0 0 0 3px var(--gold),0 0 0 4px var(--red);transition:transform 1.05s cubic-bezier(.65,0,.25,1),box-shadow .9s,border-radius .9s}
+#opening.land .fig::after{opacity:0}
+#opening .pool{bottom:6%}
