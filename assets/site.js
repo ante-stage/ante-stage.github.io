@@ -53,6 +53,14 @@ function chrome(){
   NAV.map(function(n){return '<li><a href="'+n[0]+'"'+(n[0]===curFile()?' aria-current="page"':'')+'><small>'+n[1]+'</small>'+n[2]+'</a></li>';}).join('')+'</ul></nav></div></header>'+
   '<nav class="tabbar" aria-label="メインメニュー">'+NAV.map(function(n){return '<a href="'+n[0]+'"'+(n[0]===curFile()?' aria-current="page"':'')+'><i aria-hidden="true">'+n[3]+'</i>'+n[2]+'</a>';}).join('')+'</nav>';
   b.insertAdjacentHTML('afterbegin',nav);
+  (function(){
+    var off=false;try{off=localStorage.getItem('ante-lights')==='off';}catch(e){}
+    b.classList.toggle('lights-off',off);
+    var bt=document.createElement('button');bt.type='button';bt.id='ltBtn';
+    function ui(){var o=b.classList.contains('lights-off');bt.setAttribute('aria-pressed',o?'false':'true');bt.setAttribute('aria-label',o?'ライトを点灯する':'ライトを消灯する');bt.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21h6M10 17h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z" fill="'+(o?'none':'currentColor')+'" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>'+(o?'OFF':'ON')+'</span>';}
+    bt.addEventListener('click',function(){var o=b.classList.toggle('lights-off');try{localStorage.setItem('ante-lights',o?'off':'on');}catch(e){}ui();});
+    ui();b.appendChild(bt);
+  })();
   b.insertAdjacentHTML('beforeend',
    '<footer class="ft"><img src="img/logo-gold.png" alt="あんて｡ ロゴ"><nav aria-label="フッター">'+NAV.map(function(n){return '<a href="'+n[0]+'">'+n[2]+'</a>';}).join('')+'</nav><button type="button" class="upd" id="updBtn">↻ 最新版に更新</button><small>© ANTE OFFICIAL STAGE ・ v'+VER+'</small></footer>'+
    '<div class="toast" id="toast" role="status" aria-live="polite"></div><div id="lb" aria-hidden="true"><img alt=""></div>');
@@ -85,7 +93,7 @@ function transitions(){
 
 /* ---------- 見出しの飾り（矢の刺さるハート） ---------- */
 var ORN='<img class="orn" src="img/logo-gold.png" alt="" width="900" height="438" loading="lazy">';
-var VER='20261015c';
+var VER='20261015d';
 function autoUpdate(){
   function chk(){try{fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
     if(!j||!j.v||j.v===VER)return;var k='verTry';if(ss(k)===j.v)return;ss(k,j.v);

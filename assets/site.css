@@ -587,3 +587,14 @@ body[data-page="home"].reveal .topnav{animation:barDown .8s cubic-bezier(.22,1,.
   body[data-page="home"]:not(.reveal) #sl::before,body[data-page="home"]:not(.reveal) #sl::after{opacity:0;animation:none}
 }
 @media(min-width:1024px) and (prefers-reduced-motion:reduce){body[data-page="home"] #sl::before,body[data-page="home"] #sl::after{animation:none}}
+/* ===== ライト点灯/消灯ボタン ===== */
+#ltBtn{position:fixed;z-index:60;top:calc(var(--sat,0px) + 10px);right:max(12px,env(safe-area-inset-right,0px));height:36px;padding:0 12px 0 10px;display:flex;align-items:center;gap:5px;border-radius:99px;
+  border:1.5px solid var(--gold);background:rgba(47,42,58,.82);color:#ffe9a8;font:800 11px/1 var(--ff-deco,inherit);letter-spacing:.12em;cursor:pointer;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 0 14px rgba(255,226,150,.35);transition:box-shadow .3s,color .3s,background .3s}
+#ltBtn svg{width:18px;height:18px}
+#ltBtn:hover{background:rgba(232,84,107,.5)}
+body.lights-off #ltBtn{color:#a89fb4;box-shadow:none;border-color:rgba(217,178,95,.5)}
+@media(min-width:1280px){#ltBtn{right:22px;top:14px}}
+body.lights-off .vis .sw,body.lights-off #sl::before,body.lights-off #sl::after{display:none}
+body.lights-off #sl,body.lights-off[data-page="home"] #sl{background:radial-gradient(ellipse 120% 90% at 50% 50%,rgba(6,4,10,.15) 30%,rgba(6,4,10,.62) 100%)}
+body.lights-off .hero .photo{filter:brightness(.88)}
+#sl,.vis .sw{transition:opacity .5s}
