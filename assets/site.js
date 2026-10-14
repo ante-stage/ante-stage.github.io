@@ -96,7 +96,7 @@ function transitions(){
 
 /* ---------- 見出しの飾り（矢の刺さるハート） ---------- */
 var ORN='<img class="orn" src="img/logo-gold.png" alt="" width="900" height="438" loading="lazy">';
-var VER='20261015v';
+var VER='20261015w';
 function autoUpdate(){
   function chk(){try{fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
     if(!j||!j.v||j.v===VER)return;var k='verTry';if(ss(k)===j.v)return;ss(k,j.v);
@@ -159,6 +159,7 @@ function opening(){
   var done=false;
   var phase=0;
   function place(){var fig=$('#opening .fig'),ph=$('.hero .photo');if(!fig||!ph||phase)return;var R=ph.getBoundingClientRect();if(!R.width)return;var nm=$('.hero .name'),kk=$('.hero .kick'),pn=$('#opening .pname');if(nm&&kk&&pn){var N=nm.getBoundingClientRect(),K=kk.getBoundingClientRect(),cs=getComputedStyle(nm);pn.style.cssText='left:'+N.left+'px;width:'+N.width+'px;top:'+K.top+'px;--nfs:'+cs.fontSize+';--nls:'+cs.letterSpacing+';--nlh:'+(N.top-K.top)+'px';}
+  op.style.setProperty('--fx',(R.left+R.width/2)+'px');op.style.setProperty('--fw',R.width+'px');op.style.setProperty('--fb',(R.bottom)+'px');
   fig.style.cssText='position:fixed;left:'+R.left+'px;top:'+R.top+'px;width:'+R.width+'px;height:'+R.height+'px;max-width:none;aspect-ratio:auto';}
   place();addEventListener('resize',place);addEventListener('load',place);
   function fin(){op.classList.add('out');document.body.classList.add('reveal');setTimeout(function(){document.body.classList.remove('lock');},500);ss('opened','1');}
