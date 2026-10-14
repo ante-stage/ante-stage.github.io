@@ -93,7 +93,7 @@ function transitions(){
 
 /* ---------- 見出しの飾り（矢の刺さるハート） ---------- */
 var ORN='<img class="orn" src="img/logo-gold.png" alt="" width="900" height="438" loading="lazy">';
-var VER='20261015k';
+var VER='20261015l';
 function autoUpdate(){
   function chk(){try{fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
     if(!j||!j.v||j.v===VER)return;var k='verTry';if(ss(k)===j.v)return;ss(k,j.v);
@@ -196,7 +196,9 @@ var P={};
 P.home=function(){
   var vis=$('.hero .vis');if(vis&&!$('.sw',vis)){vis.insertAdjacentHTML('beforeend','<i class="sw a" aria-hidden="true"></i><i class="sw b" aria-hidden="true"></i>');}
   $('#liveBtn').href=CONFIG.liveUrl;
-  var pk=CONFIG.pickup;if(pk){$('#pickCard').href=pk.url;$('#pickTitle').textContent=pk.title;$('#pickSub').textContent=pk.sub;}
+  var pk=CONFIG.pickup;if(pk){$('#pickCard').href=pk.url;$('#pickTitle').textContent=pk.title;$('#pickSub').textContent=pk.sub;
+    var m=String(pk.url).match(/(?:youtu\.be\/|[?&]v=|embed\/|shorts\/)([\w-]{11})/);
+    if(m)$('#ytFrame').src='https://www.youtube-nocookie.com/embed/'+m[1]+'?rel=0&playsinline=1';else $('#ytBox').style.display='none';}
   subs.push(function(){
     var u=schedRows().slice(0,4);
     $('#homeSched').innerHTML=u.length?u.map(schedItem).join(''):'<li class="empty" style="display:block;border:0">配信予定は準備中です。Xをチェックしてね♡</li>';
