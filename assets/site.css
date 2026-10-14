@@ -659,3 +659,34 @@ body.lights-lit section.sec::before{animation:none;opacity:.85}
 body.lights-lit footer.ft::before{display:none}
 body.lights-lit .h h2,body.lights-lit .h h1{text-shadow:2px 2px 0 var(--red-d)}
 body.lights-lit .card{box-shadow:0 0 0 4px var(--black-d),0 0 0 6px var(--red),0 12px 30px rgba(0,0,0,.5)}
+
+/* ===== タブレット/PC 調整 (20261015u) ===== */
+@media(min-width:768px){
+  .topnav .in{padding-right:104px}
+  #ltBtn{top:calc(var(--sat,0px) + (var(--nav-h) - 36px) / 2);right:max(16px,env(safe-area-inset-right,0px))}
+  .brand{font-size:18px}.brand img{width:40px}
+}
+@media(min-width:768px) and (max-width:1023px){
+  .topnav .in{gap:10px}
+  .topnav li a{padding:8px 10px;font-size:13px;letter-spacing:.03em}
+  .topnav ul{gap:0}
+  .hero{--pw:min(54vw,400px,calc((100svh - var(--nav-h) - 340px) * .667));padding-top:calc(var(--nav-h) + 28px);padding-bottom:36px}
+  .hero .txt{margin-top:18px}
+  .hero .name{font-size:76px}
+  .hero .tagline{font-size:16px}
+  .hero .emblem{width:min(46%,280px)}
+  section.sec{padding-block:44px}
+}
+@media(min-width:1024px) and (max-width:1279px){
+  .topnav li a{padding:8px 12px}
+  .hero{column-gap:36px}
+  .hero .name{font-size:68px}
+}
+@media(min-width:1600px){
+  .pg{max-width:1280px}
+  .hero{min-height:min(100vh,940px)}
+  .photo{width:min(92%,560px,calc(66svh * .667))}
+  .hero .emblem{width:min(80%,420px)}
+  .hero .name{font-size:112px}
+  .hero .tagline{font-size:19px}
+}
