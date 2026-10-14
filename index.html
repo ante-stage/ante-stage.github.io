@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>あんて｡ | OFFICIAL STAGE</title>
+<meta name="description" content="あんて｡の公式サイト。配信予定・歌える曲・リクエストはここから。">
+<meta name="theme-color" content="#2f2a3a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="あんて｡">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.png">
+<meta property="og:image" content="img/ante.png">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=M+PLUS+Rounded+1c:wght@500;700;800&family=Cinzel+Decorative:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#e8546b; --red-d:#b8334a; --black:#2f2a3a; --black-d:#1c1824; --gold:#d9b25f; --gold-l:#f3dc9c; --paper:#fff8f1;
+  --ff-title:"Dela Gothic One","M PLUS Rounded 1c",sans-serif;
+  --ff-body:"M PLUS Rounded 1c",system-ui,sans-serif;
+  --ff-deco:"Cinzel Decorative","Dela Gothic One",serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--ff-body); color:var(--paper); line-height:1.7;
+  /* 赤×黒のチェック(タータン風) */
+  background:
+    repeating-linear-gradient(90deg, transparent 0 40px, rgba(217,178,95,.45) 40px 42px, transparent 42px 56px),
+    repeating-linear-gradient(0deg,  transparent 0 40px, rgba(217,178,95,.45) 40px 42px, transparent 42px 56px),
+    repeating-linear-gradient(90deg, rgba(232,84,107,.30) 0 16px, transparent 16px 56px),
+    repeating-linear-gradient(0deg,  rgba(232,84,107,.30) 0 16px, transparent 16px 56px);
+  background-color:var(--black-d);
+  min-height:100vh;
+  padding-bottom:env(safe-area-inset-bottom);
+  overflow-x:hidden;
+}
+body.lock{overflow:hidden}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit}
+
+/* ---------- opening ---------- */
+#opening{position:fixed;inset:0;z-index:100;background:var(--black-d);display:flex;align-items:center;justify-content:center;overflow:hidden;transition:opacity .5s 1.5s, visibility 0s 2s}
+#opening .curtain{position:absolute;top:0;bottom:0;width:50.5%;background:
+  repeating-linear-gradient(90deg,var(--red) 0 22px,var(--red-d) 22px 44px);
+  box-shadow:inset 0 -60px 80px rgba(0,0,0,.45),inset 0 60px 60px rgba(0,0,0,.35);transition:transform 1.3s cubic-bezier(.75,0,.2,1) .55s;z-index:2}
+#opening .curtain.l{left:0;border-right:4px solid var(--gold)}
+#opening .curtain.r{right:0;border-left:4px solid var(--gold)}
+#opening .beam{position:absolute;top:-10%;width:42%;height:120%;z-index:3;pointer-events:none;mix-blend-mode:screen;opacity:0;
+  background:linear-gradient(180deg,rgba(243,220,156,.55),rgba(243,220,156,0) 78%);filter:blur(8px);transform-origin:50% 0;animation:beam 5s ease-in-out .3s both}
+#opening .beam.a{left:-6%;--r:22deg}
+#opening .beam.b{right:-6%;--r:-22deg}
+@keyframes beam{0%{opacity:0;transform:rotate(calc(var(--r)*1.9))}25%{opacity:1}60%{opacity:.9;transform:rotate(var(--r))}100%{opacity:.55;transform:rotate(calc(var(--r)*.6))}}
+#opening .logo{position:relative;z-index:4;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;transition:opacity .35s}
+#opening .logo .em{width:min(78vw,330px);opacity:0;transform:scale(.6);filter:drop-shadow(0 0 0 rgba(243,220,156,0));
+  animation:emIn .9s cubic-bezier(.2,1.4,.4,1) .5s forwards, beat 1.1s ease-in-out 1.5s 3}
+@keyframes emIn{to{opacity:1;transform:scale(1);filter:drop-shadow(0 0 14px rgba(243,220,156,.8))}}
+@keyframes beat{0%,100%{transform:scale(1)}18%{transform:scale(1.09)}34%{transform:scale(1)}50%{transform:scale(1.05)}}
+#opening .kicker{font-family:var(--ff-deco);color:var(--gold-l);letter-spacing:.38em;font-size:11px;opacity:0;animation:fade .6s ease 1.3s forwards}
+#opening .nm{display:flex;gap:2px;justify-content:center;font-family:var(--ff-title);font-size:56px;line-height:1.1;color:#fff;text-shadow:0 0 20px var(--red),0 4px 0 var(--red-d)}
+#opening .nm span{display:inline-block;opacity:0;transform:translateY(-40px) scale(1.5);animation:drop .55s cubic-bezier(.2,1.5,.4,1) forwards}
+#opening .nm span:nth-child(1){animation-delay:1.7s}
+#opening .nm span:nth-child(2){animation-delay:1.82s}
+#opening .nm span:nth-child(3){animation-delay:1.94s}
+#opening .nm span:nth-child(4){animation-delay:2.06s}
+@keyframes drop{to{opacity:1;transform:none}}
+#opening .sub{font-size:12px;color:var(--gold-l);letter-spacing:.2em;opacity:0;animation:fade .7s ease 2.5s forwards}
+@keyframes fade{to{opacity:1}}
+#opening .flash{position:absolute;inset:0;z-index:5;background:radial-gradient(circle at 50% 45%,#fff,var(--gold-l) 35%,transparent 70%);opacity:0;pointer-events:none}
+#opening .tap{position:absolute;bottom:12%;z-index:4;font-size:12px;letter-spacing:.25em;color:var(--gold-l);opacity:0;animation:fade .6s ease 3s forwards, blink 1.3s 3.6s infinite;transition:opacity .2s}
+#opening .fx{position:absolute;inset:0;z-index:3;pointer-events:none;overflow:hidden}
+#opening .fx i{position:absolute;bottom:-30px;font-style:normal;color:var(--gold-l);opacity:0;animation:rise linear infinite}
+@keyframes rise{0%{transform:translateY(0) rotate(0);opacity:0}15%{opacity:.9}100%{transform:translateY(-110vh) rotate(40deg);opacity:0}}
+#opening.go .curtain.l{transform:translateX(-101%)}
+#opening.go .curtain.r{transform:translateX(101%)}
+#opening.go .logo,#opening.go .tap,#opening.go .fx{opacity:0}
+#opening.go .flash{animation:flash 1.1s ease-out .45s}
+@keyframes flash{0%{opacity:0}18%{opacity:.95}100%{opacity:0}}
+#opening.go{opacity:0;visibility:hidden}
+@keyframes blink{50%{opacity:.25}}
+
+/* ページ側の登場演出 */
+body.reveal .stage .emblem{animation:float 3.4s ease-in-out infinite, popIn .9s cubic-bezier(.2,1.3,.4,1) .9s both}
+body.reveal .fig{animation:figIn 1.1s cubic-bezier(.2,.9,.2,1) .9s both}
+body.reveal .name{animation:nameIn .8s cubic-bezier(.2,1.4,.4,1) 1.5s both}
+body.reveal .tagline,body.reveal .cta{animation:fadeUp .7s ease 1.9s both}
+@keyframes popIn{from{opacity:0;transform:scale(.5)}to{opacity:1}}
+@keyframes figIn{from{opacity:0;transform:translateY(60px) scale(.94)}to{opacity:1;transform:none}}
+@keyframes nameIn{from{opacity:0;transform:scale(1.6)}to{opacity:1;transform:none}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){
+  #opening *,body.reveal *{animation-duration:.01s!important;animation-delay:0s!important}
+}
+
+/* ---------- layout ---------- */
+.wrap{max-width:560px;margin:0 auto;padding:0 18px 60px}
+section{margin-top:44px}
+.h{display:flex;flex-direction:column;align-items:center;margin-bottom:18px;text-align:center}
+.h small{font-family:var(--ff-deco);color:var(--gold);font-size:11px;letter-spacing:.35em}
+.h h2{font-family:var(--ff-title);font-weight:400;font-size:26px;color:#fff;letter-spacing:.06em;
+  text-shadow:2px 2px 0 var(--red-d)}
+.h::after{content:"♛";color:var(--gold);font-size:16px;margin-top:2px;letter-spacing:0}
+.card{
+  background:linear-gradient(160deg,rgba(47,42,58,.96),rgba(28,24,36,.96));
+  border:2px solid var(--gold); border-radius:18px; padding:18px;
+  box-shadow:0 0 0 4px var(--black-d), 0 0 0 6px var(--red), 0 10px 26px rgba(0,0,0,.5);
+  position:relative;
+}
+
+/* ---------- hero ---------- */
+.stage{position:relative;padding:46px 0 34px;text-align:center;overflow:hidden}
+.stage::before,.stage::after{content:"";position:absolute;top:-20px;width:46%;height:130%;background:linear-gradient(180deg,rgba(243,220,156,.28),transparent 70%);filter:blur(6px);pointer-events:none}
+.stage::before{left:-8%;transform:rotate(14deg)}
+.stage::after{right:-8%;transform:rotate(-14deg)}
+.marquee{font-size:0;display:flex;justify-content:center;gap:10px;margin-bottom:14px}
+.marquee i{width:9px;height:9px;border-radius:50%;background:var(--gold-l);box-shadow:0 0 8px var(--gold);animation:bulb 1.4s infinite}
+.marquee i:nth-child(even){animation-delay:.7s}
+@keyframes bulb{50%{opacity:.25}}
+.crown{font-size:44px;filter:drop-shadow(0 0 10px var(--gold));animation:float 3s ease-in-out infinite;display:block}
+@keyframes float{50%{transform:translateY(-6px)}}
+.avatar{width:168px;height:168px;margin:6px auto 12px;border-radius:50%;border:4px solid var(--gold);
+  background:radial-gradient(circle at 35% 30%,var(--red),var(--red-d) 70%);
+  box-shadow:0 0 0 6px var(--black-d),0 0 0 9px var(--red),0 0 30px rgba(232,84,107,.6);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+.avatar img{width:100%;height:100%;object-fit:cover;display:none}
+.avatar img.on{display:block}
+.avatar .ph{font-size:60px}
+.name{font-family:var(--ff-title);font-size:44px;line-height:1.1;color:#fff;
+  text-shadow:0 0 16px var(--red),3px 3px 0 var(--red-d)}
+.tagline{margin-top:8px;font-size:13px;color:var(--gold-l);letter-spacing:.12em}
+.cta{display:inline-flex;align-items:center;gap:8px;margin-top:20px;padding:13px 26px;border-radius:999px;font-weight:800;
+  background:linear-gradient(180deg,var(--red),var(--red-d));color:#fff;border:2px solid var(--gold);
+  box-shadow:0 5px 0 #7d2133,0 0 18px rgba(232,84,107,.5);transition:transform .1s, box-shadow .1s}
+.cta:active{transform:translateY(4px);box-shadow:0 1px 0 #7d2133}
+
+/* ---------- pickup ---------- */
+.pick{display:flex;align-items:center;gap:14px;padding:16px 18px}
+.pick b{display:block;font-size:16px}
+.pick small{display:block;font-size:12px;color:var(--gold-l);opacity:.9}
+.pk-ic{flex:none;width:44px;height:44px;border-radius:50%;background:var(--red);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:18px}
+.pk-ar{margin-left:auto;color:var(--gold);font-size:22px}
+.pick.off{display:none}
+.chip{cursor:pointer}
+
+/* ---------- art ---------- */
+.emblem{display:block;width:min(78%,300px);margin:0 auto;filter:drop-shadow(0 0 10px rgba(217,178,95,.55));animation:float 3.4s ease-in-out infinite}
+.fig{position:relative;width:min(88%,380px);margin:-6px auto -64px;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,rgba(0,0,0,.55) 9%,#000 22%),linear-gradient(180deg,#000 62%,transparent 100%);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent 0,rgba(0,0,0,.55) 9%,#000 22%),linear-gradient(180deg,#000 62%,transparent 100%);mask-composite:intersect;
+  filter:drop-shadow(0 0 22px rgba(232,84,107,.55))}
+.fig img{display:block;width:100%;height:auto;aspect-ratio:2/3;object-fit:cover;object-position:top}
+.name{position:relative;z-index:2}
+.pf-av{width:96px;height:96px;border-radius:50%;border:3px solid var(--gold);box-shadow:0 0 0 4px var(--black-d),0 0 0 6px var(--red);margin:0 auto 6px;display:block;object-fit:cover}
+
+/* ---------- schedule ---------- */
+.sched{list-style:none;display:grid;gap:10px}
+.sched li{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:12px;background:rgba(255,255,255,.05);border:1px dashed rgba(217,178,95,.55)}
+.sched .d{flex:none;width:58px;text-align:center;font-family:var(--ff-title);line-height:1.15;color:var(--gold-l)}
+.sched .d b{display:block;font-size:22px;color:#fff;font-weight:400}
+.sched .d span{font-size:11px;font-family:var(--ff-body);font-weight:700}
+.sched .t{font-weight:800}
+.sched .n{font-size:12px;opacity:.8}
+.sched .tag{margin-left:auto;white-space:nowrap;flex:none;font-size:11px;font-weight:800;padding:3px 9px;border-radius:99px;background:var(--red);border:1px solid var(--gold)}
+.empty{text-align:center;opacity:.8;font-size:14px;padding:6px}
+
+/* ---------- profile ---------- */
+.prof{display:grid;gap:8px;font-size:14px}
+.prof dl{display:grid;grid-template-columns:5.5em 1fr;gap:6px 10px}
+.prof dt{color:var(--gold);font-weight:800}
+.motifs{display:flex;justify-content:center;gap:14px;font-size:26px;margin-top:12px}
+.links{display:grid;gap:10px;margin-top:16px}
+.links a{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:14px;font-weight:800;background:rgba(255,255,255,.06);border:1.5px solid var(--gold);transition:background .15s}
+.links a:active{background:var(--red)}
+.links a .ic{width:30px;height:30px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:15px;border:1px solid var(--gold-l)}
+.links a .ar{margin-left:auto;color:var(--gold)}
+.links a.off{opacity:.45;pointer-events:none}
+
+/* ---------- songs ---------- */
+.search{width:100%;padding:12px 14px;border-radius:12px;border:2px solid var(--gold);background:var(--black-d);color:#fff;font:inherit;font-size:15px;margin-bottom:12px}
+.search::placeholder{color:rgba(255,248,241,.5)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.chip{padding:5px 12px;border-radius:99px;font-size:12px;font-weight:800;border:1.5px solid var(--gold);color:var(--gold-l)}
+.chip.on{background:var(--red);color:#fff}
+.songs{list-style:none;display:grid;gap:6px;max-height:340px;overflow:auto;padding-right:4px}
+.songs li{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:10px;background:rgba(255,255,255,.05)}
+.songs .st{font-weight:800}
+.songs .sa{font-size:12px;opacity:.75}
+.songs button{margin-left:auto;flex:none;font-size:11px;font-weight:800;padding:5px 11px;border-radius:99px;background:var(--red);border:1px solid var(--gold)}
+.note{font-size:12px;opacity:.7;margin-top:10px}
+
+/* ---------- request / x ---------- */
+details.acc{margin-top:14px}
+details.acc summary{list-style:none;cursor:pointer;text-align:center;font-weight:800;padding:12px;border-radius:14px;border:2px solid var(--gold);background:linear-gradient(180deg,var(--red),var(--red-d))}
+details.acc summary::-webkit-details-marker{display:none}
+details.acc[open] summary{border-bottom-left-radius:0;border-bottom-right-radius:0}
+.acc .in{padding:14px;border:2px solid var(--gold);border-top:0;border-radius:0 0 14px 14px;background:rgba(0,0,0,.25);display:grid;gap:10px}
+.acc input,.acc textarea{width:100%;padding:11px 12px;border-radius:10px;border:1.5px solid var(--gold);background:var(--black-d);color:#fff;font:inherit;font-size:15px}
+.acc textarea{min-height:84px;resize:vertical}
+.send{padding:12px;border-radius:12px;font-weight:800;background:var(--gold);color:var(--black-d)}
+.xpost{display:grid;gap:12px}
+.xpost .ph{padding:18px;text-align:center;font-size:13px;opacity:.8;border:1.5px dashed var(--gold);border-radius:12px}
+
+footer{margin-top:50px;text-align:center;font-size:11px;color:var(--gold);letter-spacing:.15em;opacity:.85}
+footer .m{font-size:20px;letter-spacing:.4em;margin-bottom:6px}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translate(-50%,30px);background:var(--black-d);border:2px solid var(--gold);padding:10px 18px;border-radius:99px;font-size:13px;font-weight:800;opacity:0;transition:.3s;z-index:60;pointer-events:none}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body class="lock">
+
+<!-- opening -->
+<div id="opening" role="button" aria-label="タップしてスタート">
+  <div class="curtain l"></div><div class="curtain r"></div>
+  <div class="beam a"></div><div class="beam b"></div>
+  <div class="fx" id="fx"></div>
+  <div class="logo">
+    <div class="kicker">♛ IDOL STAGE ♛</div>
+    <img class="em" src="img/logo-gold.png" alt="">
+    <div class="nm" aria-label="あんて。"><span>あ</span><span>ん</span><span>て</span><span>｡</span></div>
+    <div class="sub">OFFICIAL STAGE</div>
+  </div>
+  <div class="flash"></div>
+  <div class="tap">TAP TO START</div>
+</div>
+
+<div class="wrap">
+
+  <!-- hero -->
+  <header class="stage">
+    <div class="marquee"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <img class="emblem" src="img/logo-gold.png" alt="あんて｡ ロゴ">
+    <div class="fig"><img src="img/ante.png" alt="あんて｡" width="1000" height="1500"></div>
+    <h1 class="name">あんて｡</h1>
+    <p class="tagline" id="tagline">♡ 矢で射抜く、小さな悪魔のアイドル ♡</p>
+    <a class="cta" id="ctaLive" href="#" target="_blank" rel="noopener">▶ 配信を見に行く</a>
+  </header>
+
+  <!-- pickup -->
+  <section id="pickup" style="margin-top:8px">
+    <div class="h"><small>NEW SONG</small><h2>最新の歌ってみた</h2></div>
+    <a class="card pick" id="pickCard" href="#" target="_blank" rel="noopener">
+      <span class="pk-ic">▶</span>
+      <span><b id="pickTitle"></b><small id="pickSub"></small></span>
+      <span class="pk-ar">›</span>
+    </a>
+  </section>
+
+  <!-- schedule -->
+  <section id="schedule">
+    <div class="h"><small>SCHEDULE</small><h2>今週の配信予定</h2></div>
+    <div class="card"><ul class="sched" id="schedList"></ul></div>
+  </section>
+
+  <!-- profile -->
+  <section id="profile">
+    <div class="h"><small>PROFILE</small><h2>プロフィール</h2></div>
+    <div class="card prof">
+      <img class="pf-av" src="img/face.png" alt="あんて｡のアイコン">
+      <dl id="profDl"></dl>
+      <div class="motifs" aria-hidden="true">💘 <span>😈</span> ♛</div>
+      <div class="links" id="links"></div>
+      <div class="chips" id="tags" style="justify-content:center;margin:16px 0 0"></div>
+    </div>
+  </section>
+
+  <!-- songs -->
+  <section id="songs">
+    <div class="h"><small>SETLIST</small><h2>歌える曲</h2></div>
+    <div class="card">
+      <input class="search" id="q" type="search" placeholder="曲名・アーティストで検索">
+      <div class="chips" id="chips"></div>
+      <ul class="songs" id="songList"></ul>
+      <p class="note">※曲は順次追加していきます。</p>
+      <details class="acc">
+        <summary>🎤 曲をリクエストする</summary>
+        <form class="in" id="reqForm">
+          <input id="reqName" placeholder="ニックネーム" maxlength="30">
+          <input id="reqSong" placeholder="リクエストする曲" maxlength="80" required>
+          <textarea id="reqMsg" placeholder="ひとこと（任意）" maxlength="200"></textarea>
+          <button class="send" type="submit">送信する</button>
+        </form>
+      </details>
+    </div>
+  </section>
+
+  <!-- x posts -->
+  <section id="posts">
+    <div class="h"><small>NEWS</small><h2>最新ポスト</h2></div>
+    <div class="card xpost" id="xposts"></div>
+  </section>
+
+  <footer>
+    <div class="m">♛ 💘 ♛</div>
+    © あんて｡ / OFFICIAL STAGE
+  </footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =====================================================
+   ここだけ編集すればサイトの内容が変わります
+   ===================================================== */
+const CONFIG = {
+  name: "あんて｡",
+  tagline: "雑談×ゲーム｜史上最強のエンジョイ勢",     // 本人のMirrativ/Xプロフィールより
+    profile: [
+    ["活動名", "あんて｡➶♡"],
+    ["ジャンル", "雑談 × ゲーム / 歌ってみた"],
+    ["活動場所", "Mirrativ / YouTube / TikTok"],
+    ["誕生日", "4月24日"],
+    ["X", "@antevx_"]
+  ],
+  hashtags: ["#あんてに届け", "#おいあんて", "#あんてのふぁんあーと"],
+  links: [
+    { label: "Mirrativ（配信）", icon: "▶", url: "https://www.mirrativ.com/user/102348987" },
+    { label: "YouTube（歌ってみた）", icon: "▷", url: "https://www.youtube.com/@akumante" },
+    { label: "TikTok",   icon: "♪", url: "" },      // URLが届いたら入れる
+    { label: "X",        icon: "✕", url: "https://x.com/antevx_" },
+    { label: "X（インフォ垢）", icon: "i", url: "https://x.com/subantevx_" },
+    { label: "グッズ（SUZURI）", icon: "♡", url: "https://suzuri.jp/Ante_" }
+  ],
+  liveUrl: "https://www.mirrativ.com/user/102348987", // 「配信を見に行く」ボタンの飛び先(Mirrativ)
+  // 最新の歌ってみた（YouTubeの動画ID）。新曲が出たら差し替え
+  pickup: { title: "神っぽいな / ピノキオピー", sub: "歌ってみた Full ver.", url: "https://youtu.be/iU6hErquIGQ" },
+  // 配信予定: date は "YYYY-MM-DD"。過ぎた予定は自動で非表示
+  schedule: [
+    { date: "2026-10-16", time: "21:00", title: "【サンプル】ゲーム配信",   note: "予定は本人に確認して差し替え", tag: "ゲーム" },
+    { date: "2026-10-18", time: "23:00", title: "【サンプル】深夜の歌枠",   note: "眠れない子、おいで",           tag: "歌枠" }
+  ],
+  // 歌える曲（サンプル。曲リストが届いたら差し替え）
+  songs: [
+    { title: "（サンプル）曲名1", artist: "アーティストA", genre: "ボカロ" },
+    { title: "（サンプル）曲名2", artist: "アーティストB", genre: "アイドル" },
+    { title: "（サンプル）曲名3", artist: "アーティストC", genre: "J-POP" }
+  ],
+  // Xポスト: 載せたいポストのURLを入れる
+  xposts: [],
+  // リクエスト送信先（Supabase等）。未設定の間は送信不可の表示になる
+  requestEndpoint: ""
+};
+
+/* ---------- opening ---------- */
+const opening = document.getElementById('opening');
+(function(){ // 舞い上がるハート・王冠・星
+  const fx=document.getElementById('fx'), g=['♡','♛','✦','♥','✧'];
+  for(let i=0;i<16;i++){ const e=document.createElement('i');
+    e.textContent=g[i%g.length]; e.style.left=(Math.random()*96)+'%';
+    e.style.fontSize=(12+Math.random()*16)+'px';
+    e.style.animationDuration=(4+Math.random()*4)+'s'; e.style.animationDelay=(Math.random()*5)+'s';
+    fx.appendChild(e); }
+})();
+let opened=false;
+function openCurtain(){
+  if(opened) return; opened=true;
+  opening.classList.add('go');
+  document.body.classList.add('reveal');
+  setTimeout(()=>document.body.classList.remove('lock'),900);
+  try{ sessionStorage.setItem('opened','1'); }catch(e){}
+}
+let seen=false; try{ seen = sessionStorage.getItem('opened')==='1'; }catch(e){}
+if(seen){ opening.style.display='none'; opened=true; document.body.classList.remove('lock'); }
+else{ opening.addEventListener('click', openCurtain); setTimeout(openCurtain, 6500); }
+
+/* ---------- render ---------- */
+const $ = id => document.getElementById(id);
+const toast = m => { const t=$('toast'); t.textContent=m; t.classList.add('on'); setTimeout(()=>t.classList.remove('on'),2200); };
+const esc = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+$('tagline').textContent = CONFIG.tagline;
+const cta=$('ctaLive'); if(CONFIG.liveUrl){ cta.href=CONFIG.liveUrl; } else { cta.style.display='none'; }
+
+$('profDl').innerHTML = CONFIG.profile.map(([k,v])=>`<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('');
+$('links').innerHTML = CONFIG.links.map(l=>
+  `<a class="${l.url?'':'off'}" ${l.url?`href="${esc(l.url)}" target="_blank" rel="noopener"`:''}><span class="ic">${l.icon}</span>${esc(l.label)}<span class="ar">${l.url?'›':'準備中'}</span></a>`).join('');
+
+/* pickup */
+(function(){
+  const p=CONFIG.pickup, c=$('pickCard');
+  if(!p||!p.url){ $('pickup').style.display='none'; return; }
+  c.href=p.url; $('pickTitle').textContent=p.title; $('pickSub').textContent=p.sub||'';
+})();
+
+/* hashtags (タップでコピー) */
+$('tags').innerHTML = (CONFIG.hashtags||[]).map(t=>`<button class="chip" data-t="${esc(t)}">${esc(t)}</button>`).join('');
+$('tags').addEventListener('click',e=>{
+  const b=e.target.closest('.chip'); if(!b) return;
+  const t=b.dataset.t;
+  (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast(t+' をコピーしました'),()=>toast(t));
+});
+
+/* schedule */
+(function(){
+  const today = new Date(); today.setHours(0,0,0,0);
+  const wk = ['日','月','火','水','木','金','土'];
+  const items = CONFIG.schedule.filter(s=>new Date(s.date+'T00:00:00')>=today)
+    .sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+  $('schedList').innerHTML = items.length ? items.map(s=>{
+    const d=new Date(s.date+'T00:00:00');
+    return `<li><div class="d"><b>${d.getMonth()+1}/${d.getDate()}</b><span>${wk[d.getDay()]}</span></div>
+      <div><div class="t">${esc(s.title)}</div><div class="n">${esc(s.time||'')} ${esc(s.note||'')}</div></div>
+      ${s.tag?`<span class="tag">${esc(s.tag)}</span>`:''}</li>`;
+  }).join('') : '<li class="empty" style="display:block;border:0">配信予定は準備中です。X をチェックしてね♡</li>';
+})();
+
+/* songs */
+(function(){
+  let genre='すべて', q='';
+  const genres=['すべて',...new Set(CONFIG.songs.map(s=>s.genre).filter(Boolean))];
+  const draw=()=>{
+    $('chips').innerHTML = genres.map(g=>`<button class="chip ${g===genre?'on':''}" data-g="${esc(g)}">${esc(g)}</button>`).join('');
+    const list = CONFIG.songs.filter(s=>(genre==='すべて'||s.genre===genre) && (s.title+s.artist).toLowerCase().includes(q));
+    $('songList').innerHTML = list.length ? list.map(s=>
+      `<li><div><div class="st">${esc(s.title)}</div><div class="sa">${esc(s.artist)}</div></div><button data-t="${esc(s.title)}">リクエスト</button></li>`).join('')
+      : '<li class="empty" style="display:block">見つかりませんでした</li>';
+  };
+  $('chips').addEventListener('click',e=>{ const b=e.target.closest('.chip'); if(b){genre=b.dataset.g;draw();} });
+  $('q').addEventListener('input',e=>{ q=e.target.value.trim().toLowerCase(); draw(); });
+  $('songList').addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    const d=document.querySelector('#songs details'); d.open=true;
+    $('reqSong').value=b.dataset.t; d.scrollIntoView({behavior:'smooth',block:'center'});
+  });
+  draw();
+})();
+
+/* request */
+$('reqForm').addEventListener('submit', async e=>{
+  e.preventDefault();
+  if(!CONFIG.requestEndpoint){ toast('リクエスト受付は準備中です'); return; }
+  try{
+    const r = await fetch(CONFIG.requestEndpoint,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({name:$('reqName').value,song:$('reqSong').value,message:$('reqMsg').value})});
+    if(!r.ok) throw 0;
+    toast('送信しました♡'); e.target.reset();
+  }catch(_){ toast('送信できませんでした'); }
+});
+
+/* x posts */
+(function(){
+  const box=$('xposts');
+  if(!CONFIG.xposts.length){
+    box.innerHTML='<div class="ph">最新ポストは準備中です。<br><a href="https://x.com/antevx_" target="_blank" rel="noopener" style="color:var(--gold-l);text-decoration:underline">@antevx_ をみる ›</a></div>';
+    return;
+  }
+  box.innerHTML = CONFIG.xposts.map(u=>`<blockquote class="twitter-tweet" data-theme="dark"><a href="${esc(u)}"></a></blockquote>`).join('');
+  const s=document.createElement('script'); s.async=true; s.src='https://platform.twitter.com/widgets.js'; document.body.appendChild(s);
+})();
+</script>
+</body>
+</html>
