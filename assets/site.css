@@ -519,3 +519,21 @@ body[data-page="home"].reveal .topnav{animation:barDown .6s cubic-bezier(.2,1,.3
 @keyframes barUp{from{opacity:0;transform:translateY(100%)}to{opacity:1;transform:none}}
 @keyframes barDown{from{opacity:0;transform:translateY(-100%)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){body[data-page="home"]:not(.reveal) .hero *,body[data-page="home"]:not(.reveal) .ticker,body[data-page="home"]:not(.reveal) .tabbar,body[data-page="home"]:not(.reveal) .topnav{opacity:1}body[data-page="home"].reveal .hero *,body[data-page="home"].reveal .ticker,body[data-page="home"].reveal .tabbar,body[data-page="home"].reveal .topnav{animation:none}}
+
+/* ===== 登場演出: なめらか・テンポよく(上書き) ===== */
+body[data-page="home"].reveal .hero .emblem{animation:ePop .9s cubic-bezier(.22,1,.36,1) 0s backwards,float 3.4s ease-in-out .9s infinite}
+body[data-page="home"].reveal .hero .kick{animation:upIn .8s cubic-bezier(.22,1,.36,1) .1s backwards}
+body[data-page="home"].reveal .hero .name{animation:nameIn .9s cubic-bezier(.22,1,.36,1) .2s backwards}
+body[data-page="home"].reveal .hero .tagline{animation:upIn .8s cubic-bezier(.22,1,.36,1) .38s backwards}
+body[data-page="home"].reveal .hero .acts{animation:upIn .8s cubic-bezier(.22,1,.36,1) .5s backwards}
+body[data-page="home"].reveal .hero .qmenu{animation:upIn .8s cubic-bezier(.22,1,.36,1) .58s backwards}
+body[data-page="home"].reveal .ticker{animation:tickIn 1s cubic-bezier(.22,1,.36,1) .62s backwards}
+body[data-page="home"].reveal .tabbar{animation:barUp .8s cubic-bezier(.22,1,.36,1) .74s backwards}
+body[data-page="home"].reveal .topnav{animation:barDown .8s cubic-bezier(.22,1,.36,1) .74s backwards}
+@keyframes ePop{from{opacity:0;transform:scale(.72) translateY(8px)}to{opacity:1;transform:none}}
+@keyframes upIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes nameIn{from{opacity:0;transform:translateY(-12px) scale(1.14);filter:blur(4px)}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes tickIn{from{opacity:0;transform:translateX(-30%) rotate(-1.2deg)}to{opacity:1;transform:rotate(-1.2deg)}}
+#opening.go .spot{animation:spotOn1 1.2s cubic-bezier(.3,.6,.3,1) 1.1s forwards}
+#opening.go .fig{animation:lit1 1.2s cubic-bezier(.3,.6,.3,1) 1.1s forwards}
+#opening.land .fig{transition:box-shadow 1s cubic-bezier(.22,1,.36,1),border-radius 1s cubic-bezier(.22,1,.36,1),--fx 1s cubic-bezier(.22,1,.36,1),--fy 1s cubic-bezier(.22,1,.36,1),--fl 1s cubic-bezier(.22,1,.36,1)}
