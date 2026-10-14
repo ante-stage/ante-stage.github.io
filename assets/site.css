@@ -432,3 +432,5 @@ footer.ft .upd{display:block;margin:2px auto 12px;padding:8px 18px;border-radius
 #opening.land .fig{border-radius:22px;box-shadow:inset 0 0 0 3px var(--gold),0 0 0 4px var(--red);transition:transform 1.05s cubic-bezier(.65,0,.25,1),box-shadow .9s,border-radius .9s}
 #opening.land .fig::after{opacity:0}
 #opening .pool{bottom:6%}
+#opening .fig img{transform:scale(1.04)}
+#opening.land .fig{transition:box-shadow .9s ease,border-radius .9s ease}
