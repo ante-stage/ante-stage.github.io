@@ -45,6 +45,7 @@ ul.list li.done .t{text-decoration:line-through;opacity:.6}
 #gate{margin-top:60px}
 .tab{display:none}.tab.on{display:block}
 .sec-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.wrow{display:grid;grid-template-columns:78px 92px 1fr auto;gap:6px;align-items:center;margin:6px 0}.wrow b{font-size:12px}.wrow input{margin:0;min-width:0}.woff{display:flex;align-items:center;gap:4px;font-size:12px;margin:0;white-space:nowrap}.woff input{width:auto}@media(max-width:520px){.wrow{grid-template-columns:70px 1fr auto;}.wrow .ww{grid-column:1/-1;grid-row:2}}
 </style>
 </head>
 <body>
@@ -69,7 +70,16 @@ ul.list li.done .t{text-decoration:line-through;opacity:.6}
   <!-- 配信予定 -->
   <section class="tab on" id="tab-sch">
     <div class="card">
-      <h2>配信予定を追加</h2>
+      <h2>今週の予定をまとめて入力</h2>
+      <p class="hint">7日分を一気に入れられます。お休みの日は「おやすみ」にチェック。空のままの日は何も表示されません。</p>
+      <label for="wStart">はじまりの日</label><input id="wStart" type="date">
+      <div id="wRows"></div>
+      <label for="wNote">今週のひとこと（任意）</label><input id="wNote" maxlength="100" placeholder="例：今週は夜ふかし多め♡">
+      <button class="btn full" id="wSave">この内容で保存する</button>
+      <p class="msg" id="wMsg"></p>
+    </div>
+    <div class="card">
+      <h2>配信予定を1件ずつ追加</h2>
       <div class="row"><div><label for="sDate">日付</label><input id="sDate" type="date"></div><div><label for="sTime">開始時間</label><input id="sTime" type="time" value="21:00"></div></div>
       <label for="sTitle">タイトル</label><input id="sTitle" maxlength="100" placeholder="例：深夜の歌枠">
       <label for="sNote">ひとこと（任意）</label><input id="sNote" maxlength="200" placeholder="例：リクエスト受付中♡">
@@ -177,6 +187,34 @@ $('sAdd').onclick=function(){
 };
 $('sList').addEventListener('click',function(e){var b=e.target.closest('[data-del]');if(!b)return;S.sch.splice(+b.dataset.del,1);saveSch().catch(function(){});});
 
+/* ---- 今週まとめて入力 ---- */
+function ymdA(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
+function wDates(){var v=$('wStart').value;if(!v)return [];var d=new Date(v+'T00:00:00'),a=[];for(var i=0;i<7;i++){var x=new Date(d);x.setDate(d.getDate()+i);a.push(ymdA(x));}return a;}
+function drawWeek(){
+  var ds=wDates();
+  $('wRows').innerHTML=ds.map(function(k,i){var d=new Date(k+'T00:00:00');
+    var cur=S.sch.filter(function(s){return s.date===k&&s.tag!=='memo';})[0]||{};
+    var off=cur.tag==='off';
+    return '<div class="wrow" data-k="'+k+'"><b>'+(d.getMonth()+1)+'/'+d.getDate()+'（'+wk[d.getDay()]+'）</b><input class="wt" type="time" value="'+esc(off?'':(cur.time||''))+'"><input class="ww" maxlength="100" placeholder="内容（例：歌枠）" value="'+esc(off?'':(cur.title||''))+'"><label class="woff"><input type="checkbox" class="wo"'+(off?' checked':'')+'>おやすみ</label></div>';}).join('');
+  var m=S.sch.filter(function(s){return s.tag==='memo'&&ds.indexOf(s.date)>=0;})[0];
+  $('wNote').value=m?m.title:'';
+}
+$('wStart').value=ymdA(new Date());
+$('wStart').addEventListener('change',drawWeek);
+$('wSave').onclick=function(){
+  var ds=wDates();if(!ds.length){say($('wMsg'),'はじまりの日を選んでね','err');return;}
+  var keep=S.sch.filter(function(s){return ds.indexOf(s.date)<0;});
+  var add=[];
+  [].forEach.call($('wRows').querySelectorAll('.wrow'),function(r){var k=r.dataset.k,t=r.querySelector('.wt').value,w=r.querySelector('.ww').value.trim(),o=r.querySelector('.wo').checked;
+    if(o)add.push({date:k,time:'',title:'おやすみ',note:'',tag:'off'});
+    else if(w){var old=S.sch.filter(function(x){return x.date===k&&x.tag!=='memo'&&x.tag!=='off';})[0]||{};add.push({date:k,time:t,title:w,note:old.title===w?(old.note||''):'',tag:old.tag||'配信'});}});
+  var n=$('wNote').value.trim();if(n)add.push({date:ds[0],time:'',title:n,note:'',tag:'memo'});
+  S.sch=keep.concat(add).sort(function(a,b){return (a.date+(a.time||'')).localeCompare(b.date+(b.time||''));});
+  say($('wMsg'),'保存中…');
+  saveSchW().then(function(){say($('wMsg'),'保存しました。サイトに反映されます','ok');}).catch(function(){});
+};
+function saveSchW(){return guard(rpc('ante_save_schedule',{p_items:S.sch}),$('wMsg')).then(load);}
+
 /* ---- 歌える曲 ---- */
 function parseLine(l){
   var p=l.indexOf('\t')>=0?l.split('\t'):l.split(/\s+[\/／｜|]\s+/);
@@ -234,7 +272,7 @@ $('pAdd').onclick=function(){
 };
 $('pList').addEventListener('click',function(e){var b=e.target.closest('[data-del]');if(!b)return;S.posts.splice(+b.dataset.del,1);savePosts().catch(function(){});});
 
-function drawAll(){drawSch();drawSongs();drawReq();drawPosts();}
+function drawAll(){drawWeek();drawSch();drawSongs();drawReq();drawPosts();}
 (function(){var d=new Date();$('sDate').value=d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);})();
 if(getPass()){load().catch(function(e){if(e.message==='auth'){setPass('');gate('');}else gate(errText(e));});}
 })();

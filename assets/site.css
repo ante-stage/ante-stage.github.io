@@ -544,3 +544,23 @@ body[data-page="home"].reveal .topnav{animation:barDown .8s cubic-bezier(.22,1,.
 #opening.go .spot{animation:spotOn1 .9s cubic-bezier(.3,.6,.3,1) .85s forwards}
 #opening.go .fig{animation:lit1 .9s cubic-bezier(.3,.6,.3,1) .85s forwards}
 #opening.go .tap{animation:none;opacity:0;transition:opacity .3s}
+/* ===== 今週の配信予定(しぃ式) ===== */
+.wk-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin-bottom:12px}
+.wk-ttl{font-weight:800;font-size:17px}.wk-ttl span{margin-left:10px;font-size:12px;color:var(--gold-l);font-weight:700}
+.wk-sub{margin:20px 0 10px;font-weight:800;font-size:13px;color:var(--gold-l);letter-spacing:.08em}
+.wl{list-style:none;display:grid;gap:9px}
+.wl li{position:relative;display:flex;align-items:center;gap:12px;padding:8px 14px 8px 8px;border-radius:16px;background:rgba(255,255,255,.07);border:1.5px solid rgba(217,178,95,.35)}
+.wl .wd{flex:none;display:grid;place-items:center;width:56px;height:46px;border-radius:12px;background:var(--red);color:#fff;font-family:var(--ff-title);font-size:15px;line-height:1.1;text-align:center;box-shadow:0 2px 0 var(--red-d)}
+.wl .wd small{display:block;font-family:var(--ff-body);font-weight:800;font-size:10px;opacity:.9}
+.wl li.sat .wd{background:#6f8fe0;box-shadow:0 2px 0 #4a67b3}
+.wl li.sun .wd{background:#e8546b}
+.wl .wt{flex:none;min-width:58px;font-family:var(--ff-deco);font-weight:700;font-size:17px;color:var(--gold-l);letter-spacing:.04em}
+.wl .ww{flex:1;min-width:0;font-weight:800;font-size:15px;overflow-wrap:anywhere}
+.wl .ww em{display:block;font-style:normal;font-weight:500;font-size:12px;opacity:.75;margin-top:1px}
+.wl li.is-off{background:rgba(255,255,255,.03);border-style:dashed;border-color:rgba(217,178,95,.2)}
+.wl li.is-off .wd{background:#5d5470;box-shadow:none}
+.wl li.is-off .ww{color:rgba(255,255,255,.55)}
+.wl li.is-today{background:rgba(232,84,107,.18);border-color:var(--gold-l);box-shadow:0 0 0 1px var(--gold-l),0 0 20px rgba(243,220,156,.28)}
+.wl li.is-today::after{content:"TODAY";position:absolute;top:-9px;right:12px;padding:1px 9px;border-radius:99px;background:var(--gold);color:var(--black-d);font-family:var(--ff-deco);font-weight:700;font-size:9px;letter-spacing:.14em}
+.wl .empty{display:block;border:0;background:none;padding:14px}
+.wk-note{margin-top:14px;padding:9px 16px;border-radius:99px;background:rgba(255,255,255,.1);border:1px solid rgba(217,178,95,.45);font-weight:800;font-size:13px;color:var(--gold-l);text-align:center}

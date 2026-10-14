@@ -27,22 +27,22 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=M+PLUS+Rounded+1c:wght@500;700;800&family=Cinzel+Decorative:wght@700&display=swap" rel="stylesheet">
 <script>try{if(sessionStorage.getItem('ptin')==='1')document.documentElement.classList.add('pt-in')}catch(e){}</script>
-<link rel="stylesheet" href="assets/site.css?v=20261014t">
+<link rel="stylesheet" href="assets/site.css?v=20261014u">
 </head>
 <body data-page="schedule">
 
 <main id="main"><div class="pg">
   <div class="pghead"><div class="h"><small>SCHEDULE</small><h1>配信予定</h1></div></div>
-  <p class="sub-lead">日付をタップすると、その日の予定だけを表示します。</p>
   <div class="card rv">
-    <div class="week" id="week" role="group" aria-label="今週の日付"></div>
-    <div class="toolbar"><span class="songN" style="font-size:15px">配信予定</span><button class="btn ghost sm" id="allBtn" hidden>すべて表示</button></div>
-    <ul class="sched" id="sList"></ul>
+    <div class="wk-head"><p class="wk-ttl">今週の配信予定<span id="weekRange"></span></p></div>
+    <ol class="wl" id="sList"></ol>
+    <p class="wk-note" id="wNote" hidden></p>
+    <div id="laterBox" hidden><p class="wk-sub">そのあとの予定</p><ol class="wl" id="laterList"></ol></div>
     <div class="row-btn"><a class="btn" id="liveBtn" href="#" target="_blank" rel="noopener">▶ Mirrativで配信を見る</a></div>
     <p class="note">予定は変更になることがあります。最新情報はXでお知らせします。</p>
   </div>
 </div></main>
 
-<script src="assets/site.js?v=20261014t" defer></script>
+<script src="assets/site.js?v=20261014u" defer></script>
 </body>
 </html>
