@@ -598,3 +598,7 @@ body.lights-lit .vis .sw,body.lights-lit #sl::before,body.lights-lit #sl::after{
 body.lights-lit #sl,body.lights-lit[data-page="home"] #sl{mix-blend-mode:screen;background:linear-gradient(rgba(255,226,175,.2),rgba(255,226,175,.2))}
 body.lights-lit #ltBtn{color:#fff6cf;background:rgba(232,84,107,.75);box-shadow:0 0 22px rgba(255,236,160,.8)}
 #ltBtn{color:#c9bfd6}
+/* PC: 名前の文字つぶれ対策(太すぎる書体をやめ、字間と影を調整) */
+@media(min-width:1024px){
+  .hero .name{font-family:"M PLUS Rounded 1c","Hiragino Maru Gothic ProN",sans-serif;font-weight:800;letter-spacing:.1em;line-height:1.2;text-shadow:0 0 18px var(--red),2px 2px 0 var(--red-d)}
+}
