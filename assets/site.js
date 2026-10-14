@@ -139,7 +139,7 @@ function opening(){
   function go(){if(done)return;done=true;op.classList.add('go');document.body.classList.add('reveal');setTimeout(function(){document.body.classList.remove('lock');},900);ss('opened','1');}
   if(ss('opened')==='1'||document.documentElement.classList.contains('pt-in')||reduce){op.style.display='none';done=true;document.body.classList.remove('lock');document.body.classList.add('reveal');return;}
   document.body.classList.add('lock');
-  op.addEventListener('click',go);setTimeout(go,6500);
+  op.addEventListener('click',go);setTimeout(go,7000);
 }
 
 /* ---------- データ ---------- */
