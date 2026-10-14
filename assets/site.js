@@ -54,12 +54,11 @@ function chrome(){
   '<nav class="tabbar" aria-label="メインメニュー">'+NAV.map(function(n){return '<a href="'+n[0]+'"'+(n[0]===curFile()?' aria-current="page"':'')+'><i aria-hidden="true">'+n[3]+'</i>'+n[2]+'</a>';}).join('')+'</nav>';
   b.insertAdjacentHTML('afterbegin',nav);
   (function(){
-    var M=['on','max','off'],cur='on';try{var v=localStorage.getItem('ante-lights');if(M.indexOf(v)>-1)cur=v;}catch(e){}
+    var lit=false;try{lit=localStorage.getItem('ante-lights')==='lit';}catch(e){}
     var bt=document.createElement('button');bt.type='button';bt.id='ltBtn';
-    var L={on:['ON','ライトを全灯にする'],max:['MAX','ライトを消灯する'],off:['OFF','ライトを点灯する']};
-    function ui(){b.classList.toggle('lights-off',cur==='off');b.classList.toggle('lights-max',cur==='max');bt.setAttribute('aria-label',L[cur][1]);
-      bt.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21h6M10 17h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z" fill="'+(cur==='off'?'none':'currentColor')+'" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>'+L[cur][0]+'</span>';}
-    bt.addEventListener('click',function(){cur=M[(M.indexOf(cur)+1)%3];try{localStorage.setItem('ante-lights',cur);}catch(e){}ui();});
+    function ui(){b.classList.toggle('lights-lit',lit);bt.setAttribute('aria-pressed',lit?'true':'false');bt.setAttribute('aria-label',lit?'ライトを消灯する(スポットライト演出)':'ライトを全灯にする(演出なし)');
+      bt.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21h6M10 17h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z" fill="'+(lit?'currentColor':'none')+'" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>'+(lit?'ON':'OFF')+'</span>';}
+    bt.addEventListener('click',function(){lit=!lit;try{localStorage.setItem('ante-lights',lit?'lit':'spot');}catch(e){}ui();});
     ui();b.appendChild(bt);
   })();
   b.insertAdjacentHTML('beforeend',
@@ -94,7 +93,7 @@ function transitions(){
 
 /* ---------- 見出しの飾り（矢の刺さるハート） ---------- */
 var ORN='<img class="orn" src="img/logo-gold.png" alt="" width="900" height="438" loading="lazy">';
-var VER='20261015g';
+var VER='20261015h';
 function autoUpdate(){
   function chk(){try{fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
     if(!j||!j.v||j.v===VER)return;var k='verTry';if(ss(k)===j.v)return;ss(k,j.v);
