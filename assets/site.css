@@ -564,3 +564,9 @@ body[data-page="home"].reveal .topnav{animation:barDown .8s cubic-bezier(.22,1,.
 .wl li.is-today::after{content:"TODAY";position:absolute;top:-9px;right:12px;padding:1px 9px;border-radius:99px;background:var(--gold);color:var(--black-d);font-family:var(--ff-deco);font-weight:700;font-size:9px;letter-spacing:.14em}
 .wl .empty{display:block;border:0;background:none;padding:14px}
 .wk-note{margin-top:14px;padding:9px 16px;border-radius:99px;background:rgba(255,255,255,.1);border:1px solid rgba(217,178,95,.45);font-weight:800;font-size:13px;color:var(--gold-l);text-align:center}
+/* ===== オープニング: テンポアップ ===== */
+#opening .curtain{transition:transform .95s cubic-bezier(.7,0,.25,1) .3s}
+#opening.go .spot{animation:spotOn1 .7s cubic-bezier(.3,.6,.3,1) .5s forwards}
+#opening.go .fig{animation:lit1 .7s cubic-bezier(.3,.6,.3,1) .5s forwards}
+#opening.land .fig{opacity:0;transition:opacity .9s cubic-bezier(.4,0,.2,1)}
+#opening.land{transition:background .9s cubic-bezier(.4,0,.2,1)}
