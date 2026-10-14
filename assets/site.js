@@ -85,7 +85,7 @@ function transitions(){
 
 /* ---------- 見出しの飾り（矢の刺さるハート） ---------- */
 var ORN='<img class="orn" src="img/logo-gold.png" alt="" width="900" height="438" loading="lazy">';
-var VER='20261014o';
+var VER='20261014p';
 function autoUpdate(){
   function chk(){try{fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
     if(!j||!j.v||j.v===VER)return;var k='verTry';if(ss(k)===j.v)return;ss(k,j.v);
@@ -156,7 +156,7 @@ function opening(){
     if(reduce||!fig||!ph){fin();return;}
     try{op.classList.add('land');setTimeout(fin,1150);
     }catch(e){fin();}}
-  function go(){if(phase)return;phase=1;op.classList.add('go');setTimeout(out,5400);}
+  function go(){if(phase)return;phase=1;op.classList.add('go');setTimeout(out,3700);}
   if(ss('opened')==='1'||document.documentElement.classList.contains('pt-in')||reduce){op.style.display='none';done=true;document.body.classList.remove('lock');document.body.classList.add('reveal');return;}
   document.body.classList.add('lock');
   op.addEventListener('click',go);setTimeout(go,7000);
