@@ -1,0 +1,42 @@
+{
+ "name": "あんて｡ OFFICIAL STAGE",
+ "short_name": "あんて｡",
+ "description": "あんて｡の公式サイト",
+ "start_url": "./index.html",
+ "scope": "./",
+ "display": "standalone",
+ "orientation": "portrait",
+ "background_color": "#1c1824",
+ "theme_color": "#2f2a3a",
+ "lang": "ja",
+ "icons": [
+  {
+   "src": "icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon-maskable-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ],
+ "shortcuts": [
+  {
+   "name": "配信予定",
+   "url": "schedule.html"
+  },
+  {
+   "name": "歌える曲",
+   "url": "songs.html"
+  }
+ ]
+}

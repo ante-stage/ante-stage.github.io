@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>歌える曲・リクエスト | あんて｡ OFFICIAL STAGE</title>
+<meta name="description" content="あんて｡の歌える曲リスト。検索・ジャンル絞り込み・リクエスト送信・おまかせ選曲ができます。">
+<meta name="theme-color" content="#2f2a3a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="あんて｡">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="canonical" href="https://ante-stage.github.io/songs.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="あんて｡ OFFICIAL STAGE">
+<meta property="og:title" content="歌える曲・リクエスト | あんて｡ OFFICIAL STAGE">
+<meta property="og:description" content="あんて｡の歌える曲リスト。検索・ジャンル絞り込み・リクエスト送信・おまかせ選曲ができます。">
+<meta property="og:url" content="https://ante-stage.github.io/songs.html">
+<meta property="og:image" content="https://ante-stage.github.io/img/og.png">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ante-stage.github.io/img/og.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=M+PLUS+Rounded+1c:wght@500;700;800&family=Cinzel+Decorative:wght@700&display=swap" rel="stylesheet">
+<script>try{if(sessionStorage.getItem('ptin')==='1')document.documentElement.classList.add('pt-in')}catch(e){}</script>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body data-page="songs">
+
+<main id="main"><div class="pg">
+  <div class="pghead"><div class="h"><small>SETLIST</small><h1>歌える曲</h1></div></div>
+  <div class="card rv" id="request">
+    <div class="toolbar"><span class="songN" id="songN"></span><span id="reqClosed" class="note" style="margin:0" hidden>いまはリクエストをお休み中です</span><button class="btn sm" id="openReq">🎤 曲をリクエスト</button></div>
+    <input class="search" id="q" type="search" placeholder="曲名・アーティストで探す" aria-label="曲を検索">
+    <div class="chips" id="chips"></div>
+    <ul class="songs" id="songList"></ul>
+    <p class="note">曲は順次追加していきます。</p>
+  </div>
+  <section class="sec" id="roulette">
+    <div class="h"><small>ROULETTE</small><h2>おまかせ選曲</h2></div>
+    <div class="card rv roulette">
+      <div class="slot" id="slot"><b>どの曲が出るかな？</b><small>ボタンを押してね</small></div>
+      <div style="display:grid;gap:8px"><button class="btn sm" id="spin">♡ まわす</button><button class="btn ghost sm" id="slotReq" hidden>この曲をリクエスト</button></div>
+    </div>
+  </section>
+</div></main>
+<div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dt">
+  <form class="sheet" id="reqForm">
+    <h3 id="dt">曲をリクエスト</h3>
+    <label for="reqSong">曲名（必須）</label><input id="reqSong" maxlength="100" required>
+    <label for="reqArtist">アーティスト（わかれば）</label><input id="reqArtist" maxlength="100">
+    <label for="reqName">ニックネーム（任意）</label><input id="reqName" maxlength="40" autocomplete="nickname">
+    <label for="reqMsg">ひとこと（任意）</label><textarea id="reqMsg" maxlength="200"></textarea>
+    <div class="row"><button type="button" class="btn ghost" id="reqCancel">やめる</button><button type="submit" class="btn">送信する</button></div>
+  </form>
+</div>
+
+<script src="assets/site.js" defer></script>
+</body>
+</html>
