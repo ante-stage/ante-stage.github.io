@@ -400,3 +400,25 @@ footer.ft .upd{display:block;margin:2px auto 12px;padding:8px 18px;border-radius
 #opening.land .spot,#opening.land .pool,#opening.land .tap,#opening.land .fx,#opening.land .flash{animation:none!important;opacity:0!important;transition:opacity .6s}
 #opening.land .fig{animation:none;filter:brightness(1);transform-origin:50% 50%;transition:transform 1.05s cubic-bezier(.65,0,.25,1),box-shadow .8s,border-radius .8s;box-shadow:0 0 0 0 transparent,0 0 0 transparent}
 #opening.land.out{transition:opacity .35s}
+/* ===== ホーム整地(モバイル/タブレット) ===== */
+@media(max-width:1023px){
+  .hero{--pw:min(94vw,460px,calc((100svh - var(--sat) - var(--sab) - var(--tab-h) - 170px) * .667));padding-top:calc(var(--sat) + 10px);padding-bottom:10px;gap:0}
+  .vis{padding-top:34px}
+  .hero .emblem{position:absolute;top:0;left:0;right:0;margin:0 auto;width:min(40vw,168px);z-index:3;filter:drop-shadow(0 0 10px rgba(243,220,156,.7)) drop-shadow(0 4px 8px rgba(0,0,0,.6))}
+  .photo{margin:0 auto}
+  .hero .txt{margin-top:-96px;gap:4px}
+  .hero .kick{letter-spacing:.34em;text-shadow:0 2px 8px #000}
+  .hero .name{margin-top:0;letter-spacing:.04em}
+  .hero .tagline{margin-top:6px;font-size:14px;letter-spacing:.1em}
+  .hero .acts{margin-top:10px}
+  .hero .acts .btn{position:relative;overflow:hidden}
+  .hero .acts .btn::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-20deg);animation:shine 3.6s ease-in-out 1.5s infinite}
+  .ticker{margin-top:16px}
+}
+@keyframes shine{0%,55%{left:-60%}100%{left:130%}}
+@media(prefers-reduced-motion:reduce){.hero .acts .btn::after{animation:none;display:none}}
+@media(max-width:1023px){
+  .hero{--pw:min(94vw,460px,calc((100svh - var(--sat) - var(--sab) - var(--tab-h) - 182px) * .667))}
+  .hero .txt{margin-top:-74px}
+  .hero .tagline{margin-top:16px}
+}
