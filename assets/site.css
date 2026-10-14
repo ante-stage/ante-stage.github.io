@@ -543,3 +543,4 @@ body[data-page="home"].reveal .topnav{animation:barDown .8s cubic-bezier(.22,1,.
 #opening.land.out{transition:opacity .3s}
 #opening.go .spot{animation:spotOn1 .9s cubic-bezier(.3,.6,.3,1) .85s forwards}
 #opening.go .fig{animation:lit1 .9s cubic-bezier(.3,.6,.3,1) .85s forwards}
+#opening.go .tap{animation:none;opacity:0;transition:opacity .3s}
