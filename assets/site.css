@@ -748,3 +748,8 @@ body.lights-lit #mh,body.lights-lit #cr,body.lights-lit #cf{display:none}
 @media(prefers-reduced-motion:reduce){#mh,#cf{display:none}#cr i,#cr .sm{animation:none}}
 /* ON(演出なし)では会場演出をすべて消す */
 body.lights-lit section.sec::before{display:none}
+
+/* 配信ボタン: Mirrativと分かる表記 */
+#liveBtn .mt{display:inline-flex;flex-direction:column;align-items:flex-start;line-height:1.2;vertical-align:middle;margin-left:6px;text-align:left}
+#liveBtn .mt small{font-size:10px;font-weight:700;letter-spacing:.08em;opacity:.9;margin-top:2px}
+#liveBtn[href*="mirrativ"]::before{display:none}
