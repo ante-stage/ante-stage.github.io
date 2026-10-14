@@ -164,9 +164,9 @@ section.sec{margin-top:64px}
 .marq i{width:9px;height:9px;border-radius:50%;background:var(--gold-l);box-shadow:0 0 8px var(--gold);animation:bulb 1.4s infinite}
 .marq i:nth-child(even){animation-delay:.7s}
 @keyframes bulb{50%{opacity:.25}}
-.hero .emblem{width:min(62%,230px,calc(15svh * 2.1));filter:drop-shadow(0 0 12px rgba(243,220,156,.6));animation:float 3.4s ease-in-out infinite;position:relative;z-index:1}
+.hero .emblem{width:min(56%,230px,calc(12svh * 2.1));filter:drop-shadow(0 0 12px rgba(243,220,156,.6));animation:float 3.4s ease-in-out infinite;position:relative;z-index:1}
 @keyframes float{50%{transform:translateY(-7px)}}
-.photo{position:relative;z-index:1;width:min(80%,360px,calc(39svh * .667));aspect-ratio:2/3;overflow:hidden;margin:6px auto 4px;perspective:900px;
+.photo{position:relative;z-index:1;width:min(88%,400px,calc(46svh * .667));aspect-ratio:2/3;overflow:hidden;margin:6px auto 4px;perspective:900px;
   border:3px solid var(--gold);border-radius:22px;background:radial-gradient(ellipse at 50% 30%,#6a2a3c,var(--black-d) 75%);
   box-shadow:0 0 0 4px var(--black-d),0 0 0 7px var(--red),0 0 40px rgba(232,84,107,.55),0 16px 34px rgba(0,0,0,.6);
   transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .2s ease-out;cursor:zoom-in}
@@ -305,7 +305,7 @@ footer.ft small{font-size:11px;color:var(--gold);letter-spacing:.15em}
   .photo{width:min(60%,400px)}
   .hero{padding-top:calc(var(--nav-h) + 20px)}
   .pghead{padding-top:calc(var(--nav-h) + 34px)}
-  .photo{width:min(60%,400px,calc(52svh * .667))}
+  .photo{width:min(66%,460px,calc(60svh * .667))}
   .hero .emblem{width:min(60%,300px)}
   .scrollhint{display:none}
   .grid2{grid-template-columns:1fr 1fr}
@@ -317,7 +317,7 @@ footer.ft small{font-size:11px;color:var(--gold);letter-spacing:.15em}
   .hero .txt{grid-column:2;display:flex;flex-direction:column;gap:10px}
   .hero .acts{justify-content:flex-start}
   .hero .marq{justify-content:flex-start}
-  .photo{width:min(86%,400px,calc(58svh * .667))}
+  .photo{width:min(92%,480px,calc(60svh * .667))}
   .hero .emblem{width:min(80%,360px)}
   .qmenu{justify-content:flex-start}
   .hero::before{background:radial-gradient(ellipse 34% 60% at 30% 55%,transparent 0,transparent 40%,rgba(18,15,24,.82) 100%)}
@@ -357,3 +357,4 @@ html.pt-in::after{content:"";position:fixed;inset:0;z-index:399;background:repea
   .sched .d{width:54px}
   .card{padding:16px}
 }
+@media(max-width:767px) and (max-height:720px){.photo{width:min(88%,400px,calc(36svh * .667))}.hero .emblem{width:min(50%,200px,calc(10svh * 2.1))}}
