@@ -93,7 +93,7 @@ function transitions(){
 
 /* ---------- 見出しの飾り（矢の刺さるハート） ---------- */
 var ORN='<img class="orn" src="img/logo-gold.png" alt="" width="900" height="438" loading="lazy">';
-var VER='20261015l';
+var VER='20261015m';
 function autoUpdate(){
   function chk(){try{fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
     if(!j||!j.v||j.v===VER)return;var k='verTry';if(ss(k)===j.v)return;ss(k,j.v);
@@ -278,7 +278,8 @@ P.news=function(){
   var tw=false;
   function draw(){
     var box=$('#xposts');
-    if(!DATA.posts.length){box.innerHTML='<div class="ph">最新ポストは準備中です。<br><a href="https://x.com/antevx_" target="_blank" rel="noopener" style="color:var(--gold-l);text-decoration:underline">@antevx_ をみる ›</a></div>';return;}
+    if(!DATA.posts.length){box.innerHTML='<a class="twitter-timeline" data-theme="dark" data-height="640" data-dnt="true" data-chrome="noheader nofooter transparent" data-lang="ja" href="https://twitter.com/antevx_?ref_src=twsrc%5Etfw">@antevx_ のポスト</a><p class="note" style="margin-top:10px"><a href="https://x.com/antevx_" target="_blank" rel="noopener" style="color:var(--gold-l);text-decoration:underline">表示されないときは @antevx_ をみる ›</a></p>';
+      if(window.twttr&&twttr.widgets)twttr.widgets.load(box);else if(!tw){tw=true;var sc0=document.createElement('script');sc0.async=true;sc0.src='https://platform.twitter.com/widgets.js';document.body.appendChild(sc0);}return;}
     var norm=function(u){return String(u).replace(/^https?:\/\/(www\.)?x\.com\//,'https://twitter.com/');};
     box.innerHTML=DATA.posts.map(function(u){return '<blockquote class="twitter-tweet" data-theme="dark" data-dnt="true"><a href="'+esc(norm(u))+'"></a></blockquote>';}).join('');
     if(window.twttr&&twttr.widgets)twttr.widgets.load(box);else if(!tw){tw=true;var sc=document.createElement('script');sc.async=true;sc.src='https://platform.twitter.com/widgets.js';document.body.appendChild(sc);}
