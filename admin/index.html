@@ -7,54 +7,101 @@
 <meta name="theme-color" content="#2f2a3a">
 <title>あんて｡ 管理画面</title>
 <style>
-:root{--red:#e8546b;--red-d:#b8334a;--black:#2f2a3a;--black-d:#1c1824;--gold:#d9b25f;--gold-l:#f3dc9c;--paper:#fff8f1;--ok:#6fcf97}
+:root{--red:#e8546b;--red-d:#b8334a;--black:#2f2a3a;--black-d:#1c1824;--gold:#d9b25f;--gold-l:#f3dc9c;--paper:#fff8f1;--ok:#6fcf97;--err:#ff9db0;--line:rgba(217,178,95,.35);--field:#241f2f;color-scheme:dark}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:"Hiragino Sans","Noto Sans JP",system-ui,sans-serif;background:var(--black-d);color:var(--paper);line-height:1.6;padding:0 16px calc(40px + env(safe-area-inset-bottom))}
-.wrap{max-width:640px;margin:0 auto}
-header{padding:22px 0 10px;text-align:center}
-header h1{font-size:20px;color:var(--gold-l);letter-spacing:.08em}
-header p{font-size:12px;opacity:.7}
-.tabs{display:flex;gap:6px;position:sticky;top:0;background:var(--black-d);padding:10px 0;z-index:5}
-.tabs button{flex:1;padding:10px 4px;border-radius:12px;border:1.5px solid var(--gold);color:var(--gold-l);font-weight:800;font-size:13px;background:none;cursor:pointer}
-.tabs button.on{background:var(--red);color:#fff}
-.tabs .n{display:inline-block;min-width:18px;padding:0 5px;margin-left:3px;border-radius:99px;background:var(--gold);color:var(--black-d);font-size:11px}
-.card{background:var(--black);border:1.5px solid var(--gold);border-radius:16px;padding:16px;margin-top:12px}
-.card h2{font-size:15px;color:var(--gold-l);margin-bottom:10px}
-.hint{font-size:12px;opacity:.75;margin-bottom:10px}
-label{display:block;font-size:12px;color:var(--gold);font-weight:700;margin:10px 0 4px}
-input,textarea,select{width:100%;padding:11px 12px;border-radius:10px;border:1.5px solid var(--gold);background:var(--black-d);color:#fff;font:inherit;font-size:16px}
-textarea{min-height:130px;resize:vertical}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.btn{display:inline-block;padding:11px 18px;border-radius:12px;font-weight:800;font-size:14px;background:var(--red);color:#fff;border:1.5px solid var(--gold);cursor:pointer}
-.btn.sub{background:none;color:var(--gold-l)}
-.btn.sm{padding:6px 12px;font-size:12px;border-radius:99px}
+html{-webkit-text-size-adjust:100%}
+body{font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",Meiryo,system-ui,sans-serif;background:var(--black-d);color:var(--paper);line-height:1.65;padding:0 16px calc(48px + env(safe-area-inset-bottom));-webkit-font-smoothing:antialiased}
+.wrap{max-width:720px;margin:0 auto}
+button{font-family:inherit}
+header{padding:calc(22px + env(safe-area-inset-top)) 0 14px;text-align:center}
+header h1{font-size:20px;color:var(--gold-l);letter-spacing:.08em;line-height:1.4}
+header p{font-size:12.5px;opacity:.75;margin-top:4px}
+header .vw{display:inline-block;margin-top:10px;font-size:12.5px;font-weight:700;color:var(--gold-l);text-decoration:none;padding:6px 14px;border:1.5px solid var(--line);border-radius:99px}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;position:sticky;top:0;background:var(--black-d);padding:10px 0 12px;z-index:5;border-bottom:1px solid rgba(217,178,95,.18)}
+.tabs button{position:relative;min-height:44px;padding:8px 2px;border-radius:12px;border:1.5px solid var(--gold);color:var(--gold-l);font-weight:800;font-size:13px;line-height:1.2;background:none;cursor:pointer;white-space:nowrap}
+.tabs button.on{background:var(--red);color:#fff;border-color:var(--gold)}
+.tabs .n{position:absolute;top:-7px;right:-4px;min-width:20px;height:20px;padding:0 6px;border-radius:99px;background:var(--gold);color:var(--black-d);font-size:11px;font-weight:800;line-height:20px;text-align:center}
+.card{background:var(--black);border:1.5px solid var(--line);border-radius:18px;padding:20px 18px;margin-top:16px}
+.card h2{font-size:16px;color:var(--gold-l);margin-bottom:6px;display:flex;align-items:center;gap:8px;line-height:1.4}
+.card h2::before{content:"";flex:none;width:4px;height:1.05em;border-radius:2px;background:var(--red)}
+.hint{font-size:12.5px;opacity:.78;margin-bottom:14px;line-height:1.7}
+label{display:block;font-size:12.5px;color:var(--gold);font-weight:700;margin:14px 0 6px}
+label:first-of-type{margin-top:4px}
+input,textarea,select{display:block;width:100%;min-height:46px;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--field);color:#fff;font:inherit;font-size:16px;-webkit-appearance:none;appearance:none}
+input[type=date],input[type=time]{text-align:left}
+select{background-image:linear-gradient(45deg,transparent 50%,var(--gold) 50%),linear-gradient(135deg,var(--gold) 50%,transparent 50%);background-position:calc(100% - 20px) 50%,calc(100% - 14px) 50%;background-size:6px 6px;background-repeat:no-repeat;padding-right:36px}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(217,178,95,.28)}
+input:disabled{opacity:.4}
+::placeholder{color:#8f87a0}
+textarea{min-height:150px;resize:vertical;line-height:1.6}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.row label{margin-top:4px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:10px 20px;border-radius:12px;font-weight:800;font-size:15px;background:var(--red);color:#fff;border:1.5px solid var(--gold);cursor:pointer;text-decoration:none}
+.btn:active{transform:translateY(1px)}
+.btn.sub{background:none;color:var(--gold-l);border-color:var(--line)}
+.btn.sm{min-height:36px;padding:6px 14px;font-size:12.5px;border-radius:99px}
 .btn:disabled{opacity:.5}
-.full{width:100%;margin-top:14px}
-ul.list{list-style:none;display:grid;gap:8px;margin-top:6px}
-ul.list li{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.05);min-width:0}
+.full{width:100%;margin-top:18px}
+ul.list{list-style:none;display:grid;gap:10px;margin-top:10px}
+ul.list li{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.05);min-width:0}
 ul.list .m{min-width:0;flex:1}
-ul.list .t{font-weight:800;overflow-wrap:anywhere}
-ul.list .s{font-size:12px;opacity:.75;overflow-wrap:anywhere}
+ul.list .t{font-weight:800;font-size:14.5px;overflow-wrap:anywhere;line-height:1.5}
+ul.list .s{word-break:break-all;font-size:12.5px;opacity:.78;overflow-wrap:anywhere;margin-top:2px}
 ul.list li.past{opacity:.45}
 ul.list li.done .t{text-decoration:line-through;opacity:.6}
 .acts{display:flex;gap:6px;flex:none;flex-wrap:wrap;justify-content:flex-end}
-.msg{margin-top:10px;font-size:13px;min-height:1.3em}
-.msg.err{color:#ff8da1}.msg.ok{color:var(--ok)}
-.empty{text-align:center;opacity:.7;padding:14px;font-size:13px}
-.sw{display:flex;align-items:center;justify-content:space-between;gap:10px}
-#gate{margin-top:60px}
+.tg{display:inline-block;font-size:11px;font-weight:800;padding:1px 8px;border-radius:99px;background:rgba(217,178,95,.2);color:var(--gold-l);margin-right:6px;vertical-align:1px}
+.tg.off{background:rgba(255,255,255,.14);color:#ddd}.tg.memo{background:rgba(232,84,107,.28);color:#ffd0d8}
+.msg{margin-top:12px;font-size:13.5px;min-height:1.4em;line-height:1.6}
+.msg.err{color:var(--err)}.msg.ok{color:var(--ok)}
+.empty{text-align:center;opacity:.75;padding:18px 12px;font-size:13.5px;display:block!important}
+.sw{display:flex;align-items:center;justify-content:space-between;gap:14px}
+.sw .btn{flex:none}
+#gate{margin-top:36px;text-align:center}
+#gate .card,#gate{max-width:420px;margin-left:auto;margin-right:auto}
+#gate h2{justify-content:center}
+#gate h2::before{display:none}
+#gate .pw{position:relative;margin-top:14px;text-align:left}
+#gate .pw input{padding-right:70px}
+#gate .eye{position:absolute;right:6px;top:5px;min-height:36px;padding:0 12px;border-radius:8px;border:0;background:none;color:var(--gold-l);font-weight:700;font-size:13px;cursor:pointer}
 .tab{display:none}.tab.on{display:block}
-.sec-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.wrow{display:grid;grid-template-columns:78px 92px 1fr auto;gap:6px;align-items:center;margin:6px 0}.wrow b{font-size:12px}.wrow input{margin:0;min-width:0}.woff{display:flex;align-items:center;gap:4px;font-size:12px;margin:0;white-space:nowrap}.woff input{width:auto}@media(max-width:520px){.wrow{grid-template-columns:70px 1fr auto;}.wrow .ww{grid-column:1/-1;grid-row:2}}
+.sec-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.sec-top h2{margin:0}
+/* 今週まとめて入力 */
+#wRows{display:grid;gap:10px;margin-top:14px}
+.wrow{display:grid;grid-template-columns:96px 140px 1fr auto;gap:10px;align-items:center;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid transparent}
+.wrow.today{border-color:var(--gold)}
+.wrow.off{background:rgba(255,255,255,.02)}
+.wd{font-weight:800;font-size:14px;line-height:1.3}
+.wd small{display:block;font-size:11.5px;font-weight:700;color:var(--gold)}
+.wd.sat{color:#8ec5ff}.wd.sun{color:#ff9db0}
+.wrow input.wt,.wrow input.wtt{margin:0;min-width:0}
+.woff{display:flex;align-items:center;gap:8px;margin:0;font-size:13px;color:var(--paper);font-weight:700;white-space:nowrap;cursor:pointer;min-height:46px}
+.woff input{-webkit-appearance:none;appearance:none;width:24px;min-height:24px;height:24px;padding:0;flex:none;border-radius:7px;border:1.5px solid var(--gold);background:var(--field);position:relative;cursor:pointer}
+.woff input:checked{background:var(--red);border-color:var(--gold)}
+.woff input:checked::after{content:"";position:absolute;left:7px;top:2px;width:6px;height:12px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg)}
+@media(max-width:560px){
+  .wrow{grid-template-columns:140px 1fr auto;grid-template-areas:"d d o" "t w w"}
+  .wrow .wd{grid-area:d;display:flex;align-items:baseline;gap:8px}
+  .wrow .wd small{display:inline}
+  .wrow .woff{grid-area:o;min-height:30px}
+  .wrow input.wt{grid-area:t}
+  .wrow input.wtt{grid-area:w}
+  .tabs button{font-size:12px}
+  .card{padding:18px 14px}
+  .sw{flex-wrap:wrap}
+}
+.foot{text-align:center;margin-top:28px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 </style>
 </head>
 <body>
 <div class="wrap">
-<header><h1>♛ あんて｡ 管理画面 ♛</h1><p>配信予定・歌える曲・リクエスト・Xポストをここで更新できます</p></header>
+<header><h1>♛ あんて｡ 管理画面 ♛</h1><p>配信予定・歌える曲・リクエスト・Xポストを更新できます</p><a class="vw" href="../" target="_blank" rel="noopener">サイトを見る ›</a></header>
 
 <div id="gate" class="card">
-  <h2>合言葉を入れてください</h2>
-  <input id="pass" type="password" autocomplete="current-password" placeholder="合言葉">
+  <h2>合言葉をご入力ください</h2>
+  <p class="hint" style="margin:8px 0 0">お渡しした合言葉を入力して「入る」を押してください。</p>
+  <div class="pw"><input id="pass" type="password" autocomplete="current-password" placeholder="合言葉" aria-label="合言葉"><button type="button" class="eye" id="eye">表示</button></div>
   <button class="btn full" id="enter">入る</button>
   <p class="msg" id="gateMsg"></p>
 </div>
@@ -71,38 +118,38 @@ ul.list li.done .t{text-decoration:line-through;opacity:.6}
   <section class="tab on" id="tab-sch">
     <div class="card">
       <h2>今週の予定をまとめて入力</h2>
-      <p class="hint">7日分を一気に入れられます。お休みの日は「おやすみ」にチェック。空のままの日は何も表示されません。</p>
+      <p class="hint">最初の日を選ぶと、その日から7日分の入力欄が出ます。お休みの日は「おやすみ」にチェックを入れてください。空欄の日は、サイトに何も表示されません。</p>
       <label for="wStart">はじまりの日</label><input id="wStart" type="date">
       <div id="wRows"></div>
-      <label for="wNote">今週のひとこと（任意）</label><input id="wNote" maxlength="100" placeholder="例：今週は夜ふかし多め♡">
+      <label for="wNote">今週のひとこと（任意）</label><input id="wNote" maxlength="100" placeholder="例：今週は夜ふかし多めです">
       <button class="btn full" id="wSave">この内容で保存する</button>
-      <p class="msg" id="wMsg"></p>
+      <p class="msg" id="wMsg" role="status"></p>
     </div>
     <div class="card">
       <h2>配信予定を1件ずつ追加</h2>
       <div class="row"><div><label for="sDate">日付</label><input id="sDate" type="date"></div><div><label for="sTime">開始時間</label><input id="sTime" type="time" value="21:00"></div></div>
       <label for="sTitle">タイトル</label><input id="sTitle" maxlength="100" placeholder="例：深夜の歌枠">
-      <label for="sNote">ひとこと（任意）</label><input id="sNote" maxlength="200" placeholder="例：リクエスト受付中♡">
+      <label for="sNote">ひとこと（任意）</label><input id="sNote" maxlength="200" placeholder="例：リクエスト受付中です">
       <label for="sTag">種類</label>
       <select id="sTag"><option>雑談</option><option>ゲーム</option><option>歌枠</option><option>コラボ</option><option>お知らせ</option></select>
       <button class="btn full" id="sAdd">追加する</button>
-      <p class="msg" id="sMsg"></p>
+      <p class="msg" id="sMsg" role="status"></p>
     </div>
-    <div class="card"><h2>登録済みの予定</h2><p class="hint">過ぎた予定はサイトには出ません。</p><ul class="list" id="sList"></ul></div>
+    <div class="card"><h2>登録済みの予定</h2><p class="hint" style="margin-bottom:4px">過ぎた予定は、サイトには表示されません。</p><ul class="list" id="sList"></ul></div>
   </section>
 
   <!-- 歌える曲 -->
   <section class="tab" id="tab-song">
     <div class="card">
       <h2>曲をまとめて追加</h2>
-      <p class="hint">1行に1曲。「曲名 / アーティスト / ジャンル」の形で書きます（アーティストとジャンルは省略OK）。Excelやスプレッドシートからコピーして貼ってもOKです。</p>
+      <p class="hint">1行に1曲ずつ入力してください。「曲名 / アーティスト / ジャンル」の形式です（アーティストとジャンルは省略できます）。Excelやスプレッドシートからコピーして貼り付けることもできます。</p>
       <textarea id="bulk" placeholder="神っぽいな / ピノキオピー / ボカロ&#10;アイドル / YOASOBI / J-POP"></textarea>
       <button class="btn full" id="bAdd">追加する</button>
-      <p class="msg" id="bMsg"></p>
+      <p class="msg" id="bMsg" role="status"></p>
     </div>
     <div class="card">
       <div class="sec-top"><h2>曲リスト <span id="songN"></span></h2><button class="btn sub sm" id="songClear">全部消す</button></div>
-      <input id="songQ" placeholder="曲名・アーティストで探す" style="margin:6px 0 8px">
+      <input id="songQ" placeholder="曲名・アーティストで探す" style="margin:12px 0 4px">
       <ul class="list" id="songList"></ul>
     </div>
   </section>
@@ -110,7 +157,7 @@ ul.list li.done .t{text-decoration:line-through;opacity:.6}
   <!-- リクエスト -->
   <section class="tab" id="tab-req">
     <div class="card">
-      <div class="sw"><div><h2 style="margin:0">リクエスト受付</h2><p class="hint" style="margin:0" id="reqState"></p></div><button class="btn" id="reqToggle"></button></div>
+      <div class="sw"><div><h2 style="margin:0">リクエスト受付</h2><p class="hint" style="margin:4px 0 0" id="reqState" role="status"></p></div><button class="btn" id="reqToggle"></button></div>
     </div>
     <div class="card">
       <div class="sec-top"><h2>届いたリクエスト</h2><button class="btn sub sm" id="reqClear">歌った曲をまとめて消す</button></div>
@@ -122,15 +169,15 @@ ul.list li.done .t{text-decoration:line-through;opacity:.6}
   <section class="tab" id="tab-post">
     <div class="card">
       <h2>サイトに載せるポスト</h2>
-      <p class="hint">載せたいポストのURLを貼ります（x.com か twitter.com の「…/status/数字」）。上に追加したものが先に表示されます。</p>
+      <p class="hint">サイトに載せたいポストのURLを貼り付けてください（x.com または twitter.com の「…/status/数字」の形式）。新しく追加したものが先に表示されます。<br>何も追加しない場合は、@antevx_ の最新ポストが自動で表示されます。</p>
       <input id="pUrl" inputmode="url" placeholder="https://x.com/antevx_/status/1234567890">
       <button class="btn full" id="pAdd">追加する</button>
-      <p class="msg" id="pMsg"></p>
+      <p class="msg" id="pMsg" role="status"></p>
     </div>
     <div class="card"><h2>表示中のポスト</h2><ul class="list" id="pList"></ul></div>
   </section>
 
-  <p class="msg" style="text-align:center;margin-top:24px"><button class="btn sub sm" id="logout">合言葉を入れ直す</button></p>
+  <div class="foot"><a class="btn sub sm" href="../" target="_blank" rel="noopener">サイトを見る</a><button class="btn sub sm" id="logout">合言葉を入れ直す</button></div>
 </div>
 </div>
 
@@ -143,7 +190,7 @@ var S={sch:[],songs:[],reqs:[],posts:[],open:true};
 function getPass(){try{return localStorage.getItem('ante_admin_pass')||'';}catch(e){return '';}}
 function setPass(v){try{localStorage.setItem('ante_admin_pass',v);}catch(e){}}
 function say(el,t,cls){el.textContent=t||'';el.className='msg'+(cls?' '+cls:'');}
-function errText(e){var m=e&&e.message;if(m==='auth')return '合言葉がちがうみたい';if(m==='too_many')return '数が多すぎます';return 'うまくいきませんでした。通信を確認してもう一度ためしてね';}
+function errText(e){var m=e&&e.message;if(m==='auth')return '合言葉が違うようです。ご確認のうえ、もう一度ご入力ください';if(m==='too_many')return '数が多すぎます';return '保存できませんでした。通信環境をご確認のうえ、もう一度お試しください';}
 function rpc(fn,body){
   body=body||{};body.p_pass=getPass();
   return fetch(SB+fn,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify(body)})
@@ -156,7 +203,7 @@ function load(){
   });
 }
 function gate(msg){$('app').hidden=true;$('gate').hidden=false;say($('gateMsg'),msg,'err');}
-function guard(p,el){return p.catch(function(e){if(e.message==='auth'){setPass('');gate('合言葉がちがうみたい。もう一度入れてね');}else{say(el,errText(e),'err');}throw e;});}
+function guard(p,el){return p.catch(function(e){if(e.message==='auth'){setPass('');gate('合言葉が違うようです。ご確認のうえ、もう一度ご入力ください');}else{say(el,errText(e),'err');}throw e;});}
 
 /* tabs */
 $('tabs').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
@@ -164,8 +211,9 @@ $('tabs').addEventListener('click',function(e){var b=e.target.closest('button');
   [].forEach.call(document.querySelectorAll('.tab'),function(t){t.classList.toggle('on',t.id==='tab-'+b.dataset.t);});});
 
 /* gate */
-$('enter').onclick=function(){var v=$('pass').value.trim();if(!v){say($('gateMsg'),'合言葉を入れてね','err');return;}setPass(v);$('pass').value='';
-  say($('gateMsg'),'確認中…');load().catch(function(e){setPass('');gate(e.message==='auth'?'合言葉がちがうみたい':errText(e));});};
+$('enter').onclick=function(){var v=$('pass').value.trim();if(!v){say($('gateMsg'),'合言葉をご入力ください','err');return;}setPass(v);$('pass').value='';
+  say($('gateMsg'),'確認中…');load().catch(function(e){setPass('');gate(errText(e));});};
+$('eye').onclick=function(){var p=$('pass'),h=p.type==='password';p.type=h?'text':'password';$('eye').textContent=h?'隠す':'表示';};
 $('pass').addEventListener('keydown',function(e){if(e.key==='Enter')$('enter').click();});
 $('logout').onclick=function(){setPass('');gate('');};
 
@@ -174,16 +222,18 @@ var wk=['日','月','火','水','木','金','土'];
 function drawSch(){
   var today=new Date();today.setHours(0,0,0,0);
   $('sList').innerHTML=S.sch.length?S.sch.map(function(s,i){var d=new Date(s.date+'T00:00:00');var past=d<today;
-    return '<li class="'+(past?'past':'')+'"><div class="m"><div class="t">'+(d.getMonth()+1)+'/'+d.getDate()+'（'+wk[d.getDay()]+'） '+esc(s.time||'')+' '+esc(s.title)+'</div><div class="s">'+esc(s.tag||'')+(s.note?' ・ '+esc(s.note):'')+(past?' ・ 終了':'')+'</div></div><div class="acts"><button class="btn sub sm" data-del="'+i+'">消す</button></div></li>';}).join(''):'<li class="empty">まだ予定がありません</li>';
+    var tg=s.tag==='off'?'<span class="tg off">おやすみ</span>':s.tag==='memo'?'<span class="tg memo">今週のひとこと</span>':(s.tag?'<span class="tg">'+esc(s.tag)+'</span>':'');
+    var ttl=s.tag==='off'?'お休み':esc(s.title);
+    return '<li class="'+(past?'past':'')+'"><div class="m"><div class="t">'+(d.getMonth()+1)+'/'+d.getDate()+'（'+wk[d.getDay()]+'）'+(s.time&&s.tag!=='off'?' '+esc(s.time):'')+'</div><div class="s" style="opacity:1">'+tg+(s.tag==='off'?'':ttl)+'</div>'+((s.note||past)?'<div class="s">'+(s.note?esc(s.note):'')+(s.note&&past?' ・ ':'')+(past?'終了しました':'')+'</div>':'')+'</div><div class="acts"><button class="btn sub sm" data-del="'+i+'">消す</button></div></li>';}).join(''):'<li class="empty">まだ予定がありません</li>';
 }
 function saveSch(){return guard(rpc('ante_save_schedule',{p_items:S.sch}),$('sMsg')).then(load);}
 $('sAdd').onclick=function(){
   var d=$('sDate').value,t=$('sTitle').value.trim();
-  if(!d||!t){say($('sMsg'),'日付とタイトルを入れてね','err');return;}
+  if(!d||!t){say($('sMsg'),'日付とタイトルをご入力ください','err');return;}
   S.sch.push({date:d,time:$('sTime').value,title:t,note:$('sNote').value.trim(),tag:$('sTag').value});
   S.sch.sort(function(a,b){return (a.date+(a.time||'')).localeCompare(b.date+(b.time||''));});
   say($('sMsg'),'保存中…');
-  saveSch().then(function(){say($('sMsg'),'追加しました。サイトに反映されます','ok');$('sTitle').value='';$('sNote').value='';}).catch(function(){});
+  saveSch().then(function(){say($('sMsg'),'追加しました。まもなくサイトに反映されます','ok');$('sTitle').value='';$('sNote').value='';}).catch(function(){});
 };
 $('sList').addEventListener('click',function(e){var b=e.target.closest('[data-del]');if(!b)return;S.sch.splice(+b.dataset.del,1);saveSch().catch(function(){});});
 
@@ -192,26 +242,28 @@ function ymdA(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'
 function wDates(){var v=$('wStart').value;if(!v)return [];var d=new Date(v+'T00:00:00'),a=[];for(var i=0;i<7;i++){var x=new Date(d);x.setDate(d.getDate()+i);a.push(ymdA(x));}return a;}
 function drawWeek(){
   var ds=wDates();
-  $('wRows').innerHTML=ds.map(function(k,i){var d=new Date(k+'T00:00:00');
+  var tk=ymdA(new Date());
+  $('wRows').innerHTML=ds.map(function(k,i){var d=new Date(k+'T00:00:00'),w=d.getDay();
     var cur=S.sch.filter(function(s){return s.date===k&&s.tag!=='memo';})[0]||{};
     var off=cur.tag==='off';
-    return '<div class="wrow" data-k="'+k+'"><b>'+(d.getMonth()+1)+'/'+d.getDate()+'（'+wk[d.getDay()]+'）</b><input class="wt" type="time" value="'+esc(off?'':(cur.time||''))+'"><input class="ww" maxlength="100" placeholder="内容（例：歌枠）" value="'+esc(off?'':(cur.title||''))+'"><label class="woff"><input type="checkbox" class="wo"'+(off?' checked':'')+'>おやすみ</label></div>';}).join('');
+    return '<div class="wrow'+(off?' off':'')+(k===tk?' today':'')+'" data-k="'+k+'"><div class="wd'+(w===6?' sat':'')+(w===0?' sun':'')+'">'+(d.getMonth()+1)+'/'+d.getDate()+'（'+wk[w]+'）'+(k===tk?'<small>今日</small>':'')+'</div><input class="wt" type="time" aria-label="'+(d.getMonth()+1)+'月'+d.getDate()+'日の開始時間" value="'+esc(off?'':(cur.time||''))+'"'+(off?' disabled':'')+'><input class="wtt" maxlength="100" aria-label="'+(d.getMonth()+1)+'月'+d.getDate()+'日の内容" placeholder="内容（例：歌枠）" value="'+esc(off?'':(cur.title||''))+'"'+(off?' disabled':'')+'><label class="woff"><input type="checkbox" class="wo"'+(off?' checked':'')+'>おやすみ</label></div>';}).join('');
   var m=S.sch.filter(function(s){return s.tag==='memo'&&ds.indexOf(s.date)>=0;})[0];
   $('wNote').value=m?m.title:'';
 }
 $('wStart').value=ymdA(new Date());
 $('wStart').addEventListener('change',drawWeek);
+$('wRows').addEventListener('change',function(e){var c=e.target.closest('.wo');if(!c)return;var r=c.closest('.wrow');r.classList.toggle('off',c.checked);[].forEach.call(r.querySelectorAll('.wt,.wtt'),function(x){x.disabled=c.checked;});});
 $('wSave').onclick=function(){
-  var ds=wDates();if(!ds.length){say($('wMsg'),'はじまりの日を選んでね','err');return;}
+  var ds=wDates();if(!ds.length){say($('wMsg'),'はじまりの日をお選びください','err');return;}
   var keep=S.sch.filter(function(s){return ds.indexOf(s.date)<0;});
   var add=[];
-  [].forEach.call($('wRows').querySelectorAll('.wrow'),function(r){var k=r.dataset.k,t=r.querySelector('.wt').value,w=r.querySelector('.ww').value.trim(),o=r.querySelector('.wo').checked;
+  [].forEach.call($('wRows').querySelectorAll('.wrow'),function(r){var k=r.dataset.k,t=r.querySelector('.wt').value,w=r.querySelector('.wtt').value.trim(),o=r.querySelector('.wo').checked;
     if(o)add.push({date:k,time:'',title:'おやすみ',note:'',tag:'off'});
     else if(w){var old=S.sch.filter(function(x){return x.date===k&&x.tag!=='memo'&&x.tag!=='off';})[0]||{};add.push({date:k,time:t,title:w,note:old.title===w?(old.note||''):'',tag:old.tag||'配信'});}});
   var n=$('wNote').value.trim();if(n)add.push({date:ds[0],time:'',title:n,note:'',tag:'memo'});
   S.sch=keep.concat(add).sort(function(a,b){return (a.date+(a.time||'')).localeCompare(b.date+(b.time||''));});
   say($('wMsg'),'保存中…');
-  saveSchW().then(function(){say($('wMsg'),'保存しました。サイトに反映されます','ok');}).catch(function(){});
+  saveSchW().then(function(){say($('wMsg'),'保存しました。まもなくサイトに反映されます','ok');}).catch(function(){});
 };
 function saveSchW(){return guard(rpc('ante_save_schedule',{p_items:S.sch}),$('wMsg')).then(load);}
 
@@ -225,13 +277,13 @@ function drawSongs(){
   var q=$('songQ').value.trim().toLowerCase();
   $('songN').textContent='（'+S.songs.length+'曲）';
   var rows=[];S.songs.forEach(function(s,i){if(!q||((s.title||'')+(s.artist||'')).toLowerCase().indexOf(q)>=0)rows.push([s,i]);});
-  $('songList').innerHTML=rows.length?rows.slice(0,200).map(function(r){var s=r[0];return '<li><div class="m"><div class="t">'+esc(s.title)+'</div><div class="s">'+esc(s.artist||'')+(s.genre?' ・ '+esc(s.genre):'')+'</div></div><div class="acts"><button class="btn sub sm" data-del="'+r[1]+'">消す</button></div></li>';}).join('')+(rows.length>200?'<li class="empty">先頭200曲だけ表示しています。探すときは上の検索を使ってね</li>':''):'<li class="empty">'+(S.songs.length?'見つかりませんでした':'まだ曲がありません')+'</li>';
+  $('songList').innerHTML=rows.length?rows.slice(0,200).map(function(r){var s=r[0];return '<li><div class="m"><div class="t">'+esc(s.title)+'</div><div class="s">'+esc(s.artist||'')+(s.genre?' ・ '+esc(s.genre):'')+'</div></div><div class="acts"><button class="btn sub sm" data-del="'+r[1]+'">消す</button></div></li>';}).join('')+(rows.length>200?'<li class="empty">先頭200曲のみ表示しています。探すときは上の検索をご利用ください</li>':''):'<li class="empty">'+(S.songs.length?'見つかりませんでした':'まだ曲がありません')+'</li>';
 }
 function saveSongs(){return guard(rpc('ante_save_songs',{p_items:S.songs}),$('bMsg')).then(load);}
 $('bAdd').onclick=function(){
   var lines=$('bulk').value.split(/\r?\n/).map(function(l){return l.trim();}).filter(Boolean);
   var add=lines.map(parseLine).filter(function(s){return s.title;});
-  if(!add.length){say($('bMsg'),'追加する曲を書いてね','err');return;}
+  if(!add.length){say($('bMsg'),'追加する曲をご入力ください','err');return;}
   var have={};S.songs.forEach(function(s){have[(s.title+'|'+(s.artist||'')).toLowerCase()]=1;});
   var n=0;add.forEach(function(s){var k=(s.title+'|'+s.artist).toLowerCase();if(!have[k]){have[k]=1;S.songs.push(s);n++;}});
   say($('bMsg'),'保存中…');
@@ -239,23 +291,23 @@ $('bAdd').onclick=function(){
 };
 $('songList').addEventListener('click',function(e){var b=e.target.closest('[data-del]');if(!b)return;S.songs.splice(+b.dataset.del,1);saveSongs().catch(function(){});});
 $('songQ').addEventListener('input',drawSongs);
-$('songClear').onclick=function(){if(!S.songs.length)return;if(!confirm('曲リストを全部消します。よろしいですか？'))return;S.songs=[];saveSongs().catch(function(){});};
+$('songClear').onclick=function(){if(!S.songs.length)return;if(!confirm('曲リストをすべて削除します。よろしいですか？'))return;S.songs=[];saveSongs().catch(function(){});};
 
 /* ---- リクエスト ---- */
 function drawReq(){
   var n=S.reqs.filter(function(r){return !r.done;}).length;
   $('reqN').hidden=!n;$('reqN').textContent=n;
-  $('reqState').textContent=S.open?'いまは受付中です':'いまはお休み中です';
+  $('reqState').textContent=S.open?'現在、受付中です':'現在、お休み中です';
   $('reqToggle').textContent=S.open?'お休みにする':'受付を再開する';
   $('reqList').innerHTML=S.reqs.length?S.reqs.map(function(r){var d=new Date(r.at);
     var when=(d.getMonth()+1)+'/'+d.getDate()+' '+('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);
-    return '<li class="'+(r.done?'done':'')+'"><div class="m"><div class="t">'+esc(r.song)+(r.artist?' / '+esc(r.artist):'')+'</div><div class="s">'+esc(r.name||'名無し')+' ・ '+when+(r.comment?'<br>'+esc(r.comment):'')+'</div></div><div class="acts">'+
+    return '<li class="'+(r.done?'done':'')+'"><div class="m"><div class="t">'+esc(r.song)+(r.artist?' / '+esc(r.artist):'')+'</div><div class="s">'+esc(r.name||'お名前なし')+' ・ '+when+(r.comment?'<br>'+esc(r.comment):'')+'</div></div><div class="acts">'+
       (r.done?'<button class="btn sub sm" data-a="undo" data-id="'+r.id+'">戻す</button>':'<button class="btn sm" data-a="done" data-id="'+r.id+'">歌った</button>')+
       '<button class="btn sub sm" data-a="delete" data-id="'+r.id+'">消す</button></div></li>';}).join(''):'<li class="empty">まだリクエストはありません</li>';
 }
 $('reqList').addEventListener('click',function(e){var b=e.target.closest('[data-a]');if(!b)return;
   guard(rpc('ante_req_set',{p_id:+b.dataset.id,p_action:b.dataset.a}),$('reqState')).then(load).catch(function(){});});
-$('reqClear').onclick=function(){guard(rpc('ante_req_set',{p_id:0,p_action:'clear_done'}),$('reqState')).then(load).catch(function(){});};
+$('reqClear').onclick=function(){if(!confirm('「歌った」にした曲をまとめて削除します。よろしいですか？'))return;guard(rpc('ante_req_set',{p_id:0,p_action:'clear_done'}),$('reqState')).then(load).catch(function(){});};
 $('reqToggle').onclick=function(){guard(rpc('ante_req_open',{p_open:!S.open}),$('reqState')).then(load).catch(function(){});};
 
 /* ---- Xポスト ---- */
@@ -265,8 +317,8 @@ function drawPosts(){
 function savePosts(){return guard(rpc('ante_save_posts',{p_items:S.posts}),$('pMsg')).then(load);}
 $('pAdd').onclick=function(){
   var u=$('pUrl').value.trim().split('?')[0];
-  if(!/^https?:\/\/(www\.)?(x|twitter)\.com\/[^\/]+\/status\/\d+/.test(u)){say($('pMsg'),'ポストのURL（…/status/数字）を貼ってね','err');return;}
-  if(S.posts.indexOf(u)>=0){say($('pMsg'),'もう載せています','err');return;}
+  if(!/^https?:\/\/(www\.)?(x|twitter)\.com\/[^\/]+\/status\/\d+/.test(u)){say($('pMsg'),'ポストのURL（…/status/数字）を貼り付けてください','err');return;}
+  if(S.posts.indexOf(u)>=0){say($('pMsg'),'すでに載せています','err');return;}
   S.posts.unshift(u);say($('pMsg'),'保存中…');
   savePosts().then(function(){say($('pMsg'),'追加しました','ok');$('pUrl').value='';}).catch(function(){});
 };
