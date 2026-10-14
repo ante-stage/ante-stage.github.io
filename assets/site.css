@@ -396,3 +396,7 @@ footer.ft .upd{display:block;margin:2px auto 12px;padding:8px 18px;border-radius
   .hero .tagline{margin-top:4px;text-shadow:none}
   .hero .qmenu{display:none}
 }
+#opening.land{background:transparent;transition:background 1s ease}
+#opening.land .spot,#opening.land .pool,#opening.land .tap,#opening.land .fx,#opening.land .flash{animation:none!important;opacity:0!important;transition:opacity .6s}
+#opening.land .fig{animation:none;filter:brightness(1);transform-origin:50% 50%;transition:transform 1.05s cubic-bezier(.65,0,.25,1),box-shadow .8s,border-radius .8s;box-shadow:0 0 0 0 transparent,0 0 0 transparent}
+#opening.land.out{transition:opacity .35s}
