@@ -47,6 +47,7 @@ function rpc(fn,body){return fetch(SB+fn,{method:'POST',headers:{apikey:SBKEY,'C
 /* ---------- 共通パーツの差し込み ---------- */
 function chrome(){
   var b=document.body;
+  if(!$('#sl')){var sl=document.createElement('div');sl.id='sl';sl.setAttribute('aria-hidden','true');b.appendChild(sl);if(!reduce){var t=0;addEventListener('scroll',function(){if(t)return;t=requestAnimationFrame(function(){t=0;var y=Math.max(0,Math.min(1,(scrollY%1400)/1400));sl.style.setProperty('--sy',(46+8*Math.sin(y*6.2832))+'%');});},{passive:true});}}
   var nav='<a class="skip" href="#main">本文へ</a>'+
   '<header class="topnav"><div class="pg in"><a class="brand" href="index.html"><img src="img/logo-gold.png" alt="">あんて｡</a><nav aria-label="メインメニュー"><ul>'+
   NAV.map(function(n){return '<li><a href="'+n[0]+'"'+(n[0]===curFile()?' aria-current="page"':'')+'><small>'+n[1]+'</small>'+n[2]+'</a></li>';}).join('')+'</ul></nav></div></header>'+
@@ -84,7 +85,7 @@ function transitions(){
 
 /* ---------- 見出しの飾り（矢の刺さるハート） ---------- */
 var ORN='<img class="orn" src="img/logo-gold.png" alt="" width="900" height="438" loading="lazy">';
-var VER='20261014k';
+var VER='20261014l';
 function updater(){var b=$('#updBtn');if(!b)return;b.addEventListener('click',function(){b.textContent='更新中…';b.disabled=true;var go=function(){try{sessionStorage.removeItem('antedata');}catch(e){}var u=location.pathname+'?r='+Date.now()+(location.hash||'');location.replace(u);};try{var jobs=[];if(window.caches&&caches.keys)jobs.push(caches.keys().then(function(k){return Promise.all(k.map(function(x){return caches.delete(x);}));}));if(navigator.serviceWorker&&navigator.serviceWorker.getRegistrations)jobs.push(navigator.serviceWorker.getRegistrations().then(function(r){return Promise.all(r.map(function(x){return x.unregister();}));}));Promise.all(jobs).then(go,go);}catch(e){go();}});}
 function decorate(){
   $$('.h').forEach(function(h){h.insertAdjacentHTML('beforeend',ORN);});

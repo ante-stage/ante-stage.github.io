@@ -457,3 +457,6 @@ footer.ft .upd{display:block;margin:2px auto 12px;padding:8px 18px;border-radius
   linear-gradient(180deg,#06040a 0,rgba(6,4,10,.55) 8%,rgba(6,4,10,0) 24%,rgba(6,4,10,0) 74%,#06040a 100%),
   linear-gradient(90deg,#06040a 0,rgba(6,4,10,0) 9%,rgba(6,4,10,0) 84%,#06040a 100%)}
 .h.noorn .orn{display:none}
+#sl{--sy:50%;position:fixed;inset:0;z-index:45;pointer-events:none;
+  background:radial-gradient(ellipse 70% 42% at 50% var(--sy),rgba(255,236,190,.10),rgba(255,236,190,0) 70%),radial-gradient(ellipse 130% 95% at 50% var(--sy),rgba(6,4,10,0) 38%,rgba(6,4,10,.5) 100%)}
+body[data-page="home"] #sl{background:radial-gradient(ellipse 70% 42% at 50% var(--sy),rgba(255,236,190,.07),rgba(255,236,190,0) 70%),radial-gradient(ellipse 130% 95% at 50% var(--sy),rgba(6,4,10,0) 45%,rgba(6,4,10,.4) 100%)}
