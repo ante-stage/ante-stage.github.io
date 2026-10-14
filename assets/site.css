@@ -598,3 +598,9 @@ body.lights-off .vis .sw,body.lights-off #sl::before,body.lights-off #sl::after{
 body.lights-off #sl,body.lights-off[data-page="home"] #sl{background:radial-gradient(ellipse 120% 90% at 50% 50%,rgba(6,4,10,.15) 30%,rgba(6,4,10,.62) 100%)}
 body.lights-off .hero .photo{filter:brightness(.88)}
 #sl,.vis .sw{transition:opacity .5s}
+/* ===== 全灯: 暗いところなし ===== */
+body.lights-max #sl,body.lights-max[data-page="home"] #sl{mix-blend-mode:screen;background:radial-gradient(ellipse 110% 90% at 50% var(--sy),rgba(255,232,185,.2),rgba(255,214,160,.14) 70%,rgba(255,200,150,.11) 100%)}
+body.lights-max .vis .sw{opacity:.95!important}
+@media(min-width:1024px){body.lights-max[data-page="home"] #sl::before,body.lights-max[data-page="home"] #sl::after{background:linear-gradient(180deg,rgba(255,240,205,.4),rgba(255,230,170,.18) 60%,rgba(255,230,170,.06) 100%)}}
+body.lights-max #ltBtn{color:#fff6cf;background:rgba(232,84,107,.75);box-shadow:0 0 22px rgba(255,236,160,.8)}
+body.lights-max .card,body.lights-max .box{filter:brightness(1.12)}
