@@ -370,3 +370,4 @@ html.pt-in::after{content:"";position:fixed;inset:0;z-index:399;background:repea
   .hero .emblem{width:min(50%,200px,calc(10svh * 2.1))}
   .scrollhint{display:none}
 }
+.orn{display:block;width:104px;height:auto;margin:6px auto 0;opacity:0;transform:translateY(6px) scale(.9);filter:drop-shadow(0 0 8px rgba(217,178,95,.45));transition:opacity .7s ease .15s,transform .7s cubic-bezier(.3,1.4,.5,1) .15s}.in .orn{opacity:1;transform:none}

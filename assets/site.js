@@ -83,7 +83,7 @@ function transitions(){
 }
 
 /* ---------- 見出しの飾り（矢の刺さるハート） ---------- */
-var ORN='<svg class="orn" viewBox="0 0 132 44" aria-hidden="true"><path class="fill" d="M66 36C50 26 46 18 52 12C57 7 63 9 66 15C69 9 75 7 80 12C86 18 82 26 66 36Z"/><path class="hp" d="M66 36C50 26 46 18 52 12C57 7 63 9 66 15C69 9 75 7 80 12C86 18 82 26 66 36Z"/><path class="ar" d="M26 40L106 7"/><path class="fl" d="M26 40L19 38M30 38.4L24 33.5M33 37L28 31"/><path class="ah" d="M112 5L98 6.5L105 16Z"/></svg>';
+var ORN='<img class="orn" src="img/logo-gold.png" alt="" width="900" height="438" loading="lazy">';
 function decorate(){
   $$('.h').forEach(function(h){h.insertAdjacentHTML('beforeend',ORN);});
 }
