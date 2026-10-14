@@ -537,3 +537,7 @@ body[data-page="home"].reveal .topnav{animation:barDown .8s cubic-bezier(.22,1,.
 #opening.go .spot{animation:spotOn1 1.2s cubic-bezier(.3,.6,.3,1) 1.1s forwards}
 #opening.go .fig{animation:lit1 1.2s cubic-bezier(.3,.6,.3,1) 1.1s forwards}
 #opening.land .fig{transition:box-shadow 1s cubic-bezier(.22,1,.36,1),border-radius 1s cubic-bezier(.22,1,.36,1),--fx 1s cubic-bezier(.22,1,.36,1),--fy 1s cubic-bezier(.22,1,.36,1),--fl 1s cubic-bezier(.22,1,.36,1)}
+/* 枠は本物のホーム画像とクロスフェード(動かさない・変形しない) */
+#opening.land .fig{--fx:13%;--fy:15%;--fl:7%;border-radius:0;box-shadow:none;opacity:0;transition:opacity 1.1s cubic-bezier(.4,0,.2,1)}
+#opening.land{transition:background 1.1s cubic-bezier(.4,0,.2,1)}
+#opening.land.out{transition:opacity .3s}
