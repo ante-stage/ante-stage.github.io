@@ -48,6 +48,9 @@ function rpc(fn,body){return fetch(SB+fn,{method:'POST',headers:{apikey:SBKEY,'C
 function chrome(){
   var b=document.body;
   if(!$('#sl')){var sl=document.createElement('div');sl.id='sl';sl.setAttribute('aria-hidden','true');b.appendChild(sl);if(!reduce){var t=0;addEventListener('scroll',function(){if(t)return;t=requestAnimationFrame(function(){t=0;var y=Math.max(0,Math.min(1,(scrollY%1400)/1400));sl.style.setProperty('--sy',(46+8*Math.sin(y*6.2832))+'%');});},{passive:true});}}
+  if(!$('#pl')&&!reduce){var pl=document.createElement('div');pl.id='pl';pl.setAttribute('aria-hidden','true');var cs=['#ffe9a8','#ff8fa6','#fff6dc','#f3dc9c','#ff6f8a'];
+    for(var q=0;q<(innerWidth<700?14:26);q++){var d=document.createElement('i'),sz=3+Math.random()*6,c=cs[q%cs.length];d.style.cssText='left:'+(Math.random()*100)+'%;width:'+sz+'px;height:'+sz+'px;background:'+c+';box-shadow:0 0 '+(sz*2.2)+'px '+(sz*.6)+'px '+c+';animation-duration:'+(16+Math.random()*16)+'s,'+(2+Math.random()*3)+'s;animation-delay:-'+(Math.random()*28)+'s,-'+(Math.random()*4)+'s;--dx:'+((Math.random()*80-40)|0)+'px';pl.appendChild(d);}
+    b.appendChild(pl);}
   var nav='<a class="skip" href="#main">本文へ</a>'+
   '<header class="topnav"><div class="pg in"><a class="brand" href="index.html"><img src="img/logo-gold.png" alt="">あんて｡</a><nav aria-label="メインメニュー"><ul>'+
   NAV.map(function(n){return '<li><a href="'+n[0]+'"'+(n[0]===curFile()?' aria-current="page"':'')+'><small>'+n[1]+'</small>'+n[2]+'</a></li>';}).join('')+'</ul></nav></div></header>'+
@@ -93,7 +96,7 @@ function transitions(){
 
 /* ---------- 見出しの飾り（矢の刺さるハート） ---------- */
 var ORN='<img class="orn" src="img/logo-gold.png" alt="" width="900" height="438" loading="lazy">';
-var VER='20261015s';
+var VER='20261015t';
 function autoUpdate(){
   function chk(){try{fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
     if(!j||!j.v||j.v===VER)return;var k='verTry';if(ss(k)===j.v)return;ss(k,j.v);

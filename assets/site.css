@@ -629,3 +629,33 @@ body.lights-lit #ltBtn{color:#fff;background:#e8546b;box-shadow:0 0 0 2px #d9b25
   body:not([data-page="home"]) #sl::after{right:-34vw;animation:pcB 13s cubic-bezier(.5,0,.3,1) infinite}
 }
 @media(max-width:1023px) and (prefers-reduced-motion:reduce){body:not([data-page="home"]) #sl::before,body:not([data-page="home"]) #sl::after{animation:none}}
+
+/* ===== アイドルステージ強化 ===== */
+/* 1) セクションの上に並ぶステージ照明(ランプ列) */
+section.sec::before{content:"";display:block;height:30px;max-width:460px;margin:0 auto 14px;
+  background:
+    radial-gradient(circle at 50% 50%,#fffbe8 0 2.5px,rgba(255,226,150,.8) 3.5px,rgba(255,200,120,.28) 8px,rgba(255,200,120,0) 14px) 0 0/38px 30px repeat-x;
+  -webkit-mask:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent);mask:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent);
+  animation:lampPulse 2.8s ease-in-out infinite}
+section.sec:nth-of-type(even)::before{animation-delay:-1.4s}
+@keyframes lampPulse{0%,100%{opacity:.55;filter:brightness(.85)}50%{opacity:1;filter:brightness(1.25)}}
+/* フッター: フットライトと床の照り返し */
+footer.ft::before{content:"";position:absolute;left:0;right:0;top:-56px;height:56px;pointer-events:none;
+  background:radial-gradient(ellipse 60% 100% at 50% 100%,rgba(255,226,150,.28),rgba(255,226,150,0) 70%),
+    radial-gradient(circle at 50% 100%,#fffbe8 0 2.5px,rgba(255,226,150,.85) 3.5px,rgba(255,200,120,.3) 8px,rgba(255,200,120,0) 14px) 0 100%/38px 30px repeat-x}
+/* 2) ペンライトの光の粒がゆっくり漂う */
+#pl{position:fixed;inset:0;z-index:44;pointer-events:none;overflow:hidden;mix-blend-mode:screen}
+#pl i{position:absolute;bottom:-20px;border-radius:50%;opacity:0;animation:plRise 22s linear infinite,plTwinkle 3s ease-in-out infinite}
+@keyframes plRise{0%{transform:translate3d(0,0,0)}100%{transform:translate3d(var(--dx,0),-112vh,0)}}
+@keyframes plTwinkle{0%,100%{opacity:.15}50%{opacity:.8}}
+/* 3) ネオンサイン風の見出し・カード */
+.h h2,.h h1{text-shadow:0 0 6px rgba(255,238,180,.55),0 0 18px rgba(232,84,107,.7),2px 2px 0 var(--red-d)}
+.h small{text-shadow:0 0 8px rgba(255,226,150,.8)}
+.card{box-shadow:0 0 0 4px var(--black-d),0 0 0 6px var(--red),0 0 22px 4px rgba(232,84,107,.28),0 12px 30px rgba(0,0,0,.5)}
+@media(prefers-reduced-motion:reduce){section.sec::before{animation:none}#pl{display:none}}
+/* ライトON(演出なし)のときは落ち着いた見た目に */
+body.lights-lit #pl{display:none}
+body.lights-lit section.sec::before{animation:none;opacity:.85}
+body.lights-lit footer.ft::before{display:none}
+body.lights-lit .h h2,body.lights-lit .h h1{text-shadow:2px 2px 0 var(--red-d)}
+body.lights-lit .card{box-shadow:0 0 0 4px var(--black-d),0 0 0 6px var(--red),0 12px 30px rgba(0,0,0,.5)}
