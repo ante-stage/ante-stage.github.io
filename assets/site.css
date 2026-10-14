@@ -576,13 +576,13 @@ body[data-page="home"].reveal .topnav{animation:barDown .8s cubic-bezier(.22,1,.
   .vis .sw.a{left:-30%}.vis .sw.b{right:-30%}
   body[data-page="home"] #sl{background:
     radial-gradient(ellipse 60% 70% at 72% 48%,rgba(255,226,170,.17),rgba(255,226,170,0) 70%),
-    radial-gradient(ellipse 45% 65% at 28% 50%,rgba(255,150,170,.14),rgba(255,150,170,0) 70%),
+    radial-gradient(ellipse 45% 65% at 28% 50%,rgba(255,170,150,.2),rgba(255,170,150,0) 72%),
     radial-gradient(ellipse 150% 110% at 50% var(--sy),rgba(6,4,10,0) 62%,rgba(6,4,10,.28) 100%)}
   body[data-page="home"] #sl::before,body[data-page="home"] #sl::after{content:"";position:absolute;top:60px;width:62vw;height:100vh;transform-origin:50% 0;mix-blend-mode:screen;filter:blur(14px);
     clip-path:polygon(44% 0,56% 0,100% 100%,0 100%);background:linear-gradient(180deg,rgba(255,238,196,.26),rgba(255,230,170,.09) 55%,rgba(255,230,170,0) 95%)}
-  body[data-page="home"] #sl::before{left:28vw;animation:pcA 11s cubic-bezier(.5,0,.3,1) infinite}
+  body[data-page="home"] #sl::before{left:-4vw;animation:pcA 11s cubic-bezier(.5,0,.3,1) infinite}
   body[data-page="home"] #sl::after{right:-6vw;animation:pcB 13s cubic-bezier(.5,0,.3,1) infinite}
-  @keyframes pcA{0%,100%{transform:rotate(14deg);opacity:.55}50%{transform:rotate(-10deg);opacity:.85}}
+  @keyframes pcA{0%,100%{transform:rotate(18deg);opacity:.55}50%{transform:rotate(-4deg);opacity:.85}}
   @keyframes pcB{0%,100%{transform:rotate(-12deg);opacity:.85}50%{transform:rotate(10deg);opacity:.55}}
   body[data-page="home"]:not(.reveal) #sl::before,body[data-page="home"]:not(.reveal) #sl::after{opacity:0;animation:none}
 }
