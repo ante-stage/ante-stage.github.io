@@ -759,3 +759,35 @@ body.lights-lit section.sec::before{display:none}
   .pghead{padding-top:calc(var(--sat,0px) + 62px)}
   .pghead small,.pghead .k,.h small{color:var(--gold-l,#f3dc9c);text-shadow:0 0 8px rgba(6,4,10,.9),0 1px 0 rgba(6,4,10,.9)}
 }
+
+/* ===== オープニング: 高級ビロードカーテン(ひだ・金のブレード・房飾り・スカラップ付きバランス) ===== */
+#opening .curtain{
+  background:
+    linear-gradient(180deg,rgba(0,0,0,.6) 0,rgba(0,0,0,.12) 20%,transparent 34%,transparent 66%,rgba(0,0,0,.55) 100%),
+    repeating-linear-gradient(90deg,rgba(0,0,0,.42) 0,rgba(0,0,0,.18) 7px,rgba(255,110,125,.2) 17px,rgba(255,150,160,.1) 24px,rgba(0,0,0,.22) 38px,rgba(0,0,0,.42) 46px),
+    repeating-linear-gradient(90deg,transparent 0,rgba(255,170,180,.1) 14px,transparent 30px,rgba(0,0,0,.2) 52px,transparent 77px),
+    linear-gradient(90deg,#4a0713,#a3182c 26%,#74101f 52%,#b61f37 78%,#5c0b18);
+  box-shadow:inset 0 -70px 90px rgba(0,0,0,.5),inset 0 70px 60px rgba(0,0,0,.45),0 0 40px rgba(0,0,0,.6);
+}
+#opening .curtain.l{border-right:5px solid;border-image:linear-gradient(180deg,#f8e6ae,#c9972e 35%,#f3dc9c 60%,#8a6320) 1}
+#opening .curtain.r{border-left:5px solid;border-image:linear-gradient(180deg,#f8e6ae,#c9972e 35%,#f3dc9c 60%,#8a6320) 1}
+#opening .curtain::after{content:"";position:absolute;left:0;right:0;bottom:0;height:30px;pointer-events:none;
+  background:
+    linear-gradient(180deg,#f8e6ae,#c9972e 55%,#8a6320) 0 0/100% 7px no-repeat,
+    repeating-linear-gradient(90deg,#ecd08a 0 3px,#8a6320 3px 4px,transparent 4px 7px) 0 7px/100% calc(100% - 7px) no-repeat;
+  -webkit-mask-image:linear-gradient(180deg,#000 0,#000 55%,rgba(0,0,0,.55) 100%);mask-image:linear-gradient(180deg,#000 0,#000 55%,rgba(0,0,0,.55) 100%)}
+/* バランス(上部の飾り幕): 金の房 → 金のブレード → ビロード の3層 */
+#opening .pelmet{position:absolute;top:0;left:0;right:0;z-index:4;pointer-events:none;
+  --sc:72px;
+  -webkit-mask:radial-gradient(farthest-side at 50% 0,#000 97%,transparent 100%) 0 0/var(--sc) 100% repeat-x;
+  mask:radial-gradient(farthest-side at 50% 0,#000 97%,transparent 100%) 0 0/var(--sc) 100% repeat-x}
+#opening .pelmet.fr{height:calc(var(--sat,0px) + 88px);
+  background:repeating-linear-gradient(90deg,#ecd08a 0 2px,#8a6320 2px 3px,transparent 3px 6px)}
+#opening .pelmet.gd{height:calc(var(--sat,0px) + 70px);background:linear-gradient(180deg,#f8e6ae,#c9972e 70%,#8a6320)}
+#opening .pelmet.vl{height:calc(var(--sat,0px) + 62px);
+  background:
+    linear-gradient(180deg,rgba(0,0,0,.5),transparent 70%),
+    repeating-linear-gradient(90deg,rgba(0,0,0,.4) 0,rgba(255,120,135,.22) 18px,rgba(0,0,0,.4) 36px),
+    linear-gradient(90deg,#74101f,#b61f37 50%,#74101f);
+  filter:drop-shadow(0 6px 8px rgba(0,0,0,.6))}
+@media(min-width:768px){#opening .pelmet{--sc:110px}#opening .pelmet.fr{height:calc(var(--sat,0px) + 104px)}#opening .pelmet.gd{height:calc(var(--sat,0px) + 84px)}#opening .pelmet.vl{height:calc(var(--sat,0px) + 76px)}}
