@@ -892,3 +892,22 @@ html.pt-in::after{--ph:50px;background:
 html.pt-in::after{bottom:-80px}
 #opening::before,#pt::before{filter:none;box-shadow:0 8px 14px rgba(0,0,0,.5)}
 #opening,#pt{box-shadow:0 200px 0 #230509}
+
+/* ===== 上の飾り幕を自然に(オープニングのみ・中央の線なし・不規則なひだ)/ 画面転換では出さない ===== */
+#pt::before{display:none!important}
+#opening::before{
+  background:
+    linear-gradient(180deg,rgba(0,0,0,.5) 0,rgba(0,0,0,0) 35%,rgba(0,0,0,.4) 100%) 0 0/100% calc(var(--sat,0px) + var(--ph)) no-repeat,
+    repeating-linear-gradient(90deg,rgba(0,0,0,.34) 0,rgba(0,0,0,.05) 9px,rgba(255,110,125,.13) 17px,rgba(0,0,0,.06) 26px,rgba(0,0,0,.34) 37px) 0 0/100% calc(var(--sat,0px) + var(--ph)) no-repeat,
+    repeating-linear-gradient(90deg,rgba(0,0,0,.22) 0,rgba(0,0,0,0) 14px,rgba(255,90,105,.09) 27px,rgba(0,0,0,0) 40px,rgba(0,0,0,.22) 53px) 0 0/100% calc(var(--sat,0px) + var(--ph)) no-repeat,
+    linear-gradient(90deg,#6a0b19,#8f1426 25%,#7a1020 55%,#951729 80%,#6a0b19) 0 0/100% calc(var(--sat,0px) + var(--ph)) no-repeat,
+    linear-gradient(180deg,#f3dc9c,#b8893a 60%,#7a5518) 0 calc(var(--sat,0px) + var(--ph))/100% 4px no-repeat,
+    repeating-linear-gradient(90deg,#e2c37a 0 2px,#7a5518 2px 3px,transparent 3px 5px) 0 calc(var(--sat,0px) + var(--ph) + 4px)/100% 12px no-repeat;
+  height:calc(var(--sat,0px) + var(--ph) + 16px)}
+/* 左右の幕の合わせ目: 金の縁をやめ、重なりの影だけにする */
+#opening .curtain.l,#opening .curtain.r{border:0;border-image:none;background-clip:padding-box}
+#opening .curtain.l{box-shadow:inset -10px 0 14px rgba(0,0,0,.4),inset 0 -60px 80px rgba(0,0,0,.4),0 0 30px rgba(0,0,0,.55)}
+#opening .curtain.r{box-shadow:inset 10px 0 14px rgba(0,0,0,.4),inset 0 -60px 80px rgba(0,0,0,.4),0 0 30px rgba(0,0,0,.55)}
+#pt b:first-child,#pt b:last-child{border:0;border-image:none;background-clip:padding-box}
+#pt b:first-child{box-shadow:inset -10px 0 14px rgba(0,0,0,.4),inset 0 -60px 80px rgba(0,0,0,.4),0 0 30px rgba(0,0,0,.55)}
+#pt b:last-child{box-shadow:inset 10px 0 14px rgba(0,0,0,.4),inset 0 -60px 80px rgba(0,0,0,.4),0 0 30px rgba(0,0,0,.55)}
