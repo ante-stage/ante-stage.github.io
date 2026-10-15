@@ -753,3 +753,9 @@ body.lights-lit section.sec::before{display:none}
 #liveBtn .mt{display:inline-flex;flex-direction:column;align-items:flex-start;line-height:1.2;vertical-align:middle;margin-left:6px;text-align:left}
 #liveBtn .mt small{font-size:10px;font-weight:700;letter-spacing:.08em;opacity:.9;margin-top:2px}
 #liveBtn[href*="mirrativ"]::before{display:none}
+
+/* スマホ: 各ページ最上部の英字(PROFILE等)がステータスバー/ライトボタンに隠れないよう下げる */
+@media(max-width:767px){
+  .pghead{padding-top:calc(var(--sat,0px) + 62px)}
+  .pghead small,.pghead .k,.h small{color:var(--gold-l,#f3dc9c);text-shadow:0 0 8px rgba(6,4,10,.9),0 1px 0 rgba(6,4,10,.9)}
+}
