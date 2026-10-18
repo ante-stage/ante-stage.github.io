@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20261018p">
+<meta name="build" content="20261018q">
 <meta name="theme-color" content="#2f2a3a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -111,6 +111,15 @@ ul.list li.stk{flex-direction:column;align-items:stretch;gap:12px;padding:16px 0
 .schOff input:checked{background:var(--red)}
 .schOff input:checked::after{content:"";position:absolute;left:6px;top:1.5px;width:5px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
 .schRow.off .schF input[type=text]{opacity:.4}
+details.acc{margin-top:14px;border:1.5px solid var(--rule);border-radius:12px;background:var(--panel);overflow:hidden}
+details.acc[open]{border-color:var(--gold)}
+details.acc>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 16px;min-height:64px}
+details.acc>summary::-webkit-details-marker{display:none}
+details.acc>summary::after{content:"";flex:none;width:10px;height:10px;border-right:2.5px solid var(--gold);border-bottom:2.5px solid var(--gold);transform:rotate(45deg);margin:-4px 4px 0 0;transition:transform .15s}
+details.acc[open]>summary::after{transform:rotate(-135deg);margin:4px 4px 0 0}
+details.acc .ttl{font-family:var(--maru);font-weight:700;font-size:16px;letter-spacing:.04em;color:var(--gold-l);line-height:1.5}
+details.acc .ttl small{display:block;font-family:var(--sans);font-weight:400;font-size:12px;color:var(--sub);letter-spacing:.02em}
+.accb{padding:4px 16px 20px;border-top:1px solid var(--rule)}
 details.more{margin-top:40px}
 details.more>summary{list-style:none;cursor:pointer;text-align:center;padding:14px 12px;border-radius:8px;border:1.5px solid var(--rule);color:var(--gold-l);font-family:var(--maru);font-weight:700;font-size:13.5px;letter-spacing:.04em}
 details.more>summary::-webkit-details-marker{display:none}
@@ -302,36 +311,53 @@ input,select{height:56px}
 
   <!-- プロフィール・リンク -->
   <section class="tab" id="tab-site">
-    <div class="card">
-      <h2>プロフィール</h2>
-      <p class="hint">サイトのプロフィールページとホームに出る内容です。変えたい所だけ直して、一番下の「保存する」を押してください。</p>
-      <label for="pfTagline">キャッチフレーズ</label><input id="pfTagline" maxlength="60" autocomplete="off">
-      <label for="pfName">活動名</label><input id="pfName" maxlength="40" autocomplete="off">
-      <label for="pfGenre">ジャンル</label><input id="pfGenre" maxlength="40" autocomplete="off">
-      <label for="pfBirth">誕生日</label><input id="pfBirth" maxlength="20" autocomplete="off" placeholder="例）4月24日">
-      <label for="pfFan">ファンネーム</label><input id="pfFan" maxlength="30" autocomplete="off">
-      <label for="pfXid">Xのアカウント名</label><input id="pfXid" maxlength="40" autocomplete="off" placeholder="例）@antevx_">
-      <label for="pfTags">ファンタグ<span class="opt">1行に1つ</span></label>
-      <textarea id="pfTags" style="min-height:110px" placeholder="#あんてに届け"></textarea>
-      <h2 style="margin-top:26px">活動場所の紹介文</h2>
-      <p class="hint">プロフィールページの「活動場所」に出る、短い説明です。</p>
-      <label for="pfWMir">Mirrativ</label><textarea id="pfWMir" maxlength="120" style="min-height:84px"></textarea>
-      <label for="pfWYt">YouTube</label><textarea id="pfWYt" maxlength="120" style="min-height:84px"></textarea>
-      <label for="pfWTt">TikTok</label><textarea id="pfWTt" maxlength="120" style="min-height:84px"></textarea>
-      <button class="btn full" id="pfSave">プロフィールを保存する</button>
-      <p class="msg" id="pfMsg" role="status"></p>
-    </div>
-    <div class="card">
-      <h2>リンク（SNSなどのURL）</h2>
-      <p class="hint">空欄にすると、サイトでは「準備中」と表示されます。</p>
-      <label for="lMir">Mirrativ（配信）</label><input id="lMir" inputmode="url" autocomplete="off" placeholder="https://…">
-      <label for="lYt">YouTube（歌ってみた）</label><input id="lYt" inputmode="url" autocomplete="off" placeholder="https://…">
-      <label for="lTt">TikTok</label><input id="lTt" inputmode="url" autocomplete="off" placeholder="https://…">
-      <label for="lX">X</label><input id="lX" inputmode="url" autocomplete="off" placeholder="https://…">
-      <label for="lXi">X（インフォ垢）</label><input id="lXi" inputmode="url" autocomplete="off" placeholder="https://…">
-      <label for="lGoods">グッズ（SUZURI）</label><input id="lGoods" inputmode="url" autocomplete="off" placeholder="https://…">
-      <button class="btn full" id="lSave">リンクを保存する</button>
-      <p class="msg" id="lMsg" role="status"></p>
+    <p class="hint" style="margin:20px 0 0">直したい項目をタップすると開きます。直したら、その項目の「保存する」を押してください。</p>
+    <div class="accs">
+    <details class="acc" open>
+      <summary><span class="ttl">基本情報<small>キャッチフレーズ・活動名・誕生日など</small></span></summary>
+      <div class="accb">
+        <label for="pfTagline" style="margin-top:6px">キャッチフレーズ</label><input id="pfTagline" maxlength="60" autocomplete="off">
+        <label for="pfName">活動名</label><input id="pfName" maxlength="40" autocomplete="off">
+        <label for="pfGenre">ジャンル</label><input id="pfGenre" maxlength="40" autocomplete="off">
+        <label for="pfBirth">誕生日</label><input id="pfBirth" maxlength="20" autocomplete="off" placeholder="例）4月24日">
+        <label for="pfFan">ファンネーム</label><input id="pfFan" maxlength="30" autocomplete="off">
+        <label for="pfXid">Xのアカウント名</label><input id="pfXid" maxlength="40" autocomplete="off" placeholder="例）@antevx_">
+        <button class="btn full pfSave" type="button">保存する</button>
+        <p class="msg" role="status"></p>
+      </div>
+    </details>
+    <details class="acc">
+      <summary><span class="ttl">ファンタグ<small>タップでコピーされるハッシュタグ</small></span></summary>
+      <div class="accb">
+        <label for="pfTags" style="margin-top:6px">ファンタグ<span class="opt">1行に1つ</span></label>
+        <textarea id="pfTags" style="min-height:110px" placeholder="#あんてに届け"></textarea>
+        <button class="btn full pfSave" type="button">保存する</button>
+        <p class="msg" role="status"></p>
+      </div>
+    </details>
+    <details class="acc">
+      <summary><span class="ttl">活動場所の紹介文<small>プロフィールページの Mirrativ・YouTube・TikTok の説明</small></span></summary>
+      <div class="accb">
+        <label for="pfWMir" style="margin-top:6px">Mirrativ</label><textarea id="pfWMir" maxlength="120" style="min-height:112px"></textarea>
+        <label for="pfWYt">YouTube</label><textarea id="pfWYt" maxlength="120" style="min-height:112px"></textarea>
+        <label for="pfWTt">TikTok</label><textarea id="pfWTt" maxlength="120" style="min-height:112px"></textarea>
+        <button class="btn full pfSave" type="button">保存する</button>
+        <p class="msg" role="status"></p>
+      </div>
+    </details>
+    <details class="acc">
+      <summary><span class="ttl">リンク（SNSなどのURL）<small>空欄にすると、サイトでは「準備中」と表示されます</small></span></summary>
+      <div class="accb">
+        <label for="lMir" style="margin-top:6px">Mirrativ（配信）</label><input id="lMir" inputmode="url" autocomplete="off" placeholder="https://…">
+        <label for="lYt">YouTube（歌ってみた）</label><input id="lYt" inputmode="url" autocomplete="off" placeholder="https://…">
+        <label for="lTt">TikTok</label><input id="lTt" inputmode="url" autocomplete="off" placeholder="https://…">
+        <label for="lX">X</label><input id="lX" inputmode="url" autocomplete="off" placeholder="https://…">
+        <label for="lXi">X（インフォ垢）</label><input id="lXi" inputmode="url" autocomplete="off" placeholder="https://…">
+        <label for="lGoods">グッズ（SUZURI）</label><input id="lGoods" inputmode="url" autocomplete="off" placeholder="https://…">
+        <button class="btn full" id="lSave" type="button">保存する</button>
+        <p class="msg" id="lMsg" role="status"></p>
+      </div>
+    </details>
     </div>
   </section>
 
@@ -708,13 +734,16 @@ function loadSiteInfo(){
    .then(function(r){return r.ok?r.json():{};}).catch(function(){return {};})
    .then(function(d){S.site=d||{};fillSite();drawSongs();drawNews();drawCovers();});
 }
-$('pfSave').onclick=function(){
+function pfDo(btn){var pm=btn.parentNode.querySelector('.msg');
   var tags=$('pfTags').value.split(/\r?\n/).map(function(x){x=x.trim();return x&&x.charAt(0)!=='#'&&x.charAt(0)!=='＃'?'#'+x:x;}).filter(Boolean).slice(0,10);
-  var v={tagline:$('pfTagline').value.trim(),name:$('pfName').value.trim(),genre:$('pfGenre').value.trim(),birthday:$('pfBirth').value.trim(),fanname:$('pfFan').value.trim(),xid:$('pfXid').value.trim(),hashtags:tags,whereMir:$('pfWMir').value.trim(),whereYt:$('pfWYt').value.trim(),whereTt:$('pfWTt').value.trim()};
-  if(!v.tagline){say($('pfMsg'),'キャッチフレーズをご入力ください','err');return;}
-  say($('pfMsg'),'保存中…');
-  guard(rpc('ante_save_site',{p_key:'profile',p_value:v}),$('pfMsg')).then(function(){S.site.profile=v;say($('pfMsg'),'保存しました。まもなくサイトに反映されます','ok');}).catch(function(){});
-};
+  var v={tagline:$('pfTagline').value.trim(),name:$('pfName').value.trim(),genre:$('pfGenre').value.trim(),birthday:$('pfBirth').value.trim(),fanname:$('pfFan').value.trim(),xid:$('pfXid').value.trim(),hashtags:tags,whereMir:$('pfWMir').value.trim(),whereYt:$('pfWYt').value.trim(),whereTt:$('pfWTt').value.trim()}
+  if(!v.tagline){say(pm,'キャッチフレーズをご入力ください','err');return;}
+  say(pm,'保存中…');
+  guard(rpc('ante_save_site',{p_key:'profile',p_value:v}),pm).then(function(){S.site.profile=v;say(pm,'保存しました。まもなくサイトに反映されます','ok');}).catch(function(){});
+}
+[].forEach.call(document.querySelectorAll('.pfSave'),function(b){b.onclick=function(){pfDo(b);};});
+/* 項目は1つずつ開く */
+[].forEach.call(document.querySelectorAll('details.acc'),function(d){d.addEventListener('toggle',function(){if(!d.open)return;[].forEach.call(document.querySelectorAll('details.acc'),function(o){if(o!==d)o.open=false;});setTimeout(function(){d.scrollIntoView({behavior:'smooth',block:'start'});},60);});});
 $('lSave').onclick=function(){
   var v={},bad='';
   LMAP.forEach(function(m){var u=$(m[1]).value.trim();if(u&&!/^https?:\/\//.test(u))bad=bad||'URLは「https://」から始めてください';v[m[0]]=u;});
