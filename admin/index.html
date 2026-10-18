@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20261018r">
+<meta name="build" content="20261018s">
 <meta name="theme-color" content="#2f2a3a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -179,7 +179,7 @@ input,select{height:56px}
     <button data-t="cover"><span class="ic">▶</span><span class="lb">歌ってみた</span><span class="st" id="tlCover"></span></button>
     <button data-t="news"><span class="ic">✦</span><span class="lb">お知らせ</span><span class="st" id="tlNews"></span></button>
     <button data-t="req"><span class="ic">♬</span><span class="lb">リクエスト</span><span class="n" id="reqN" hidden>0</span><span class="st" id="tlReq"></span></button>
-    <button data-t="post"><span class="ic">✕</span><span class="lb">Xポスト</span><span class="st" id="tlPost"></span></button>
+    <button data-t="post"><span class="ic">✕</span><span class="lb">注目ポスト</span><span class="st" id="tlPost"></span></button>
     <button data-t="site" class="wide"><span class="ic">♡</span><span class="lb">プロフィール・リンク<span class="st" style="display:block">キャッチフレーズ・誕生日・SNSのURLなど</span></span></button>
   </div>
   <div class="backbar" id="backbar" hidden><button class="btn sub" id="backBtn" type="button">‹ もどる</button><b id="backTitle"></b></div>
@@ -286,16 +286,16 @@ input,select{height:56px}
     </div>
   </section>
 
-  <!-- Xポスト -->
+  <!-- 注目ポスト -->
   <section class="tab" id="tab-post">
     <div class="card">
-      <h2>サイトに載せるポスト</h2>
-      <p class="hint">サイトに載せたいポストのURLを貼り付けてください（x.com または twitter.com の「…/status/数字」の形式）。新しく追加したものが先に表示されます。<br>何も追加しない場合は、@antevx_ の最新ポストが自動で表示されます。</p>
+      <h2>注目ポストを追加</h2>
+      <p class="hint">ニュースページの「注目ポスト」に載せたい、Xのポストのリンクを貼り付けてください（x.com または twitter.com の「…/status/数字」の形式）。何本でも追加できます。新しく追加したものが先に表示されます。<br>1本も追加しないときは、「注目ポスト」の欄は、サイトに表示されません。</p>
       <input id="pUrl" inputmode="url" placeholder="https://x.com/antevx_/status/1234567890">
       <button class="btn full" id="pAdd">追加する</button>
       <p class="msg" id="pMsg" role="status"></p>
     </div>
-    <div class="card"><h2>表示中のポスト</h2><ul class="list" id="pList"></ul></div>
+    <div class="card"><h2>載せているポスト</h2><ul class="list" id="pList"></ul></div>
   </section>
 
   <!-- 歌ってみた -->
@@ -414,7 +414,7 @@ function toggleHide(kind,key,el,redraw){
 
 document.body.classList.add('menu');
 /* tabs */
-var TITLES={sch:'配信予定',song:'歌える曲',cover:'歌ってみた',site:'プロフィール・リンク',news:'お知らせ',req:'リクエスト',post:'Xポスト'};
+var TITLES={sch:'配信予定',song:'歌える曲',cover:'歌ってみた',site:'プロフィール・リンク',news:'お知らせ',req:'リクエスト',post:'注目ポスト'};
 function openTab(t){document.body.classList.remove('menu');[].forEach.call(document.querySelectorAll('.tab'),function(x){x.classList.toggle('on',x.id==='tab-'+t);});
   $('panel').hidden=true;$('panelHead').hidden=true;$('backbar').hidden=false;$('backTitle').textContent=TITLES[t]||'';window.scrollTo(0,0);}
 function openPanel(){document.body.classList.add('menu');[].forEach.call(document.querySelectorAll('.tab'),function(x){x.classList.remove('on');});
@@ -429,7 +429,7 @@ function drawTiles(){
   $('tlCover').textContent=S.covers.length?S.covers.length+'本':'';
   $('tlNews').textContent=S.news.length?S.news.length+'件':'';
   $('tlReq').textContent=S.reqs.filter(function(r){return !r.done;}).length?'歌ってない曲あり':'';
-  $('tlPost').textContent=S.posts.length?S.posts.length+'件':'自動表示';
+  $('tlPost').textContent=S.posts.length?S.posts.length+'件':'なし';
 }
 
 /* gate */
@@ -669,7 +669,7 @@ $('nAdd').onclick=function(){
 };
 $('nList').addEventListener('click',function(e){var h=e.target.closest('[data-hide]');if(h){toggleHide('news',newsFk(S.news[+h.dataset.hide]),$('nMsg'),drawNews);return;}var b=e.target.closest('[data-del]');if(!b)return;if(!confirm('このお知らせを削除します。よろしいですか？'))return;S.news.splice(+b.dataset.del,1);saveNews().catch(function(){});});
 
-/* ---- Xポスト ---- */
+/* ---- 注目ポスト ---- */
 function drawPosts(){
   $('pList').innerHTML=S.posts.length?S.posts.map(function(u,i){return '<li><div class="m"><div class="s" style="opacity:1"><a href="'+esc(u)+'" target="_blank" rel="noopener" style="color:var(--gold-l)">'+esc(u)+'</a></div></div><div class="acts"><button class="btn sub sm" data-del="'+i+'">外す</button></div></li>';}).join(''):'<li class="empty">まだポストを載せていません</li>';
 }
