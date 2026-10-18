@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20261018o">
+<meta name="build" content="20261018p">
 <meta name="theme-color" content="#2f2a3a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -313,6 +313,11 @@ input,select{height:56px}
       <label for="pfXid">Xのアカウント名</label><input id="pfXid" maxlength="40" autocomplete="off" placeholder="例）@antevx_">
       <label for="pfTags">ファンタグ<span class="opt">1行に1つ</span></label>
       <textarea id="pfTags" style="min-height:110px" placeholder="#あんてに届け"></textarea>
+      <h2 style="margin-top:26px">活動場所の紹介文</h2>
+      <p class="hint">プロフィールページの「活動場所」に出る、短い説明です。</p>
+      <label for="pfWMir">Mirrativ</label><textarea id="pfWMir" maxlength="120" style="min-height:84px"></textarea>
+      <label for="pfWYt">YouTube</label><textarea id="pfWYt" maxlength="120" style="min-height:84px"></textarea>
+      <label for="pfWTt">TikTok</label><textarea id="pfWTt" maxlength="120" style="min-height:84px"></textarea>
       <button class="btn full" id="pfSave">プロフィールを保存する</button>
       <p class="msg" id="pfMsg" role="status"></p>
     </div>
@@ -687,7 +692,7 @@ $('cList').addEventListener('click',function(e){
 $('cSeedBtn').onclick=function(){S.covers=COVER_SEED.slice();say($('cMsg'),'保存中…');saveCovers().then(function(){say($('cMsg'),'登録しました','ok');}).catch(function(){S.covers=[];drawCovers();});};
 
 /* ---- プロフィール・リンク ---- */
-var SITE_DEF={profile:{tagline:'雑談×ゲーム｜史上最強のエンジョイ勢',name:'あんて｡➶♡',genre:'雑談 × ゲーム ／ 歌ってみた',birthday:'4月24日',fanname:'てて教',xid:'@antevx_',hashtags:['#あんてに届け','#おいあんて','#あんてのふぁんあーと']},
+var SITE_DEF={profile:{tagline:'雑談×ゲーム｜史上最強のエンジョイ勢',whereMir:'雑談とゲームを中心にした配信。歌の練習枠や、朝・深夜のゲリラ配信もあります。',whereYt:'「歌ってみた」を投稿しています。',whereTt:'歌ってみたを投稿しています。',name:'あんて｡➶♡',genre:'雑談 × ゲーム ／ 歌ってみた',birthday:'4月24日',fanname:'てて教',xid:'@antevx_',hashtags:['#あんてに届け','#おいあんて','#あんてのふぁんあーと']},
   links:{mirrativ:'https://www.mirrativ.com/user/102348987',youtube:'https://www.youtube.com/@akumante',tiktok:'https://www.tiktok.com/@antevx_0424',x:'https://x.com/antevx_',xinfo:'https://x.com/subantevx_',goods:'https://suzuri.jp/Ante_'}};
 S.site={};
 var LMAP=[['mirrativ','lMir'],['youtube','lYt'],['tiktok','lTt'],['x','lX'],['xinfo','lXi'],['goods','lGoods']];
@@ -695,6 +700,7 @@ function fillSite(){
   var p=Object.assign({},SITE_DEF.profile,S.site.profile||{}),l=Object.assign({},SITE_DEF.links,S.site.links||{});
   $('pfTagline').value=p.tagline||'';$('pfName').value=p.name||'';$('pfGenre').value=p.genre||'';$('pfBirth').value=p.birthday||'';$('pfFan').value=p.fanname||'';$('pfXid').value=p.xid||'';
   $('pfTags').value=(p.hashtags||[]).join('\n');
+  $('pfWMir').value=p.whereMir||'';$('pfWYt').value=p.whereYt||'';$('pfWTt').value=p.whereTt||'';
   LMAP.forEach(function(m){$(m[1]).value=l[m[0]]||'';});
 }
 function loadSiteInfo(){
@@ -704,7 +710,7 @@ function loadSiteInfo(){
 }
 $('pfSave').onclick=function(){
   var tags=$('pfTags').value.split(/\r?\n/).map(function(x){x=x.trim();return x&&x.charAt(0)!=='#'&&x.charAt(0)!=='＃'?'#'+x:x;}).filter(Boolean).slice(0,10);
-  var v={tagline:$('pfTagline').value.trim(),name:$('pfName').value.trim(),genre:$('pfGenre').value.trim(),birthday:$('pfBirth').value.trim(),fanname:$('pfFan').value.trim(),xid:$('pfXid').value.trim(),hashtags:tags};
+  var v={tagline:$('pfTagline').value.trim(),name:$('pfName').value.trim(),genre:$('pfGenre').value.trim(),birthday:$('pfBirth').value.trim(),fanname:$('pfFan').value.trim(),xid:$('pfXid').value.trim(),hashtags:tags,whereMir:$('pfWMir').value.trim(),whereYt:$('pfWYt').value.trim(),whereTt:$('pfWTt').value.trim()};
   if(!v.tagline){say($('pfMsg'),'キャッチフレーズをご入力ください','err');return;}
   say($('pfMsg'),'保存中…');
   guard(rpc('ante_save_site',{p_key:'profile',p_value:v}),$('pfMsg')).then(function(){S.site.profile=v;say($('pfMsg'),'保存しました。まもなくサイトに反映されます','ok');}).catch(function(){});

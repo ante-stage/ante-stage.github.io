@@ -114,7 +114,7 @@ function transitions(){
 
 /* ---------- 見出しの飾り（矢の刺さるハート） ---------- */
 var ORN='<img class="orn" src="img/logo-gold.png" alt="" width="900" height="438" loading="lazy">';
-var VER='20261018o';
+var VER='20261018p';
 function autoUpdate(){
   function chk(){try{fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
     if(!j||!j.v||j.v===VER)return;var k='verTry';if(ss(k)===j.v)return;ss(k,j.v);
@@ -244,6 +244,7 @@ function mergeSite(s){
     var rows=[['活動名',p.name],['ジャンル',p.genre],['誕生日',p.birthday],['ファンネーム',p.fanname],['X',p.xid]].filter(function(r){return r[1]&&String(r[1]).trim();});
     if(rows.length)CONFIG.profile=rows;
     if(Array.isArray(p.hashtags))CONFIG.hashtags=p.hashtags.filter(Boolean);
+    CONFIG.whereTxt={wMirTxt:p.whereMir,wYtTxt:p.whereYt,wTtTxt:p.whereTt};
   }
   if(l){LKEYS.forEach(function(k,i){if(typeof l[k]==='string'){var u=l[k].trim();CONFIG.links[i].url=/^https?:\/\//.test(u)?u:'';}});
     if(CONFIG.links[0].url)CONFIG.liveUrl=CONFIG.links[0].url;}
@@ -258,6 +259,7 @@ function paintSite(){
   var dl=$('#pfDl');if(dl)dl.innerHTML=CONFIG.profile.map(function(r){return '<dt>'+esc(r[0])+'</dt><dd>'+esc(r[1])+'</dd>';}).join('');
   var tg=$('#tags');if(tg)tg.innerHTML=CONFIG.hashtags.map(function(x){return '<button class="chip" data-t="'+esc(x)+'">'+esc(x)+'</button>';}).join('');
   links('#links');
+  var wt=CONFIG.whereTxt||{};Object.keys(wt).forEach(function(id){var el=$('#'+id),v=wt[id];if(el&&typeof v==='string'&&v.trim())el.textContent=v.trim();});
   [['wMir',0],['wYt',1],['wTt',2]].forEach(function(w){var el=$('#'+w[0]);if(!el)return;var u=CONFIG.links[w[1]].url;
     el.outerHTML=u?'<a class="btn sm" id="'+w[0]+'" href="'+esc(u)+'" target="_blank" rel="noopener">'+({wMir:'配信を見に行く ›',wYt:'チャンネルへ ›',wTt:'TikTokへ ›'})[w[0]]+'</a>':'<span class="btn sm ghost" id="'+w[0]+'" aria-disabled="true">準備中</span>';});
 }
