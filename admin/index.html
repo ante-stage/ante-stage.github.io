@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20261018l">
+<meta name="build" content="20261018m">
 <meta name="theme-color" content="#2f2a3a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -69,6 +69,8 @@ ul.list li.rq{align-items:flex-start}
 .rq .acts{flex-direction:column;align-items:stretch}
 .tg{display:inline-block;font-family:var(--sans);font-size:11px;font-weight:700;padding:0 8px;border-radius:99px;background:rgba(217,178,95,.22);color:var(--gold-l);margin-right:6px;vertical-align:1px;line-height:1.7}
 .tg.off{background:rgba(255,255,255,.16);color:#ddd}.tg.memo{background:rgba(232,84,107,.3);color:#ffd0d8}
+ul.list li.hid .m{opacity:.5}
+.tg.pin{background:var(--red);color:#fff}.tg.hide{background:rgba(255,255,255,.16);color:#ddd}
 .empty{display:block!important;text-align:center;color:var(--sub);padding:18px 8px!important;font-size:13.5px;border-bottom:0!important}
 .switch{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:24px;padding:14px 16px;border-radius:8px;background:var(--panel);border:1.5px solid var(--rule);font-family:var(--maru);font-weight:700;font-size:14px;letter-spacing:.06em}
 .switch small{display:block;font-family:var(--sans);font-weight:400;font-size:12px;color:var(--sub);letter-spacing:.02em}
@@ -168,6 +170,8 @@ input,select{height:56px}
     <div class="card" style="margin-top:28px">
       <label for="wStart" style="margin-top:0">はじまりの日</label><input id="wStart" type="date">
       <p class="hint">選んだ日から7日分の予定を入力できます。</p>
+      <button class="btn sub" id="wCopy" type="button" style="width:100%;margin-top:14px;box-shadow:none">↺ 先週と同じ内容を入れる</button>
+      <p class="hint">1週間前の同じ曜日の予定を、下の欄にコピーします。直してから「HPに載せる」を押すまでは、サイトは変わりません。</p>
     </div>
     <div class="sch" id="wRows"></div>
     <div class="card" style="margin-top:28px">
@@ -229,7 +233,9 @@ input,select{height:56px}
       <div class="sec-top"><h2>いま載っている曲 <span id="songN"></span></h2></div>
       <input id="songQ" placeholder="曲名・アーティストで絞り込み" style="margin:12px 0 8px">
       <select id="songG" aria-label="ジャンルで絞り込み" style="margin-bottom:4px"></select>
+      <p class="hint">「隠す」を押すと、削除せずにサイトだけから外せます。あとで「出す」で戻せます。</p>
       <ul class="list" id="songList"></ul>
+      <p class="msg" id="songMsg" role="status"></p>
     </div>
   </section>
 
@@ -244,7 +250,7 @@ input,select{height:56px}
       <button class="btn full" id="nAdd">追加する</button>
       <p class="msg" id="nMsg" role="status"></p>
     </div>
-    <div class="card"><h2>登録済みのお知らせ <span id="newsN" style="font-size:13px;opacity:.8"></span></h2><ul class="list" id="nList"></ul></div>
+    <div class="card"><h2>登録済みのお知らせ <span id="newsN" style="font-size:13px;opacity:.8"></span></h2><p class="hint">「隠す」を押すと、削除せずにサイトだけから外せます。</p><ul class="list" id="nList"></ul></div>
   </section>
 
   <!-- リクエスト -->
@@ -280,6 +286,7 @@ input,select{height:56px}
     </div>
     <div class="card">
       <div class="sec-top"><h2>載せている歌ってみた <span id="cN" style="font-size:13px;opacity:.8"></span></h2></div>
+      <p class="hint" style="margin-top:10px">「ホームに出す」を押した動画が、ホームとニュースの「最新の歌ってみた」に出ます。選ばないときは、一番上の動画が自動で出ます。</p>
       <div id="cSeed" hidden><p class="hint">まだここに登録されていません（サイトには最初の6本が表示されています）。</p><button class="btn full" id="cSeedBtn">いまの6本をここに登録する</button></div>
       <ul class="list" id="cList"></ul>
     </div>
@@ -342,6 +349,22 @@ function load(){
 }
 function gate(msg){$('app').hidden=true;$('gate').hidden=false;say($('gateMsg'),msg,'err');}
 function guard(p,el){return p.catch(function(e){if(e.message==='auth'){setPass('');gate('合言葉が違うようです。ご確認のうえ、もう一度ご入力ください');}else{say(el,errText(e),'err');}throw e;});}
+
+/* ---- 「隠す」「ホームに出す」の設定（サイトに保存） ---- */
+function hsh(s){var h=5381;s=String(s);for(var i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return (h>>>0).toString(36);}
+function fl(){var f=(S.site&&S.site.flags)||{};if(!f.hide||typeof f.hide!=='object')f.hide={};['songs','news','covers'].forEach(function(k){if(!Array.isArray(f.hide[k]))f.hide[k]=[];});return f;}
+function isHid(k,key){return fl().hide[k].indexOf(key)>=0;}
+function songFk(s){return hsh(songKey(s));}
+function newsFk(n){return n.date+':'+hsh(n.body);}
+function setFlags(mut,el,okText,redraw){
+  var old=JSON.stringify(fl()),f=fl();mut(f);S.site=S.site||{};S.site.flags=f;redraw();say(el,'保存中…');
+  return guard(rpc('ante_save_site',{p_key:'flags',p_value:f}),el).then(function(){say(el,okText,'ok');})
+    .catch(function(){S.site.flags=JSON.parse(old);redraw();});
+}
+function toggleHide(kind,key,el,redraw){
+  var nowHid=isHid(kind,key);
+  return setFlags(function(f){var a=f.hide[kind],i=a.indexOf(key);if(i<0)a.push(key);else a.splice(i,1);},el,nowHid?'サイトに戻しました':'サイトから隠しました（あとで「出す」で戻せます）',redraw);
+}
 
 /* tabs */
 var TITLES={sch:'配信予定',song:'歌える曲',cover:'歌ってみた',site:'プロフィール・リンク',news:'お知らせ',req:'リクエスト',post:'Xポスト'};
@@ -413,6 +436,20 @@ function drawNow(){
 $('wStart').value=ymdA(new Date());
 $('wStart').addEventListener('change',drawWeek);
 $('wRows').addEventListener('change',function(e){var c=e.target.closest('.wo');if(!c)return;c.closest('.schRow').classList.toggle('off',c.checked);});
+$('wCopy').onclick=function(){
+  var ds=wDates();if(!ds.length){say($('wMsg'),'はじまりの日をお選びください','err');return;}
+  var rows=[].slice.call($('wRows').querySelectorAll('.schRow'));
+  var filled=rows.some(function(r){return r.querySelector('.wt').value.trim()||r.querySelector('.wtt').value.trim()||r.querySelector('.wo').checked;});
+  if(filled&&!confirm('いま入力してある内容は、先週の内容で置きかわります。よろしいですか？'))return;
+  var n=0;
+  rows.forEach(function(r){var d=new Date(r.dataset.k+'T00:00:00');d.setDate(d.getDate()-7);var pk=ymdA(d);
+    var p=S.sch.filter(function(s){return s.date===pk&&s.tag!=='memo';})[0];
+    var off=!!p&&p.tag==='off';
+    r.querySelector('.wo').checked=off;r.classList.toggle('off',off);
+    r.querySelector('.wt').value=p&&!off?(p.time||''):'';r.querySelector('.wtt').value=p&&!off?(p.title||''):'';
+    if(p)n++;});
+  say($('wMsg'),n?'先週の内容を入れました（'+n+'日分）。直したい所を直して、「この内容でHPに載せる」を押してください':'先週の予定が見つかりませんでした',n?'ok':'err');
+};
 $('schClear').onclick=function(){if(!confirm('HPから、今日以降の配信予定をすべて消します。よろしいですか？'))return;S.sch=S.sch.filter(function(s){return s.date<ymdA(new Date());});say($('wMsg'),'削除中…');saveSchW().then(function(){say($('wMsg'),'HPから予定を消しました','ok');}).catch(function(){});};
 $('wSave').onclick=function(){
   var ds=wDates();if(!ds.length){say($('wMsg'),'はじまりの日をお選びください','err');return;}
@@ -512,8 +549,9 @@ function drawSongs(){
   drawOneChips();
   var gcur=g;$('songG').innerHTML=genreOpts(gcur,'すべてのジャンル');
   var rows=[];S.songs.forEach(function(s,i){if((!g||s.genre===g)&&(!q||songNorm((s.title||'')+' '+(s.artist||'')).indexOf(q)>=0))rows.push([s,i]);});
-  $('songN').textContent=S.songs.length?'（'+(rows.length<S.songs.length?rows.length+' / ':'')+S.songs.length+'曲）':'';
-  $('songList').innerHTML=rows.length?rows.slice(0,200).map(function(r){var s=r[0];return '<li><div class="m"><div class="t">'+esc(s.title)+'</div><div class="s">'+esc(s.artist||'')+'</div><select class="gSel" data-i="'+r[1]+'" aria-label="ジャンル" style="height:38px;font-size:14px;margin-top:6px">'+genreOpts(s.genre||'','ジャンルなし')+'</select></div><div class="acts"><button class="btn sub sm" data-del="'+r[1]+'">消す</button></div></li>';}).join('')+(rows.length>200?'<li class="empty">先頭200曲のみ表示しています。探すときは上の絞り込みをご利用ください</li>':''):'<li class="empty">'+(S.songs.length?'条件に合う曲がありません':'まだ曲がありません')+'</li>';
+  var nh=S.songs.filter(function(s){return isHid('songs',songFk(s));}).length;
+  $('songN').textContent=S.songs.length?'（'+(rows.length<S.songs.length?rows.length+' / ':'')+S.songs.length+'曲'+(nh?'・うち隠し中'+nh+'曲':'')+'）':'';
+  $('songList').innerHTML=rows.length?rows.slice(0,200).map(function(r){var s=r[0],hd=isHid('songs',songFk(s));return '<li class="'+(hd?'hid':'')+'"><div class="m"><div class="t">'+(hd?'<span class="tg hide">隠し中</span>':'')+esc(s.title)+'</div><div class="s">'+esc(s.artist||'')+'</div><select class="gSel" data-i="'+r[1]+'" aria-label="ジャンル" style="height:38px;font-size:14px;margin-top:6px">'+genreOpts(s.genre||'','ジャンルなし')+'</select></div><div class="acts"><button class="btn sub sm" data-hide="'+r[1]+'">'+(hd?'出す':'隠す')+'</button><button class="btn sub sm" data-del="'+r[1]+'">消す</button></div></li>';}).join('')+(rows.length>200?'<li class="empty">先頭200曲のみ表示しています。探すときは上の絞り込みをご利用ください</li>':''):'<li class="empty">'+(S.songs.length?'条件に合う曲がありません':'まだ曲がありません')+'</li>';
 }
 function saveSongs(msgEl){return guard(rpc('ante_save_songs',{p_items:S.songs}),msgEl||$('bMsg')).then(load);}
 /* 追加: いまのリストの後ろに足す（同じ曲名+アーティストは足さない） */
@@ -544,7 +582,7 @@ $('bReplace').onclick=function(){
   var before=S.songs.slice();S.songs=p;say($('bMsg'),'更新中…');
   saveSongs($('bMsg')).then(function(){say($('bMsg'),'リストを入れ替えました','ok');$('bulk').value='';$('bPreview').textContent='';}).catch(function(){S.songs=before;drawSongs();});
 };
-$('songList').addEventListener('click',function(e){var b=e.target.closest('[data-del]');if(!b)return;var i=+b.dataset.del,rm=S.songs.splice(i,1);saveSongs().catch(function(){S.songs.splice(i,0,rm[0]);drawSongs();});});
+$('songList').addEventListener('click',function(e){var h=e.target.closest('[data-hide]');if(h){toggleHide('songs',songFk(S.songs[+h.dataset.hide]),$('songMsg'),drawSongs);return;}var b=e.target.closest('[data-del]');if(!b)return;var i=+b.dataset.del,rm=S.songs.splice(i,1);saveSongs().catch(function(){S.songs.splice(i,0,rm[0]);drawSongs();});});
 $('songList').addEventListener('change',function(e){var s=e.target.closest('.gSel');if(!s)return;var i=+s.dataset.i,old=S.songs[i].genre||'';S.songs[i].genre=s.value;saveSongs().catch(function(){S.songs[i].genre=old;drawSongs();});});
 $('songQ').addEventListener('input',drawSongs);
 $('songG').addEventListener('change',drawSongs);
@@ -570,7 +608,7 @@ $('reqToggle').onclick=function(){guard(rpc('ante_req_open',{p_open:!S.open}),$(
 function drawNews(){
   $('newsN').textContent=S.news.length?'（'+S.news.length+'件）':'';
   $('nList').innerHTML=S.news.length?S.news.map(function(n,i){var d=new Date(n.date+'T00:00:00');
-    return '<li><div class="m"><div class="s" style="opacity:1;color:var(--gold-l);font-weight:700">'+d.getFullYear()+'/'+(d.getMonth()+1)+'/'+d.getDate()+'（'+wk[d.getDay()]+'）</div><div class="t" style="font-weight:600;white-space:pre-wrap">'+esc(n.body)+'</div></div><div class="acts"><button class="btn sub sm" data-del="'+i+'">消す</button></div></li>';}).join(''):'<li class="empty">まだお知らせがありません</li>';
+    var hd=isHid('news',newsFk(n));return '<li class="'+(hd?'hid':'')+'"><div class="m"><div class="s" style="opacity:1;color:var(--gold-l);font-weight:700">'+(hd?'<span class="tg hide">隠し中</span>':'')+d.getFullYear()+'/'+(d.getMonth()+1)+'/'+d.getDate()+'（'+wk[d.getDay()]+'）</div><div class="t" style="font-weight:600;white-space:pre-wrap">'+esc(n.body)+'</div></div><div class="acts"><button class="btn sub sm" data-hide="'+i+'">'+(hd?'出す':'隠す')+'</button><button class="btn sub sm" data-del="'+i+'">消す</button></div></li>';}).join(''):'<li class="empty">まだお知らせがありません</li>';
 }
 function saveNews(){return guard(rpc('ante_save_news',{p_items:S.news}),$('nMsg')).then(load);}
 $('nBody').addEventListener('input',function(){$('nCnt').textContent=$('nBody').value.length;});
@@ -582,7 +620,7 @@ $('nAdd').onclick=function(){
   say($('nMsg'),'保存中…');
   saveNews().then(function(){say($('nMsg'),'追加しました。まもなくサイトに反映されます','ok');$('nBody').value='';$('nCnt').textContent='0';}).catch(function(){});
 };
-$('nList').addEventListener('click',function(e){var b=e.target.closest('[data-del]');if(!b)return;if(!confirm('このお知らせを削除します。よろしいですか？'))return;S.news.splice(+b.dataset.del,1);saveNews().catch(function(){});});
+$('nList').addEventListener('click',function(e){var h=e.target.closest('[data-hide]');if(h){toggleHide('news',newsFk(S.news[+h.dataset.hide]),$('nMsg'),drawNews);return;}var b=e.target.closest('[data-del]');if(!b)return;if(!confirm('このお知らせを削除します。よろしいですか？'))return;S.news.splice(+b.dataset.del,1);saveNews().catch(function(){});});
 
 /* ---- Xポスト ---- */
 function drawPosts(){
@@ -609,7 +647,8 @@ function loadCovers(){
 function drawCovers(){
   $('cN').textContent=S.covers.length?'（'+S.covers.length+'本）':'';
   $('cSeed').hidden=S.covers.length>0;
-  $('cList').innerHTML=S.covers.length?S.covers.map(function(c,i){return '<li><div class="m"><div class="t">'+esc(c.title)+'</div><div class="s" style="opacity:1"><a href="https://youtu.be/'+esc(c.id)+'" target="_blank" rel="noopener" style="color:var(--gold-l)">https://youtu.be/'+esc(c.id)+'</a></div></div><div class="acts"><button class="btn sub sm" data-del="'+i+'">外す</button></div></li>';}).join(''):'<li class="empty">まだ登録がありません</li>';
+  var vis=S.covers.filter(function(c){return !isHid('covers',c.id);}),pin=fl().pin,home=(vis.filter(function(c){return c.id===pin;})[0]||vis[0]||{}).id;
+  $('cList').innerHTML=S.covers.length?S.covers.map(function(c,i){var hd=isHid('covers',c.id),isHome=c.id===home;return '<li class="'+(hd?'hid':'')+'"><div class="m"><div class="t">'+(isHome?'<span class="tg pin">ホームに表示中</span>':'')+(hd?'<span class="tg hide">隠し中</span>':'')+esc(c.title)+'</div><div class="s" style="opacity:1"><a href="https://youtu.be/'+esc(c.id)+'" target="_blank" rel="noopener" style="color:var(--gold-l)">https://youtu.be/'+esc(c.id)+'</a></div></div><div class="acts">'+(!hd&&!isHome?'<button class="btn sm" data-pin="'+i+'">ホームに出す</button>':'')+(isHome&&pin===c.id?'<button class="btn sub sm" data-pin="">自動に戻す</button>':'')+'<button class="btn sub sm" data-hide="'+i+'">'+(hd?'出す':'隠す')+'</button><button class="btn sub sm" data-del="'+i+'">外す</button></div></li>';}).join(''):'<li class="empty">まだ登録がありません</li>';
 }
 function saveCovers(){return guard(rpc('ante_save_covers',{p_items:S.covers}),$('cMsg')).then(loadCovers);}
 function ytId(u){var m=String(u).trim().match(/(?:youtu\.be\/|[?&]v=|embed\/|shorts\/)([\w-]{11})/);return m?m[1]:'';}
@@ -628,7 +667,15 @@ $('cAdd').onclick=function(){
    .then(function(d){go(d.title||'');})
    .catch(function(){say($('cMsg'),'タイトルを取得できませんでした。タイトルを入力してから、もう一度「追加する」を押してください','err');});
 };
-$('cList').addEventListener('click',function(e){var b=e.target.closest('[data-del]');if(!b)return;if(!confirm('この動画をサイトから外します。よろしいですか？（YouTube上の動画は消えません）'))return;var rm=S.covers.splice(+b.dataset.del,1);saveCovers().catch(function(){S.covers.splice(+b.dataset.del,0,rm[0]);drawCovers();});});
+var tFetch='';
+$('cUrl').addEventListener('input',function(){var id=ytId($('cUrl').value);if(!id||id===tFetch||$('cTitle').value.trim())return;tFetch=id;
+  $('cTitle').placeholder='タイトルを取得中…';
+  fetch('https://www.youtube.com/oembed?format=json&url='+encodeURIComponent('https://www.youtube.com/watch?v='+id)).then(function(r){if(!r.ok)throw 0;return r.json();})
+   .then(function(d){if(ytId($('cUrl').value)===id&&!$('cTitle').value.trim()&&d.title)$('cTitle').value=d.title;}).catch(function(){}).then(function(){$('cTitle').placeholder='タイトル（空欄なら自動で入ります）';});});
+$('cList').addEventListener('click',function(e){
+  var p=e.target.closest('[data-pin]');if(p){var id=p.dataset.pin===''?'':S.covers[+p.dataset.pin].id;setFlags(function(f){if(id)f.pin=id;else delete f.pin;},$('cMsg'),id?'ホームの「最新の歌ってみた」に出すようにしました':'自動（一番上の動画）に戻しました',drawCovers);return;}
+  var h=e.target.closest('[data-hide]');if(h){toggleHide('covers',S.covers[+h.dataset.hide].id,$('cMsg'),drawCovers);return;}
+  var b=e.target.closest('[data-del]');if(!b)return;if(!confirm('この動画をサイトから外します。よろしいですか？（YouTube上の動画は消えません）'))return;var rm=S.covers.splice(+b.dataset.del,1);saveCovers().catch(function(){S.covers.splice(+b.dataset.del,0,rm[0]);drawCovers();});});
 $('cSeedBtn').onclick=function(){S.covers=COVER_SEED.slice();say($('cMsg'),'保存中…');saveCovers().then(function(){say($('cMsg'),'登録しました','ok');}).catch(function(){S.covers=[];drawCovers();});};
 
 /* ---- プロフィール・リンク ---- */
@@ -645,7 +692,7 @@ function fillSite(){
 function loadSiteInfo(){
   return fetch(SB+'ante_site_public',{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:'{}'})
    .then(function(r){return r.ok?r.json():{};}).catch(function(){return {};})
-   .then(function(d){S.site=d||{};fillSite();});
+   .then(function(d){S.site=d||{};fillSite();drawSongs();drawNews();drawCovers();});
 }
 $('pfSave').onclick=function(){
   var tags=$('pfTags').value.split(/\r?\n/).map(function(x){x=x.trim();return x&&x.charAt(0)!=='#'&&x.charAt(0)!=='＃'?'#'+x:x;}).filter(Boolean).slice(0,10);

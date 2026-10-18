@@ -114,7 +114,7 @@ function transitions(){
 
 /* ---------- 見出しの飾り（矢の刺さるハート） ---------- */
 var ORN='<img class="orn" src="img/logo-gold.png" alt="" width="900" height="438" loading="lazy">';
-var VER='20261018l';
+var VER='20261018m';
 function autoUpdate(){
   function chk(){try{fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
     if(!j||!j.v||j.v===VER)return;var k='verTry';if(ss(k)===j.v)return;ss(k,j.v);
@@ -197,13 +197,18 @@ function opening(){
 
 /* ---------- データ ---------- */
 var DATA={schedule:CONFIG.schedule,songs:CONFIG.songs,posts:CONFIG.posts,news:[],requestOpen:true,live:false};
-var subs=[];
+var subs=[],onSite=[],RAW=null,FLAGS={hide:{}};
+/* 更新ページで「隠す」にしたものを除く */
+function hsh(s){var h=5381;s=String(s);for(var i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return (h>>>0).toString(36);}
+function songFk(s){return hsh((String(s.title||'')+'\u0001'+String(s.artist||'')).replace(/[\s\u3000]/g,'').toLowerCase());}
+function newsFk(n){return n.date+':'+hsh(n.body);}
+function isHid(kind,key){var a=FLAGS.hide&&FLAGS.hide[kind];return Array.isArray(a)&&a.indexOf(key)>=0;}
 function load(){
   var cached=null;try{cached=JSON.parse(ss('antedata')||'null');}catch(e){}
   if(cached&&Date.now()-cached.t<45000){apply(cached.d);return Promise.resolve();}
   return rpc('ante_public').then(function(d){if(!d){subs.forEach(function(f){f();});return;}ss('antedata',JSON.stringify({t:Date.now(),d:d}));apply(d);}).catch(function(){subs.forEach(function(f){f();});});
 }
-function apply(d){DATA.schedule=d.schedule||[];DATA.songs=d.songs||[];DATA.posts=d.posts||[];DATA.news=d.news||[];DATA.requestOpen=d.request_open!==false;DATA.live=true;subs.forEach(function(f){f();});}
+function apply(d){RAW=d;DATA.schedule=d.schedule||[];DATA.songs=(d.songs||[]).filter(function(s){return !isHid('songs',songFk(s));});DATA.posts=d.posts||[];DATA.news=(d.news||[]).filter(function(n){return !isHid('news',newsFk(n));});DATA.requestOpen=d.request_open!==false;DATA.live=true;subs.forEach(function(f){f();});}
 function ymd(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
 var WK=['日','月','火','水','木','金','土'];
 function upcoming(){var t=ymd(new Date());return DATA.schedule.filter(function(s){return s.date>=t;}).sort(function(a,b){return (a.date+(a.time||'')).localeCompare(b.date+(b.time||''));});}
@@ -223,11 +228,17 @@ function paintPick(){var pk=CONFIG.pickup;if(!pk||!$('#pickCard'))return;$('#pic
   var m=String(pk.url).match(/(?:youtu\.be\/|[?&]v=|embed\/|shorts\/)([\w-]{11})/);
   if(m){var src='https://www.youtube-nocookie.com/embed/'+m[1]+'?rel=0&playsinline=1',fr=$('#ytFrame');if(fr.getAttribute('src')!==src)fr.src=src;$('#ytBox').style.display='';}else $('#ytBox').style.display='none';}
 /* 「歌ってみた」の先頭の動画を、最新の歌ってみたとして表示 */
-function loadPickup(){rpc('ante_covers_public').then(function(l){if(Array.isArray(l)&&l.length&&/^[\w-]{11}$/.test(l[0].id)){CONFIG.pickup={title:l[0].title,sub:'歌ってみた',url:'https://youtu.be/'+l[0].id};paintPick();}}).catch(function(){});}
+var COVL=null;
+function applyPick(){if(!COVL)return;var v=COVL.filter(function(c){return c&&/^[\w-]{11}$/.test(c.id)&&!isHid('covers',c.id);});
+  var c=v.filter(function(x){return x.id===FLAGS.pin;})[0]||v[0];
+  if(c){CONFIG.pickup={title:c.title,sub:'歌ってみた',url:'https://youtu.be/'+c.id};paintPick();}}
+onSite.push(applyPick);
+function loadPickup(){rpc('ante_covers_public').then(function(l){if(Array.isArray(l)&&l.length){COVL=l;applyPick();}}).catch(function(){});}
 /* 更新ページで変えられるプロフィール・リンク */
 var LKEYS=['mirrativ','youtube','tiktok','x','xinfo','goods'];
 function mergeSite(s){
   if(!s)return;var p=s.profile,l=s.links;
+  if(s.flags&&typeof s.flags==='object')FLAGS=s.flags;
   if(p){
     if(typeof p.tagline==='string'&&p.tagline.trim())CONFIG.tagline=p.tagline.trim();
     var rows=[['活動名',p.name],['ジャンル',p.genre],['誕生日',p.birthday],['ファンネーム',p.fanname],['X',p.xid]].filter(function(r){return r[1]&&String(r[1]).trim();});
@@ -237,6 +248,8 @@ function mergeSite(s){
   if(l){LKEYS.forEach(function(k,i){if(typeof l[k]==='string'){var u=l[k].trim();CONFIG.links[i].url=/^https?:\/\//.test(u)?u:'';}});
     if(CONFIG.links[0].url)CONFIG.liveUrl=CONFIG.links[0].url;}
   paintSite();
+  if(RAW)apply(RAW);
+  onSite.forEach(function(f){f();});
 }
 function paintSite(){
   var t=$('.hero .tagline');if(t)t.textContent=CONFIG.tagline;
@@ -330,14 +343,16 @@ P.songs=function(){
 };
 P.covers=function(){
   var g=$('#coverGrid');if(!g)return;
-  var list=CONFIG.covers;
+  var all=CONFIG.covers,list=all;
   function render(){
+    list=all.filter(function(c){return !isHid('covers',c.id);});
     g.innerHTML=list.map(function(c){return '<a class="cv rv in" href="https://youtu.be/'+esc(c.id)+'" target="_blank" rel="noopener"><span class="th"><img src="https://i.ytimg.com/vi/'+esc(c.id)+'/hqdefault.jpg" alt="" loading="lazy"><i aria-hidden="true">▶</i></span><b>'+esc(c.title)+'</b>'+(c.sub?'<small>'+esc(c.sub)+'</small>':'')+'</a>';}).join('');
   }
   render();
   /* 管理画面で登録した一覧があれば、そちらを優先 */
-  rpc('ante_covers_public').then(function(d){if(Array.isArray(d)&&d.length){list=d.filter(function(c){return c&&/^[\w-]{11}$/.test(c.id);});render();}}).catch(function(){});
+  rpc('ante_covers_public').then(function(d){if(Array.isArray(d)&&d.length){all=d.filter(function(c){return c&&/^[\w-]{11}$/.test(c.id);});render();}}).catch(function(){});
   var md=document.createElement('div');md.id='cvm';md.hidden=true;md.setAttribute('role','dialog');md.setAttribute('aria-modal','true');md.setAttribute('aria-label','動画プレイヤー');
+  onSite.push(render);
   md.innerHTML='<div class="bx"><button type="button" class="x" aria-label="閉じる">×</button><div class="yt-fr"><iframe title="歌ってみた" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div><p class="tt"></p><a class="yo" target="_blank" rel="noopener">YouTubeで開く ›</a></div>';
   document.body.appendChild(md);
   var fr=$('iframe',md);
