@@ -20,7 +20,12 @@ var CONFIG={
   liveUrl:'https://www.mirrativ.com/user/102348987',
   /* 歌ってみた一覧: 動画を足すときは1行ずつ追加（idはYouTubeのURLの11文字） */
   covers:[
-    {id:'iU6hErquIGQ',title:'神っぽいな / ピノキオピー',sub:'Full ver.'}
+    {id:'iU6hErquIGQ',title:'神っぽいな / ピノキオピー',sub:'Full ver.'},
+    {id:'-53EOxCVAII',title:'ファンサ'},
+    {id:'79Ki3coWP6M',title:'きみだけは。'},
+    {id:'K8WoPSxqQB8',title:'ヴァンパイア'},
+    {id:'4gxbKkyLXFU',title:'グッバイ宣言'},
+    {id:'up13KqZrLtU',title:'小悪魔だってかまわない！'}
   ],
   pickup:{title:'神っぽいな / ピノキオピー',sub:'歌ってみた Full ver.',url:'https://youtu.be/iU6hErquIGQ'},
   /* つながるまでの仮データ */
@@ -109,7 +114,7 @@ function transitions(){
 
 /* ---------- 見出しの飾り（矢の刺さるハート） ---------- */
 var ORN='<img class="orn" src="img/logo-gold.png" alt="" width="900" height="438" loading="lazy">';
-var VER='20261018d';
+var VER='20261018e';
 function autoUpdate(){
   function chk(){try{fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
     if(!j||!j.v||j.v===VER)return;var k='verTry';if(ss(k)===j.v)return;ss(k,j.v);
