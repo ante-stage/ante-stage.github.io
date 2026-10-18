@@ -99,6 +99,27 @@ details.more>summary::-webkit-details-marker{display:none}
 .foot{margin-top:48px;display:flex;justify-content:space-between;gap:12px;font-size:12.5px}
 .foot a,.foot button{color:var(--sub);background:none;border:0;height:auto;font:inherit;letter-spacing:.06em;text-decoration:underline;cursor:pointer;padding:6px 0}
 @media(max-width:380px){.tabs button{font-size:12.5px;flex-basis:calc(33.3% - 8px)}}
+
+[hidden]{display:none!important}
+/* ===== タッチパネル方式 ===== */
+.panel{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:24px}
+.panel button{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:136px;padding:14px 8px;border-radius:16px;border:2px solid var(--gold);background:linear-gradient(180deg,rgba(232,84,107,.28),rgba(232,84,107,.12));color:var(--ink);box-shadow:5px 5px 0 var(--gold);cursor:pointer;text-align:center}
+.panel button:active{transform:translate(4px,4px);box-shadow:1px 1px 0 var(--gold)}
+.panel .ic{font-size:34px;line-height:1;color:var(--gold-l)}
+.panel .lb{font-family:var(--maru);font-weight:700;font-size:19px;letter-spacing:.06em;line-height:1.3}
+.panel .st{font-family:var(--sans);font-size:12.5px;color:var(--sub);line-height:1.4}
+.panel .n{position:absolute;top:-10px;right:-6px;min-width:26px;height:26px;padding:0 8px;border-radius:99px;background:var(--gold);color:var(--black-d);font-family:var(--sans);font-size:14px;font-weight:800;line-height:26px;text-align:center}
+.panel .wide{grid-column:1/-1;min-height:96px;flex-direction:row;gap:14px}
+.backbar{position:sticky;top:0;z-index:20;margin:0 -20px;padding:calc(10px + env(safe-area-inset-top)) 20px 10px;background:rgba(28,24,36,.96);border-bottom:1px solid var(--rule);display:flex;align-items:center;gap:12px}
+.backbar .btn{height:52px;flex:none;box-shadow:3px 3px 0 var(--gold);padding:0 18px;font-size:16px}
+.backbar b{font-family:var(--maru);font-size:18px;letter-spacing:.06em;color:var(--gold-l)}
+.chips2{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.chips2 button{height:52px;padding:0 20px;border-radius:99px;border:2px solid var(--rule);background:rgba(255,255,255,.06);color:var(--ink);font-weight:700;font-size:16px;cursor:pointer}
+.chips2 button.on{background:var(--red);border-color:var(--gold);box-shadow:3px 3px 0 var(--gold);color:#fff}
+.btn{height:56px}
+.btn.sm{height:42px}
+input,select{height:56px}
+.schF input[type=text]{height:46px}
 </style>
 </head>
 <body>
@@ -115,17 +136,18 @@ details.more>summary::-webkit-details-marker{display:none}
 </div>
 
 <div id="app" hidden>
-  <div class="tabs" id="tabs">
-    <button data-t="sch" class="on">配信予定</button>
-    <button data-t="song">歌える曲</button>
-    <button data-t="news">お知らせ</button>
-    <button data-t="req">リクエスト<span class="n" id="reqN" hidden>0</span></button>
-    <button data-t="post">Xポスト</button>
-    <button data-t="cover">歌ってみた</button>
+  <div class="panel" id="panel">
+    <button data-t="sch"><span class="ic">◷</span><span class="lb">配信予定</span><span class="st" id="tlSch"></span></button>
+    <button data-t="song"><span class="ic">♪</span><span class="lb">歌える曲</span><span class="st" id="tlSong"></span></button>
+    <button data-t="cover"><span class="ic">▶</span><span class="lb">歌ってみた</span><span class="st" id="tlCover"></span></button>
+    <button data-t="news"><span class="ic">✦</span><span class="lb">お知らせ</span><span class="st" id="tlNews"></span></button>
+    <button data-t="req"><span class="ic">♡</span><span class="lb">リクエスト</span><span class="n" id="reqN" hidden>0</span><span class="st" id="tlReq"></span></button>
+    <button data-t="post"><span class="ic">✕</span><span class="lb">Xポスト</span><span class="st" id="tlPost"></span></button>
   </div>
+  <div class="backbar" id="backbar" hidden><button class="btn sub" id="backBtn" type="button">‹ もどる</button><b id="backTitle"></b></div>
 
   <!-- 配信予定 -->
-  <section class="tab on" id="tab-sch">
+  <section class="tab" id="tab-sch">
     <div class="now" id="schNow">
       <p class="now__lbl">いまHPに載っている予定</p>
       <p class="now__val" id="schNowVal">確認中…</p>
@@ -176,7 +198,8 @@ details.more>summary::-webkit-details-marker{display:none}
       <h2>1曲ずつ追加</h2>
       <input id="oneTitle" maxlength="120" autocomplete="off" placeholder="曲名（必須）　例）神っぽいな">
       <input id="oneArtist" maxlength="80" autocomplete="off" placeholder="アーティスト（なくてもOK）" style="margin-top:8px">
-      <select id="oneGenre" aria-label="ジャンル" style="margin-top:8px"></select>
+      <select id="oneGenre" aria-label="ジャンル" hidden></select>
+      <label style="margin-top:14px">ジャンル（選ばなくてもOK）</label><div class="chips2" id="oneChips"></div>
       <button class="btn full" id="oneAdd">この曲を追加</button>
       <p class="hint">追加後もジャンルは残るので、同じジャンルの曲を続けて足せます。</p>
       <p class="msg" id="oneMsg" role="status"></p>
@@ -279,9 +302,23 @@ function gate(msg){$('app').hidden=true;$('gate').hidden=false;say($('gateMsg'),
 function guard(p,el){return p.catch(function(e){if(e.message==='auth'){setPass('');gate('合言葉が違うようです。ご確認のうえ、もう一度ご入力ください');}else{say(el,errText(e),'err');}throw e;});}
 
 /* tabs */
-$('tabs').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
-  [].forEach.call($('tabs').children,function(x){x.classList.toggle('on',x===b);});
-  [].forEach.call(document.querySelectorAll('.tab'),function(t){t.classList.toggle('on',t.id==='tab-'+b.dataset.t);});});
+var TITLES={sch:'配信予定',song:'歌える曲',cover:'歌ってみた',news:'お知らせ',req:'リクエスト',post:'Xポスト'};
+function openTab(t){[].forEach.call(document.querySelectorAll('.tab'),function(x){x.classList.toggle('on',x.id==='tab-'+t);});
+  $('panel').hidden=true;$('backbar').hidden=false;$('backTitle').textContent=TITLES[t]||'';window.scrollTo(0,0);}
+function openPanel(){[].forEach.call(document.querySelectorAll('.tab'),function(x){x.classList.remove('on');});
+  $('panel').hidden=false;$('backbar').hidden=true;window.scrollTo(0,0);}
+$('panel').addEventListener('click',function(e){var b=e.target.closest('button');if(b)openTab(b.dataset.t);});
+$('backBtn').onclick=openPanel;
+function drawTiles(){
+  var t=new Date(),k=t.getFullYear()+'-'+('0'+(t.getMonth()+1)).slice(-2)+'-'+('0'+t.getDate()).slice(-2);
+  var up=S.sch.filter(function(s){return s.date>=k&&s.tag!=='memo';}).length;
+  $('tlSch').textContent=up?'これからの予定 '+up+'件':'予定なし';
+  $('tlSong').textContent=S.songs.length+'曲';
+  $('tlCover').textContent=S.covers.length?S.covers.length+'本':'';
+  $('tlNews').textContent=S.news.length?S.news.length+'件':'';
+  $('tlReq').textContent=S.reqs.filter(function(r){return !r.done;}).length?'歌ってない曲あり':'';
+  $('tlPost').textContent=S.posts.length?S.posts.length+'件':'自動表示';
+}
 
 /* gate */
 $('enter').onclick=function(){var v=$('pass').value.trim();if(!v){say($('gateMsg'),'合言葉をご入力ください','err');return;}setPass(v);$('pass').value='';
@@ -425,9 +462,13 @@ function parseSongs(text){
   });
   return out;
 }
+function drawOneChips(){var v=$('oneGenre').value,o=[].slice.call($('oneGenre').options);
+  $('oneChips').innerHTML=o.map(function(x){return '<button type="button" class="'+(x.value===v?'on':'')+'" data-g="'+esc(x.value)+'">'+esc(x.value||'指定なし')+'</button>';}).join('');}
+$('oneChips').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;$('oneGenre').value=b.dataset.g;drawOneChips();});
 function drawSongs(){
   var q=songNorm($('songQ').value),g=$('songG').value,keep=$('oneGenre').value;
   $('oneGenre').innerHTML=genreOpts(keep,'ジャンル（選ばなくてもOK）');
+  drawOneChips();
   var gcur=g;$('songG').innerHTML=genreOpts(gcur,'すべてのジャンル');
   var rows=[];S.songs.forEach(function(s,i){if((!g||s.genre===g)&&(!q||songNorm((s.title||'')+' '+(s.artist||'')).indexOf(q)>=0))rows.push([s,i]);});
   $('songN').textContent=S.songs.length?'（'+(rows.length<S.songs.length?rows.length+' / ':'')+S.songs.length+'曲）':'';
@@ -522,7 +563,7 @@ S.covers=[];
 function loadCovers(){
   return fetch(SB+'ante_covers_public',{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:'{}'})
    .then(function(r){return r.ok?r.json():[];}).catch(function(){return [];})
-   .then(function(d){S.covers=Array.isArray(d)?d:[];drawCovers();});
+   .then(function(d){S.covers=Array.isArray(d)?d:[];drawCovers();drawTiles();});
 }
 function drawCovers(){
   $('cN').textContent=S.covers.length?'（'+S.covers.length+'本）':'';
@@ -549,7 +590,7 @@ $('cAdd').onclick=function(){
 $('cList').addEventListener('click',function(e){var b=e.target.closest('[data-del]');if(!b)return;if(!confirm('この動画をサイトから外します。よろしいですか？（YouTube上の動画は消えません）'))return;var rm=S.covers.splice(+b.dataset.del,1);saveCovers().catch(function(){S.covers.splice(+b.dataset.del,0,rm[0]);drawCovers();});});
 $('cSeedBtn').onclick=function(){S.covers=COVER_SEED.slice();say($('cMsg'),'保存中…');saveCovers().then(function(){say($('cMsg'),'登録しました','ok');}).catch(function(){S.covers=[];drawCovers();});};
 
-function drawAll(){loadCovers();drawNow();drawWeek();drawSch();drawSongs();drawNews();drawReq();drawPosts();}
+function drawAll(){loadCovers();drawTiles();drawNow();drawWeek();drawSch();drawSongs();drawNews();drawReq();drawPosts();}
 (function(){var d=new Date();$('nDate').value=d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);$('sDate').value=d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);})();
 if(getPass()){load().catch(function(e){if(e.message==='auth'){setPass('');gate('');}else gate(errText(e));});}
 })();
