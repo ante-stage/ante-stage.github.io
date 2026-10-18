@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20261018m">
+<meta name="build" content="20261018n">
 <meta name="theme-color" content="#2f2a3a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -69,7 +69,15 @@ ul.list li.rq{align-items:flex-start}
 .rq .acts{flex-direction:column;align-items:stretch}
 .tg{display:inline-block;font-family:var(--sans);font-size:11px;font-weight:700;padding:0 8px;border-radius:99px;background:rgba(217,178,95,.22);color:var(--gold-l);margin-right:6px;vertical-align:1px;line-height:1.7}
 .tg.off{background:rgba(255,255,255,.16);color:#ddd}.tg.memo{background:rgba(232,84,107,.3);color:#ffd0d8}
-ul.list li.hid .m{opacity:.5}
+ul.list li.hid .m,ul.list li.hid .th{opacity:.45}
+ul.list li.stk{flex-direction:column;align-items:stretch;gap:12px;padding:16px 0}
+.stk .acts{flex-wrap:nowrap;justify-content:stretch;gap:8px}
+.stk .acts .btn{flex:1 1 0;min-width:0;padding:0 6px;height:42px;font-size:13.5px;letter-spacing:.02em}
+.stk .acts .btn.main{flex:2 1 0}
+.cvt{display:flex;gap:12px;align-items:center}
+.cvt .th{flex:none;width:112px;aspect-ratio:16/9;object-fit:cover;border-radius:8px;border:1.5px solid var(--rule);background:#000}
+.tgs{display:block;margin-bottom:4px;line-height:1.9}.tgs:empty{display:none}
+.cvt .lk{display:inline-block;margin-top:2px;font-size:12px;color:var(--gold-l)}
 .tg.pin{background:var(--red);color:#fff}.tg.hide{background:rgba(255,255,255,.16);color:#ddd}
 .empty{display:block!important;text-align:center;color:var(--sub);padding:18px 8px!important;font-size:13.5px;border-bottom:0!important}
 .switch{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:24px;padding:14px 16px;border-radius:8px;background:var(--panel);border:1.5px solid var(--rule);font-family:var(--maru);font-weight:700;font-size:14px;letter-spacing:.06em}
@@ -551,7 +559,7 @@ function drawSongs(){
   var rows=[];S.songs.forEach(function(s,i){if((!g||s.genre===g)&&(!q||songNorm((s.title||'')+' '+(s.artist||'')).indexOf(q)>=0))rows.push([s,i]);});
   var nh=S.songs.filter(function(s){return isHid('songs',songFk(s));}).length;
   $('songN').textContent=S.songs.length?'（'+(rows.length<S.songs.length?rows.length+' / ':'')+S.songs.length+'曲'+(nh?'・うち隠し中'+nh+'曲':'')+'）':'';
-  $('songList').innerHTML=rows.length?rows.slice(0,200).map(function(r){var s=r[0],hd=isHid('songs',songFk(s));return '<li class="'+(hd?'hid':'')+'"><div class="m"><div class="t">'+(hd?'<span class="tg hide">隠し中</span>':'')+esc(s.title)+'</div><div class="s">'+esc(s.artist||'')+'</div><select class="gSel" data-i="'+r[1]+'" aria-label="ジャンル" style="height:38px;font-size:14px;margin-top:6px">'+genreOpts(s.genre||'','ジャンルなし')+'</select></div><div class="acts"><button class="btn sub sm" data-hide="'+r[1]+'">'+(hd?'出す':'隠す')+'</button><button class="btn sub sm" data-del="'+r[1]+'">消す</button></div></li>';}).join('')+(rows.length>200?'<li class="empty">先頭200曲のみ表示しています。探すときは上の絞り込みをご利用ください</li>':''):'<li class="empty">'+(S.songs.length?'条件に合う曲がありません':'まだ曲がありません')+'</li>';
+  $('songList').innerHTML=rows.length?rows.slice(0,200).map(function(r){var s=r[0],hd=isHid('songs',songFk(s));return '<li class="stk '+(hd?'hid':'')+'"><div class="m"><span class="tgs">'+(hd?'<span class="tg hide">隠し中</span>':'')+'</span><div class="t">'+esc(s.title)+'</div><div class="s">'+esc(s.artist||'')+'</div><select class="gSel" data-i="'+r[1]+'" aria-label="ジャンル" style="height:38px;font-size:14px;margin-top:6px">'+genreOpts(s.genre||'','ジャンルなし')+'</select></div><div class="acts"><button class="btn sub" data-hide="'+r[1]+'">'+(hd?'出す':'隠す')+'</button><button class="btn sub" data-del="'+r[1]+'">消す</button></div></li>';}).join('')+(rows.length>200?'<li class="empty">先頭200曲のみ表示しています。探すときは上の絞り込みをご利用ください</li>':''):'<li class="empty">'+(S.songs.length?'条件に合う曲がありません':'まだ曲がありません')+'</li>';
 }
 function saveSongs(msgEl){return guard(rpc('ante_save_songs',{p_items:S.songs}),msgEl||$('bMsg')).then(load);}
 /* 追加: いまのリストの後ろに足す（同じ曲名+アーティストは足さない） */
@@ -608,7 +616,7 @@ $('reqToggle').onclick=function(){guard(rpc('ante_req_open',{p_open:!S.open}),$(
 function drawNews(){
   $('newsN').textContent=S.news.length?'（'+S.news.length+'件）':'';
   $('nList').innerHTML=S.news.length?S.news.map(function(n,i){var d=new Date(n.date+'T00:00:00');
-    var hd=isHid('news',newsFk(n));return '<li class="'+(hd?'hid':'')+'"><div class="m"><div class="s" style="opacity:1;color:var(--gold-l);font-weight:700">'+(hd?'<span class="tg hide">隠し中</span>':'')+d.getFullYear()+'/'+(d.getMonth()+1)+'/'+d.getDate()+'（'+wk[d.getDay()]+'）</div><div class="t" style="font-weight:600;white-space:pre-wrap">'+esc(n.body)+'</div></div><div class="acts"><button class="btn sub sm" data-hide="'+i+'">'+(hd?'出す':'隠す')+'</button><button class="btn sub sm" data-del="'+i+'">消す</button></div></li>';}).join(''):'<li class="empty">まだお知らせがありません</li>';
+    var hd=isHid('news',newsFk(n));return '<li class="stk '+(hd?'hid':'')+'"><div class="m"><span class="tgs">'+(hd?'<span class="tg hide">隠し中</span>':'')+'</span><div class="s" style="opacity:1;color:var(--gold-l);font-weight:700">'+d.getFullYear()+'/'+(d.getMonth()+1)+'/'+d.getDate()+'（'+wk[d.getDay()]+'）</div><div class="t" style="font-weight:600;white-space:pre-wrap">'+esc(n.body)+'</div></div><div class="acts"><button class="btn sub" data-hide="'+i+'">'+(hd?'出す':'隠す')+'</button><button class="btn sub" data-del="'+i+'">消す</button></div></li>';}).join(''):'<li class="empty">まだお知らせがありません</li>';
 }
 function saveNews(){return guard(rpc('ante_save_news',{p_items:S.news}),$('nMsg')).then(load);}
 $('nBody').addEventListener('input',function(){$('nCnt').textContent=$('nBody').value.length;});
@@ -648,7 +656,7 @@ function drawCovers(){
   $('cN').textContent=S.covers.length?'（'+S.covers.length+'本）':'';
   $('cSeed').hidden=S.covers.length>0;
   var vis=S.covers.filter(function(c){return !isHid('covers',c.id);}),pin=fl().pin,home=(vis.filter(function(c){return c.id===pin;})[0]||vis[0]||{}).id;
-  $('cList').innerHTML=S.covers.length?S.covers.map(function(c,i){var hd=isHid('covers',c.id),isHome=c.id===home;return '<li class="'+(hd?'hid':'')+'"><div class="m"><div class="t">'+(isHome?'<span class="tg pin">ホームに表示中</span>':'')+(hd?'<span class="tg hide">隠し中</span>':'')+esc(c.title)+'</div><div class="s" style="opacity:1"><a href="https://youtu.be/'+esc(c.id)+'" target="_blank" rel="noopener" style="color:var(--gold-l)">https://youtu.be/'+esc(c.id)+'</a></div></div><div class="acts">'+(!hd&&!isHome?'<button class="btn sm" data-pin="'+i+'">ホームに出す</button>':'')+(isHome&&pin===c.id?'<button class="btn sub sm" data-pin="">自動に戻す</button>':'')+'<button class="btn sub sm" data-hide="'+i+'">'+(hd?'出す':'隠す')+'</button><button class="btn sub sm" data-del="'+i+'">外す</button></div></li>';}).join(''):'<li class="empty">まだ登録がありません</li>';
+  $('cList').innerHTML=S.covers.length?S.covers.map(function(c,i){var hd=isHid('covers',c.id),isHome=c.id===home;return '<li class="stk '+(hd?'hid':'')+'"><div class="cvt"><img class="th" src="https://i.ytimg.com/vi/'+esc(c.id)+'/mqdefault.jpg" alt="" loading="lazy"><div class="m"><span class="tgs">'+(isHome?'<span class="tg pin">ホームに表示中</span>':'')+(hd?'<span class="tg hide">隠し中</span>':'')+'</span><div class="t">'+esc(c.title)+'</div><a class="lk" href="https://youtu.be/'+esc(c.id)+'" target="_blank" rel="noopener">YouTubeで見る ›</a></div></div><div class="acts">'+(!hd&&!isHome?'<button class="btn main" data-pin="'+i+'">ホームに出す</button>':'')+(isHome&&pin===c.id?'<button class="btn sub main" data-pin="">自動に戻す</button>':'')+'<button class="btn sub" data-hide="'+i+'">'+(hd?'出す':'隠す')+'</button><button class="btn sub" data-del="'+i+'">外す</button></div></li>';}).join(''):'<li class="empty">まだ登録がありません</li>';
 }
 function saveCovers(){return guard(rpc('ante_save_covers',{p_items:S.covers}),$('cMsg')).then(loadCovers);}
 function ytId(u){var m=String(u).trim().match(/(?:youtu\.be\/|[?&]v=|embed\/|shorts\/)([\w-]{11})/);return m?m[1]:'';}
