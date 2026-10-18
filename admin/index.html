@@ -5,6 +5,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
+<meta name="build" content="20261018k">
 <meta name="theme-color" content="#2f2a3a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -314,7 +315,7 @@ input,select{height:56px}
     </div>
   </section>
 
-  <div class="foot"><a href="../" target="_blank" rel="noopener">サイトを見る</a><button id="logout" type="button">合言葉を入れ直す</button></div>
+  <div class="foot"><a href="../" target="_blank" rel="noopener">サイトを見る</a><button id="updBtn" type="button">↻ 最新版に更新</button><button id="logout" type="button">合言葉を入れ直す</button></div>
 </div>
 </div>
 
@@ -665,6 +666,16 @@ $('lSave').onclick=function(){
 function drawAll(){loadCovers();loadSiteInfo();drawTiles();drawNow();drawWeek();drawSch();drawSongs();drawNews();drawReq();drawPosts();}
 (function(){var d=new Date();$('nDate').value=d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);$('sDate').value=d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);})();
 if(getPass()){load().catch(function(e){if(e.message==='auth'){setPass('');gate('');}else gate(errText(e));});}
+
+/* ---- 自動で最新版にする（ホーム画面に追加していても古いままにならないように） ---- */
+(function(){
+  var B=(document.querySelector('meta[name=build]')||{}).content||'';
+  function fresh(v){location.replace(location.pathname+'?b='+encodeURIComponent(v));}
+  fetch('../version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.json();}).then(function(d){
+    if(d&&d.v&&B&&d.v!==B&&location.search.indexOf('b='+d.v)<0)fresh(d.v);
+  }).catch(function(){});
+  var u=document.getElementById('updBtn');if(u)u.onclick=function(){fresh(Date.now());};
+})();
 })();
 </script>
 </body>
