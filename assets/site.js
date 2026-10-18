@@ -7,12 +7,12 @@
 var CONFIG={
   name:'あんて｡', kana:'あんて｡➶♡',
   tagline:'雑談×ゲーム｜史上最強のエンジョイ勢',
-  profile:[['活動名','あんて｡➶♡'],['ジャンル','雑談 × ゲーム ／ 歌ってみた'],['誕生日','4月24日'],['X','@antevx_']],
+  profile:[['活動名','あんて｡➶♡'],['ジャンル','雑談 × ゲーム ／ 歌ってみた'],['誕生日','4月24日'],['ファンネーム','てて教'],['X','@antevx_']],
   hashtags:['#あんてに届け','#おいあんて','#あんてのふぁんあーと'],
   links:[
     {label:'Mirrativ（配信）',icon:'▶',url:'https://www.mirrativ.com/user/102348987'},
     {label:'YouTube（歌ってみた）',icon:'▷',url:'https://www.youtube.com/@akumante'},
-    {label:'TikTok',icon:'♪',url:''},
+    {label:'TikTok',icon:'♪',url:'https://www.tiktok.com/@antevx_0424'},
     {label:'X',icon:'✕',url:'https://x.com/antevx_'},
     {label:'X（インフォ垢）',icon:'i',url:'https://x.com/subantevx_'},
     {label:'グッズ（SUZURI）',icon:'♡',url:'https://suzuri.jp/Ante_'}
@@ -105,7 +105,7 @@ function transitions(){
 
 /* ---------- 見出しの飾り（矢の刺さるハート） ---------- */
 var ORN='<img class="orn" src="img/logo-gold.png" alt="" width="900" height="438" loading="lazy">';
-var VER='20261015za';
+var VER='20261018a';
 function autoUpdate(){
   function chk(){try{fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
     if(!j||!j.v||j.v===VER)return;var k='verTry';if(ss(k)===j.v)return;ss(k,j.v);
