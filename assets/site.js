@@ -18,6 +18,10 @@ var CONFIG={
     {label:'グッズ（SUZURI）',icon:'♡',url:'https://suzuri.jp/Ante_'}
   ],
   liveUrl:'https://www.mirrativ.com/user/102348987',
+  /* 歌ってみた一覧: 動画を足すときは1行ずつ追加（idはYouTubeのURLの11文字） */
+  covers:[
+    {id:'iU6hErquIGQ',title:'神っぽいな / ピノキオピー',sub:'Full ver.'}
+  ],
   pickup:{title:'神っぽいな / ピノキオピー',sub:'歌ってみた Full ver.',url:'https://youtu.be/iU6hErquIGQ'},
   /* つながるまでの仮データ */
   schedule:[
@@ -105,7 +109,7 @@ function transitions(){
 
 /* ---------- 見出しの飾り（矢の刺さるハート） ---------- */
 var ORN='<img class="orn" src="img/logo-gold.png" alt="" width="900" height="438" loading="lazy">';
-var VER='20261018c';
+var VER='20261018d';
 function autoUpdate(){
   function chk(){try{fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
     if(!j||!j.v||j.v===VER)return;var k='verTry';if(ss(k)===j.v)return;ss(k,j.v);
@@ -286,6 +290,10 @@ P.songs=function(){
   });
   $('#slotReq').addEventListener('click',function(){if(pick)open(pick.title,pick.artist||'');});
   subs.push(draw);draw();
+};
+P.covers=function(){
+  var g=$('#coverGrid');if(!g)return;
+  g.innerHTML=CONFIG.covers.map(function(c){return '<a class="cv rv" href="https://youtu.be/'+esc(c.id)+'" target="_blank" rel="noopener"><span class="th"><img src="https://i.ytimg.com/vi/'+esc(c.id)+'/hqdefault.jpg" alt="" loading="lazy"><i aria-hidden="true">▶</i></span><b>'+esc(c.title)+'</b>'+(c.sub?'<small>'+esc(c.sub)+'</small>':'')+'</a>';}).join('');
 };
 P.news=function(){
   subs.push(function(){var l=$('#newsList');if(!l)return;l.innerHTML=DATA.news.length?newsRows(DATA.news):'<li class="empty" style="display:block;border:0">お知らせはまだありません。更新をお待ちください。</li>';});
