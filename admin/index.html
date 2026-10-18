@@ -121,6 +121,7 @@ details.more>summary::-webkit-details-marker{display:none}
     <button data-t="news">お知らせ</button>
     <button data-t="req">リクエスト<span class="n" id="reqN" hidden>0</span></button>
     <button data-t="post">Xポスト</button>
+    <button data-t="cover">歌ってみた</button>
   </div>
 
   <!-- 配信予定 -->
@@ -218,6 +219,23 @@ details.more>summary::-webkit-details-marker{display:none}
       <p class="msg" id="pMsg" role="status"></p>
     </div>
     <div class="card"><h2>表示中のポスト</h2><ul class="list" id="pList"></ul></div>
+  </section>
+
+  <!-- 歌ってみた -->
+  <section class="tab" id="tab-cover">
+    <div class="card">
+      <h2>歌ってみたを追加</h2>
+      <p class="hint">YouTubeの動画のURLを貼り付けてください。タイトルは自動で入ります（入らないときは手で入力）。新しく追加したものが先に表示されます。ショート動画は載せなくて大丈夫です。</p>
+      <input id="cUrl" inputmode="url" placeholder="https://www.youtube.com/watch?v=…">
+      <input id="cTitle" placeholder="タイトル（空欄なら自動で入ります）" style="margin-top:8px">
+      <button class="btn full" id="cAdd">追加する</button>
+      <p class="msg" id="cMsg" role="status"></p>
+    </div>
+    <div class="card">
+      <div class="sec-top"><h2>載せている歌ってみた <span id="cN" style="font-size:13px;opacity:.8"></span></h2></div>
+      <div id="cSeed" hidden><p class="hint">まだ管理画面に登録されていません（サイトには最初の6本が表示されています）。</p><button class="btn full" id="cSeedBtn">いまの6本をここに登録する</button></div>
+      <ul class="list" id="cList"></ul>
+    </div>
   </section>
 
   <div class="foot"><a href="../" target="_blank" rel="noopener">サイトを見る</a><button id="logout" type="button">合言葉を入れ直す</button></div>
@@ -451,7 +469,40 @@ $('pAdd').onclick=function(){
 };
 $('pList').addEventListener('click',function(e){var b=e.target.closest('[data-del]');if(!b)return;S.posts.splice(+b.dataset.del,1);savePosts().catch(function(){});});
 
-function drawAll(){drawNow();drawWeek();drawSch();drawSongs();drawNews();drawReq();drawPosts();}
+/* ---- 歌ってみた ---- */
+var COVER_SEED=[{id:'iU6hErquIGQ',title:'神っぽいな / ピノキオピー'},{id:'-53EOxCVAII',title:'ファンサ'},{id:'79Ki3coWP6M',title:'きみだけは。'},{id:'K8WoPSxqQB8',title:'ヴァンパイア'},{id:'4gxbKkyLXFU',title:'グッバイ宣言'},{id:'up13KqZrLtU',title:'小悪魔だってかまわない！'}];
+S.covers=[];
+function loadCovers(){
+  return fetch(SB+'ante_covers_public',{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:'{}'})
+   .then(function(r){return r.ok?r.json():[];}).catch(function(){return [];})
+   .then(function(d){S.covers=Array.isArray(d)?d:[];drawCovers();});
+}
+function drawCovers(){
+  $('cN').textContent=S.covers.length?'（'+S.covers.length+'本）':'';
+  $('cSeed').hidden=S.covers.length>0;
+  $('cList').innerHTML=S.covers.length?S.covers.map(function(c,i){return '<li><div class="m"><div class="t">'+esc(c.title)+'</div><div class="s" style="opacity:1"><a href="https://youtu.be/'+esc(c.id)+'" target="_blank" rel="noopener" style="color:var(--gold-l)">https://youtu.be/'+esc(c.id)+'</a></div></div><div class="acts"><button class="btn sub sm" data-del="'+i+'">外す</button></div></li>';}).join(''):'<li class="empty">まだ登録がありません</li>';
+}
+function saveCovers(){return guard(rpc('ante_save_covers',{p_items:S.covers}),$('cMsg')).then(loadCovers);}
+function ytId(u){var m=String(u).trim().match(/(?:youtu\.be\/|[?&]v=|embed\/|shorts\/)([\w-]{11})/);return m?m[1]:'';}
+$('cAdd').onclick=function(){
+  var id=ytId($('cUrl').value),t=$('cTitle').value.trim();
+  if(!id){say($('cMsg'),'YouTubeの動画のURLを貼り付けてください','err');return;}
+  if(S.covers.some(function(c){return c.id===id;})){say($('cMsg'),'すでに載せています','err');return;}
+  function go(title){
+    S.covers.unshift({id:id,title:title.slice(0,100)});say($('cMsg'),'保存中…');
+    saveCovers().then(function(){say($('cMsg'),'追加しました。まもなくサイトに反映されます','ok');$('cUrl').value='';$('cTitle').value='';}).catch(function(){S.covers.shift();});
+  }
+  if(t){go(t);return;}
+  say($('cMsg'),'タイトルを取得中…');
+  fetch('https://www.youtube.com/oembed?format=json&url='+encodeURIComponent('https://www.youtube.com/watch?v='+id))
+   .then(function(r){if(!r.ok)throw 0;return r.json();})
+   .then(function(d){go(d.title||'');})
+   .catch(function(){say($('cMsg'),'タイトルを取得できませんでした。タイトルを入力してから、もう一度「追加する」を押してください','err');});
+};
+$('cList').addEventListener('click',function(e){var b=e.target.closest('[data-del]');if(!b)return;if(!confirm('この動画をサイトから外します。よろしいですか？（YouTube上の動画は消えません）'))return;var rm=S.covers.splice(+b.dataset.del,1);saveCovers().catch(function(){S.covers.splice(+b.dataset.del,0,rm[0]);drawCovers();});});
+$('cSeedBtn').onclick=function(){S.covers=COVER_SEED.slice();say($('cMsg'),'保存中…');saveCovers().then(function(){say($('cMsg'),'登録しました','ok');}).catch(function(){S.covers=[];drawCovers();});};
+
+function drawAll(){loadCovers();drawNow();drawWeek();drawSch();drawSongs();drawNews();drawReq();drawPosts();}
 (function(){var d=new Date();$('nDate').value=d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);$('sDate').value=d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);})();
 if(getPass()){load().catch(function(e){if(e.message==='auth'){setPass('');gate('');}else gate(errText(e));});}
 })();

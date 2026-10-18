@@ -114,7 +114,7 @@ function transitions(){
 
 /* ---------- 見出しの飾り（矢の刺さるハート） ---------- */
 var ORN='<img class="orn" src="img/logo-gold.png" alt="" width="900" height="438" loading="lazy">';
-var VER='20261018g';
+var VER='20261018h';
 function autoUpdate(){
   function chk(){try{fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
     if(!j||!j.v||j.v===VER)return;var k='verTry';if(ss(k)===j.v)return;ss(k,j.v);
@@ -298,14 +298,20 @@ P.songs=function(){
 };
 P.covers=function(){
   var g=$('#coverGrid');if(!g)return;
-  g.innerHTML=CONFIG.covers.map(function(c){return '<a class="cv rv" href="https://youtu.be/'+esc(c.id)+'" target="_blank" rel="noopener"><span class="th"><img src="https://i.ytimg.com/vi/'+esc(c.id)+'/hqdefault.jpg" alt="" loading="lazy"><i aria-hidden="true">▶</i></span><b>'+esc(c.title)+'</b>'+(c.sub?'<small>'+esc(c.sub)+'</small>':'')+'</a>';}).join('');
+  var list=CONFIG.covers;
+  function render(){
+    g.innerHTML=list.map(function(c){return '<a class="cv rv in" href="https://youtu.be/'+esc(c.id)+'" target="_blank" rel="noopener"><span class="th"><img src="https://i.ytimg.com/vi/'+esc(c.id)+'/hqdefault.jpg" alt="" loading="lazy"><i aria-hidden="true">▶</i></span><b>'+esc(c.title)+'</b>'+(c.sub?'<small>'+esc(c.sub)+'</small>':'')+'</a>';}).join('');
+  }
+  render();
+  /* 管理画面で登録した一覧があれば、そちらを優先 */
+  rpc('ante_covers_public').then(function(d){if(Array.isArray(d)&&d.length){list=d.filter(function(c){return c&&/^[\w-]{11}$/.test(c.id);});render();}}).catch(function(){});
   var md=document.createElement('div');md.id='cvm';md.hidden=true;md.setAttribute('role','dialog');md.setAttribute('aria-modal','true');md.setAttribute('aria-label','動画プレイヤー');
   md.innerHTML='<div class="bx"><button type="button" class="x" aria-label="閉じる">×</button><div class="yt-fr"><iframe title="歌ってみた" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div><p class="tt"></p><a class="yo" target="_blank" rel="noopener">YouTubeで開く ›</a></div>';
   document.body.appendChild(md);
   var fr=$('iframe',md);
   function shut(){md.hidden=true;fr.src='about:blank';document.body.style.overflow='';}
   function play(c){fr.src='https://www.youtube-nocookie.com/embed/'+c.id+'?autoplay=1&rel=0&playsinline=1';$('.tt',md).textContent=c.title;$('.yo',md).href='https://youtu.be/'+c.id;md.hidden=false;document.body.style.overflow='hidden';$('.x',md).focus();}
-  $$('.cv',g).forEach(function(a,i){a.addEventListener('click',function(e){e.preventDefault();play(CONFIG.covers[i]);});});
+  g.addEventListener('click',function(e){var a=e.target.closest('.cv');if(!a)return;e.preventDefault();var i=$$('.cv',g).indexOf(a);if(list[i])play(list[i]);});
   md.addEventListener('click',function(e){if(e.target===md||e.target.classList.contains('x'))shut();});
   document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!md.hidden)shut();});
 };
