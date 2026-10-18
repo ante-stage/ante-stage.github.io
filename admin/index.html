@@ -109,6 +109,8 @@ details.more>summary::-webkit-details-marker{display:none}
 
 [hidden]{display:none!important}
 /* ===== タッチパネル方式 ===== */
+.panelHead{margin-top:26px;font-family:var(--maru);font-weight:700;font-size:20px;letter-spacing:.1em;color:var(--gold-l);text-align:center}
+.panelHead small{display:block;font-family:var(--sans);font-weight:400;font-size:12.5px;letter-spacing:.04em;color:var(--sub);margin-top:2px}
 .panel{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:24px}
 .panel button{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:136px;padding:14px 8px;border-radius:16px;border:2px solid var(--gold);background:linear-gradient(180deg,rgba(232,84,107,.28),rgba(232,84,107,.12));color:var(--ink);box-shadow:5px 5px 0 var(--gold);cursor:pointer;text-align:center}
 .panel button:active{transform:translate(4px,4px);box-shadow:1px 1px 0 var(--gold)}
@@ -143,6 +145,7 @@ input,select{height:56px}
 </div>
 
 <div id="app" hidden>
+  <p class="panelHead" id="panelHead">♛ 管理メニュー<small>さわって選んでください</small></p>
   <div class="panel" id="panel">
     <button data-t="sch"><span class="ic">◷</span><span class="lb">配信予定</span><span class="st" id="tlSch"></span></button>
     <button data-t="song"><span class="ic">♪</span><span class="lb">歌える曲</span><span class="st" id="tlSong"></span></button>
@@ -311,9 +314,9 @@ function guard(p,el){return p.catch(function(e){if(e.message==='auth'){setPass('
 /* tabs */
 var TITLES={sch:'配信予定',song:'歌える曲',cover:'歌ってみた',news:'お知らせ',req:'リクエスト',post:'Xポスト'};
 function openTab(t){[].forEach.call(document.querySelectorAll('.tab'),function(x){x.classList.toggle('on',x.id==='tab-'+t);});
-  $('panel').hidden=true;$('backbar').hidden=false;$('backTitle').textContent=TITLES[t]||'';window.scrollTo(0,0);}
+  $('panel').hidden=true;$('panelHead').hidden=true;$('backbar').hidden=false;$('backTitle').textContent=TITLES[t]||'';window.scrollTo(0,0);}
 function openPanel(){[].forEach.call(document.querySelectorAll('.tab'),function(x){x.classList.remove('on');});
-  $('panel').hidden=false;$('backbar').hidden=true;window.scrollTo(0,0);}
+  $('panel').hidden=false;$('panelHead').hidden=false;$('backbar').hidden=true;window.scrollTo(0,0);}
 $('panel').addEventListener('click',function(e){var b=e.target.closest('button');if(b)openTab(b.dataset.t);});
 $('backBtn').onclick=openPanel;
 function drawTiles(){
