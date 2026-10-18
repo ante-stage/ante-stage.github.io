@@ -920,3 +920,10 @@ html.pt-in::after{bottom:-80px}
 .cv .th i{position:absolute;inset:0;margin:auto;width:46px;height:46px;border-radius:50%;background:rgba(232,84,107,.92);color:#fff;display:grid;place-items:center;font-style:normal;font-size:18px;padding-left:3px}
 .cv b{display:block;font-size:15px;line-height:1.5}
 .cv small{display:block;font-size:12px;color:var(--gold-l)}
+
+#cvm{position:fixed;inset:0;z-index:300;background:rgba(10,6,16,.88);display:grid;place-items:center;padding:16px}
+#cvm[hidden]{display:none}
+#cvm .bx{position:relative;width:min(100%,720px);padding:14px;border:2px solid var(--gold);border-radius:16px;background:#1d1728;box-shadow:0 0 0 3px var(--red)}
+#cvm .x{position:absolute;right:-6px;top:-46px;width:38px;height:38px;border-radius:50%;border:1.5px solid var(--gold);background:#1d1728;color:var(--gold-l);font-size:22px;line-height:1;cursor:pointer}
+#cvm .tt{font-weight:800;font-size:15px;line-height:1.5;margin:12px 0 8px}
+#cvm .yo{font-size:13px;font-weight:800;color:var(--gold-l);text-decoration:underline}
