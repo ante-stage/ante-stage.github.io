@@ -114,7 +114,7 @@ function transitions(){
 
 /* ---------- 見出しの飾り（矢の刺さるハート） ---------- */
 var ORN='<img class="orn" src="img/logo-gold.png" alt="" width="900" height="438" loading="lazy">';
-var VER='20261018i';
+var VER='20261018j';
 function autoUpdate(){
   function chk(){try{fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
     if(!j||!j.v||j.v===VER)return;var k='verTry';if(ss(k)===j.v)return;ss(k,j.v);
@@ -219,12 +219,44 @@ function weekRange(){var t=new Date();t.setHours(0,0,0,0);var e=new Date(t);e.se
 function newsRows(list){return list.map(function(n){var d=new Date(n.date+'T00:00:00');return '<li class="nw"><time datetime="'+esc(n.date)+'">'+d.getFullYear()+'.'+('0'+(d.getMonth()+1)).slice(-2)+'.'+('0'+d.getDate()).slice(-2)+'</time><p>'+esc(n.body)+'</p></li>';}).join('');}
 /* ---------- ページごと ---------- */
 var P={};
+function paintPick(){var pk=CONFIG.pickup;if(!pk||!$('#pickCard'))return;$('#pickCard').href=pk.url;$('#pickTitle').textContent=pk.title;$('#pickSub').textContent=pk.sub;
+  var m=String(pk.url).match(/(?:youtu\.be\/|[?&]v=|embed\/|shorts\/)([\w-]{11})/);
+  if(m){var src='https://www.youtube-nocookie.com/embed/'+m[1]+'?rel=0&playsinline=1',fr=$('#ytFrame');if(fr.getAttribute('src')!==src)fr.src=src;$('#ytBox').style.display='';}else $('#ytBox').style.display='none';}
+/* 「歌ってみた」の先頭の動画を、最新の歌ってみたとして表示 */
+function loadPickup(){rpc('ante_covers_public').then(function(l){if(Array.isArray(l)&&l.length&&/^[\w-]{11}$/.test(l[0].id)){CONFIG.pickup={title:l[0].title,sub:'歌ってみた',url:'https://youtu.be/'+l[0].id};paintPick();}}).catch(function(){});}
+/* 更新ページで変えられるプロフィール・リンク */
+var LKEYS=['mirrativ','youtube','tiktok','x','xinfo','goods'];
+function mergeSite(s){
+  if(!s)return;var p=s.profile,l=s.links;
+  if(p){
+    if(typeof p.tagline==='string'&&p.tagline.trim())CONFIG.tagline=p.tagline.trim();
+    var rows=[['活動名',p.name],['ジャンル',p.genre],['誕生日',p.birthday],['ファンネーム',p.fanname],['X',p.xid]].filter(function(r){return r[1]&&String(r[1]).trim();});
+    if(rows.length)CONFIG.profile=rows;
+    if(Array.isArray(p.hashtags))CONFIG.hashtags=p.hashtags.filter(Boolean);
+  }
+  if(l){LKEYS.forEach(function(k,i){if(typeof l[k]==='string'){var u=l[k].trim();CONFIG.links[i].url=/^https?:\/\//.test(u)?u:'';}});
+    if(CONFIG.links[0].url)CONFIG.liveUrl=CONFIG.links[0].url;}
+  paintSite();
+}
+function paintSite(){
+  var t=$('.hero .tagline');if(t)t.textContent=CONFIG.tagline;
+  if($('#liveBtn'))$('#liveBtn').href=CONFIG.liveUrl;
+  var pt=$('#pfTag');if(pt)pt.textContent=CONFIG.tagline;
+  var dl=$('#pfDl');if(dl)dl.innerHTML=CONFIG.profile.map(function(r){return '<dt>'+esc(r[0])+'</dt><dd>'+esc(r[1])+'</dd>';}).join('');
+  var tg=$('#tags');if(tg)tg.innerHTML=CONFIG.hashtags.map(function(x){return '<button class="chip" data-t="'+esc(x)+'">'+esc(x)+'</button>';}).join('');
+  links('#links');
+  [['wMir',0],['wYt',1],['wTt',2]].forEach(function(w){var el=$('#'+w[0]);if(!el)return;var u=CONFIG.links[w[1]].url;
+    el.outerHTML=u?'<a class="btn sm" id="'+w[0]+'" href="'+esc(u)+'" target="_blank" rel="noopener">'+({wMir:'配信を見に行く ›',wYt:'チャンネルへ ›',wTt:'TikTokへ ›'})[w[0]]+'</a>':'<span class="btn sm ghost" id="'+w[0]+'" aria-disabled="true">準備中</span>';});
+}
+function loadSite(){
+  var c=null;try{c=JSON.parse(ss('antesite')||'null');}catch(e){}
+  if(c&&Date.now()-c.t<45000){mergeSite(c.d);return;}
+  rpc('ante_site_public').then(function(d){if(d){ss('antesite',JSON.stringify({t:Date.now(),d:d}));mergeSite(d);}}).catch(function(){});
+}
 P.home=function(){
   var vis=$('.hero .vis');if(vis&&!$('.sw',vis)){vis.insertAdjacentHTML('beforeend','<i class="sw a" aria-hidden="true"></i><i class="sw b" aria-hidden="true"></i>');}
   $('#liveBtn').href=CONFIG.liveUrl;
-  var pk=CONFIG.pickup;if(pk){$('#pickCard').href=pk.url;$('#pickTitle').textContent=pk.title;$('#pickSub').textContent=pk.sub;
-    var m=String(pk.url).match(/(?:youtu\.be\/|[?&]v=|embed\/|shorts\/)([\w-]{11})/);
-    if(m)$('#ytFrame').src='https://www.youtube-nocookie.com/embed/'+m[1]+'?rel=0&playsinline=1';else $('#ytBox').style.display='none';}
+  paintPick();loadPickup();
   subs.push(function(){
     var u=schedRows().slice(0,4);
     var nb=$('#homeNews');if(nb){var nn=DATA.news.slice(0,3);$('#newsHome').hidden=!nn.length;nb.innerHTML=newsRows(nn);}
@@ -317,9 +349,7 @@ P.covers=function(){
 };
 P.news=function(){
   subs.push(function(){var l=$('#newsList');if(!l)return;l.innerHTML=DATA.news.length?newsRows(DATA.news):'<li class="empty" style="display:block;border:0">お知らせはまだありません。更新をお待ちください。</li>';});
-  var pk=CONFIG.pickup;if(pk){$('#pickCard').href=pk.url;$('#pickTitle').textContent=pk.title;$('#pickSub').textContent=pk.sub;
-    var m=String(pk.url).match(/(?:youtu\.be\/|[?&]v=|embed\/|shorts\/)([\w-]{11})/);
-    if(m)$('#ytFrame').src='https://www.youtube-nocookie.com/embed/'+m[1]+'?rel=0&playsinline=1';else $('#ytBox').style.display='none';}
+  paintPick();loadPickup();
   $('#tags').innerHTML=CONFIG.hashtags.map(function(t){return '<button class="chip" data-t="'+esc(t)+'">'+esc(t)+'</button>';}).join('');
   copyTags('#tags');links('#links');
   var tw=false;
@@ -337,6 +367,7 @@ P.news=function(){
 /* ---------- 起動 ---------- */
 chrome();updater();autoUpdate();decorate();transitions();opening();
 if(P[page])P[page]();
+loadSite();
 fx();lightbox();reveal();
 load();
 })();

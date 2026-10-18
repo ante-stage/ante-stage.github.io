@@ -153,6 +153,7 @@ input,select{height:56px}
     <button data-t="news"><span class="ic">✦</span><span class="lb">お知らせ</span><span class="st" id="tlNews"></span></button>
     <button data-t="req"><span class="ic">♡</span><span class="lb">リクエスト</span><span class="n" id="reqN" hidden>0</span><span class="st" id="tlReq"></span></button>
     <button data-t="post"><span class="ic">✕</span><span class="lb">Xポスト</span><span class="st" id="tlPost"></span></button>
+    <button data-t="site" class="wide"><span class="ic">✿</span><span class="lb">プロフィール・リンク<span class="st" style="display:block">キャッチフレーズ・誕生日・SNSのURLなど</span></span></button>
   </div>
   <div class="backbar" id="backbar" hidden><button class="btn sub" id="backBtn" type="button">‹ もどる</button><b id="backTitle"></b></div>
 
@@ -283,6 +284,36 @@ input,select{height:56px}
     </div>
   </section>
 
+  <!-- プロフィール・リンク -->
+  <section class="tab" id="tab-site">
+    <div class="card">
+      <h2>プロフィール</h2>
+      <p class="hint">サイトのプロフィールページとホームに出る内容です。変えたい所だけ直して、一番下の「保存する」を押してください。</p>
+      <label for="sTag">キャッチフレーズ</label><input id="sTag" maxlength="60" autocomplete="off">
+      <label for="sName">活動名</label><input id="sName" maxlength="40" autocomplete="off">
+      <label for="sGenre">ジャンル</label><input id="sGenre" maxlength="40" autocomplete="off">
+      <label for="sBirth">誕生日</label><input id="sBirth" maxlength="20" autocomplete="off" placeholder="例）4月24日">
+      <label for="sFan">ファンネーム</label><input id="sFan" maxlength="30" autocomplete="off">
+      <label for="sXid">Xのアカウント名</label><input id="sXid" maxlength="40" autocomplete="off" placeholder="例）@antevx_">
+      <label for="sTags">ファンタグ<span class="opt">1行に1つ</span></label>
+      <textarea id="sTags" style="min-height:110px" placeholder="#あんてに届け"></textarea>
+      <button class="btn full" id="sSave">プロフィールを保存する</button>
+      <p class="msg" id="sMsg" role="status"></p>
+    </div>
+    <div class="card">
+      <h2>リンク（SNSなどのURL）</h2>
+      <p class="hint">空欄にすると、サイトでは「準備中」と表示されます。</p>
+      <label for="lMir">Mirrativ（配信）</label><input id="lMir" inputmode="url" autocomplete="off" placeholder="https://…">
+      <label for="lYt">YouTube（歌ってみた）</label><input id="lYt" inputmode="url" autocomplete="off" placeholder="https://…">
+      <label for="lTt">TikTok</label><input id="lTt" inputmode="url" autocomplete="off" placeholder="https://…">
+      <label for="lX">X</label><input id="lX" inputmode="url" autocomplete="off" placeholder="https://…">
+      <label for="lXi">X（インフォ垢）</label><input id="lXi" inputmode="url" autocomplete="off" placeholder="https://…">
+      <label for="lGoods">グッズ（SUZURI）</label><input id="lGoods" inputmode="url" autocomplete="off" placeholder="https://…">
+      <button class="btn full" id="lSave">リンクを保存する</button>
+      <p class="msg" id="lMsg" role="status"></p>
+    </div>
+  </section>
+
   <div class="foot"><a href="../" target="_blank" rel="noopener">サイトを見る</a><button id="logout" type="button">合言葉を入れ直す</button></div>
 </div>
 </div>
@@ -312,7 +343,7 @@ function gate(msg){$('app').hidden=true;$('gate').hidden=false;say($('gateMsg'),
 function guard(p,el){return p.catch(function(e){if(e.message==='auth'){setPass('');gate('合言葉が違うようです。ご確認のうえ、もう一度ご入力ください');}else{say(el,errText(e),'err');}throw e;});}
 
 /* tabs */
-var TITLES={sch:'配信予定',song:'歌える曲',cover:'歌ってみた',news:'お知らせ',req:'リクエスト',post:'Xポスト'};
+var TITLES={sch:'配信予定',song:'歌える曲',cover:'歌ってみた',site:'プロフィール・リンク',news:'お知らせ',req:'リクエスト',post:'Xポスト'};
 function openTab(t){[].forEach.call(document.querySelectorAll('.tab'),function(x){x.classList.toggle('on',x.id==='tab-'+t);});
   $('panel').hidden=true;$('panelHead').hidden=true;$('backbar').hidden=false;$('backTitle').textContent=TITLES[t]||'';window.scrollTo(0,0);}
 function openPanel(){[].forEach.call(document.querySelectorAll('.tab'),function(x){x.classList.remove('on');});
@@ -600,7 +631,38 @@ $('cAdd').onclick=function(){
 $('cList').addEventListener('click',function(e){var b=e.target.closest('[data-del]');if(!b)return;if(!confirm('この動画をサイトから外します。よろしいですか？（YouTube上の動画は消えません）'))return;var rm=S.covers.splice(+b.dataset.del,1);saveCovers().catch(function(){S.covers.splice(+b.dataset.del,0,rm[0]);drawCovers();});});
 $('cSeedBtn').onclick=function(){S.covers=COVER_SEED.slice();say($('cMsg'),'保存中…');saveCovers().then(function(){say($('cMsg'),'登録しました','ok');}).catch(function(){S.covers=[];drawCovers();});};
 
-function drawAll(){loadCovers();drawTiles();drawNow();drawWeek();drawSch();drawSongs();drawNews();drawReq();drawPosts();}
+/* ---- プロフィール・リンク ---- */
+var SITE_DEF={profile:{tagline:'雑談×ゲーム｜史上最強のエンジョイ勢',name:'あんて｡➶♡',genre:'雑談 × ゲーム ／ 歌ってみた',birthday:'4月24日',fanname:'てて教',xid:'@antevx_',hashtags:['#あんてに届け','#おいあんて','#あんてのふぁんあーと']},
+  links:{mirrativ:'https://www.mirrativ.com/user/102348987',youtube:'https://www.youtube.com/@akumante',tiktok:'https://www.tiktok.com/@antevx_0424',x:'https://x.com/antevx_',xinfo:'https://x.com/subantevx_',goods:'https://suzuri.jp/Ante_'}};
+S.site={};
+var LMAP=[['mirrativ','lMir'],['youtube','lYt'],['tiktok','lTt'],['x','lX'],['xinfo','lXi'],['goods','lGoods']];
+function fillSite(){
+  var p=Object.assign({},SITE_DEF.profile,S.site.profile||{}),l=Object.assign({},SITE_DEF.links,S.site.links||{});
+  $('sTag').value=p.tagline||'';$('sName').value=p.name||'';$('sGenre').value=p.genre||'';$('sBirth').value=p.birthday||'';$('sFan').value=p.fanname||'';$('sXid').value=p.xid||'';
+  $('sTags').value=(p.hashtags||[]).join('\n');
+  LMAP.forEach(function(m){$(m[1]).value=l[m[0]]||'';});
+}
+function loadSiteInfo(){
+  return fetch(SB+'ante_site_public',{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:'{}'})
+   .then(function(r){return r.ok?r.json():{};}).catch(function(){return {};})
+   .then(function(d){S.site=d||{};fillSite();});
+}
+$('sSave').onclick=function(){
+  var tags=$('sTags').value.split(/\r?\n/).map(function(x){x=x.trim();return x&&x.charAt(0)!=='#'&&x.charAt(0)!=='＃'?'#'+x:x;}).filter(Boolean).slice(0,10);
+  var v={tagline:$('sTag').value.trim(),name:$('sName').value.trim(),genre:$('sGenre').value.trim(),birthday:$('sBirth').value.trim(),fanname:$('sFan').value.trim(),xid:$('sXid').value.trim(),hashtags:tags};
+  if(!v.tagline){say($('sMsg'),'キャッチフレーズをご入力ください','err');return;}
+  say($('sMsg'),'保存中…');
+  guard(rpc('ante_save_site',{p_key:'profile',p_value:v}),$('sMsg')).then(function(){S.site.profile=v;say($('sMsg'),'保存しました。まもなくサイトに反映されます','ok');}).catch(function(){});
+};
+$('lSave').onclick=function(){
+  var v={},bad='';
+  LMAP.forEach(function(m){var u=$(m[1]).value.trim();if(u&&!/^https?:\/\//.test(u))bad=bad||'URLは「https://」から始めてください';v[m[0]]=u;});
+  if(bad){say($('lMsg'),bad,'err');return;}
+  say($('lMsg'),'保存中…');
+  guard(rpc('ante_save_site',{p_key:'links',p_value:v}),$('lMsg')).then(function(){S.site.links=v;say($('lMsg'),'保存しました。まもなくサイトに反映されます','ok');}).catch(function(){});
+};
+
+function drawAll(){loadCovers();loadSiteInfo();drawTiles();drawNow();drawWeek();drawSch();drawSongs();drawNews();drawReq();drawPosts();}
 (function(){var d=new Date();$('nDate').value=d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);$('sDate').value=d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);})();
 if(getPass()){load().catch(function(e){if(e.message==='auth'){setPass('');gate('');}else gate(errText(e));});}
 })();
