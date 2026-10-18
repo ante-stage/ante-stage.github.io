@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20261018k">
+<meta name="build" content="20261018l">
 <meta name="theme-color" content="#2f2a3a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -315,7 +315,7 @@ input,select{height:56px}
     </div>
   </section>
 
-  <div class="foot"><a href="../" target="_blank" rel="noopener">サイトを見る</a><button id="updBtn" type="button">↻ 最新版に更新</button><button id="logout" type="button">合言葉を入れ直す</button></div>
+  <div class="foot"><a href="../" target="_blank" rel="noopener">サイトを見る</a><button id="updBtn" type="button">↻ 最新版に更新</button></div>
 </div>
 </div>
 
@@ -367,7 +367,6 @@ $('enter').onclick=function(){var v=$('pass').value.trim();if(!v){say($('gateMsg
   say($('gateMsg'),'確認中…');load().catch(function(e){setPass('');gate(errText(e));});};
 $('eye').onclick=function(){var p=$('pass'),h=p.type==='password';p.type=h?'text':'password';$('eye').textContent=h?'隠す':'表示';};
 $('pass').addEventListener('keydown',function(e){if(e.key==='Enter')$('enter').click();});
-$('logout').onclick=function(){setPass('');gate('');};
 
 /* ---- 配信予定 ---- */
 var wk=['日','月','火','水','木','金','土'];
