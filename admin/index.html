@@ -173,15 +173,27 @@ details.more>summary::-webkit-details-marker{display:none}
   <!-- 歌える曲 -->
   <section class="tab" id="tab-song">
     <div class="card">
-      <h2>曲をまとめて追加</h2>
-      <p class="hint">1行に1曲ずつ入力してください。「曲名 / アーティスト / ジャンル」の形式です（アーティストとジャンルは省略できます）。Excelやスプレッドシートからコピーして貼り付けることもできます。</p>
-      <textarea id="bulk" placeholder="神っぽいな / ピノキオピー / ボカロ&#10;アイドル / YOASOBI / J-POP"></textarea>
-      <button class="btn full" id="bAdd">追加する</button>
+      <h2>1曲ずつ追加</h2>
+      <input id="oneTitle" maxlength="120" autocomplete="off" placeholder="曲名（必須）　例）神っぽいな">
+      <input id="oneArtist" maxlength="80" autocomplete="off" placeholder="アーティスト（なくてもOK）" style="margin-top:8px">
+      <select id="oneGenre" aria-label="ジャンル" style="margin-top:8px"></select>
+      <button class="btn full" id="oneAdd">この曲を追加</button>
+      <p class="hint">追加後もジャンルは残るので、同じジャンルの曲を続けて足せます。</p>
+      <p class="msg" id="oneMsg" role="status"></p>
+    </div>
+    <div class="card">
+      <h2>まとめて追加（たくさん足したいとき）</h2>
+      <p class="hint">1行に1曲ずつ入力してください。「曲名 / アーティスト」の形で書くと、アーティストも分かれます。「【ボカロ】」のように書いた行は、その下の曲のジャンルになります。Excelやスプレッドシートからコピーして貼り付けることもできます。</p>
+      <textarea id="bulk" placeholder="【ボカロ】&#10;神っぽいな / ピノキオピー&#10;【アイドル】&#10;アイドル / YOASOBI"></textarea>
+      <p class="hint" id="bPreview"></p>
+      <button class="btn full" id="bAdd">貼り付けた曲をリストに追加</button>
+      <button class="btn sub full" id="bReplace" style="margin-top:8px">全部入れ替える（上級者向け）</button>
       <p class="msg" id="bMsg" role="status"></p>
     </div>
     <div class="card">
-      <div class="sec-top"><h2>曲リスト <span id="songN"></span></h2><button class="btn sub sm" id="songClear">全部消す</button></div>
-      <input id="songQ" placeholder="曲名・アーティストで探す" style="margin:12px 0 4px">
+      <div class="sec-top"><h2>いま載っている曲 <span id="songN"></span></h2></div>
+      <input id="songQ" placeholder="曲名・アーティストで絞り込み" style="margin:12px 0 8px">
+      <select id="songG" aria-label="ジャンルで絞り込み" style="margin-bottom:4px"></select>
       <ul class="list" id="songList"></ul>
     </div>
   </section>
@@ -395,30 +407,65 @@ function saveSchW(){return guard(rpc('ante_save_schedule',{p_items:S.sch}),$('wM
 })();
 
 /* ---- 歌える曲 ---- */
-function parseLine(l){
-  var p=l.indexOf('\t')>=0?l.split('\t'):l.split(/\s+[\/／｜|]\s+/);
-  p=p.map(function(x){return x.trim();});
-  return {title:p[0]||'',artist:p[1]||'',genre:p[2]||''};
+var GENRES=['ボカロ','アイドル','J-POP','アニソン','洋楽','演歌','その他'];
+function genreOpts(cur,blank){var gs=GENRES.slice();S.songs.forEach(function(s){if(s.genre&&gs.indexOf(s.genre)<0)gs.push(s.genre);});if(cur&&gs.indexOf(cur)<0)gs.push(cur);
+  return '<option value="">'+blank+'</option>'+gs.map(function(g){return '<option'+(g===cur?' selected':'')+'>'+esc(g)+'</option>';}).join('');}
+function songKey(s){return (String(s.title||'')+'\u0001'+String(s.artist||'')).replace(/[\s\u3000]/g,'').toLowerCase();}
+function songNorm(x){return String(x||'').normalize('NFKC').toLowerCase().replace(/[\s\u3000]/g,'').replace(/[ァ-ヶ]/g,function(c){return String.fromCharCode(c.charCodeAt(0)-0x60);});}
+function parseSongs(text){
+  var out=[],genre='';
+  String(text).split(/\r?\n/).forEach(function(raw){
+    var line=raw.replace(/\u3000/g,' ').trim();if(!line)return;
+    var hd=line.match(/^【(.+?)】$/)||line.match(/^[#＃■◆●]\s*(.+)$/)||line.match(/^\[(.+?)\]$/);
+    if(hd){genre=hd[1].trim().slice(0,30);return;}
+    line=line.replace(/^(\d+[\.\)．、:：]?\s+|[・\-–―*]\s*)/,'');
+    var p=line.indexOf('\t')>=0?line.split('\t'):line.split(/\s+[\/／｜|]\s+|[\/／｜|]/);
+    p=p.map(function(x){return x.trim();});
+    if(p[0])out.push({title:p[0].slice(0,120),artist:(p[1]||'').slice(0,80),genre:(p[2]||genre).slice(0,30)});
+  });
+  return out;
 }
 function drawSongs(){
-  var q=$('songQ').value.trim().toLowerCase();
-  $('songN').textContent='（'+S.songs.length+'曲）';
-  var rows=[];S.songs.forEach(function(s,i){if(!q||((s.title||'')+(s.artist||'')).toLowerCase().indexOf(q)>=0)rows.push([s,i]);});
-  $('songList').innerHTML=rows.length?rows.slice(0,200).map(function(r){var s=r[0];return '<li><div class="m"><div class="t">'+esc(s.title)+'</div><div class="s">'+esc(s.artist||'')+(s.genre?' ・ '+esc(s.genre):'')+'</div></div><div class="acts"><button class="btn sub sm" data-del="'+r[1]+'">消す</button></div></li>';}).join('')+(rows.length>200?'<li class="empty">先頭200曲のみ表示しています。探すときは上の検索をご利用ください</li>':''):'<li class="empty">'+(S.songs.length?'見つかりませんでした':'まだ曲がありません')+'</li>';
+  var q=songNorm($('songQ').value),g=$('songG').value,keep=$('oneGenre').value;
+  $('oneGenre').innerHTML=genreOpts(keep,'ジャンル（選ばなくてもOK）');
+  var gcur=g;$('songG').innerHTML=genreOpts(gcur,'すべてのジャンル');
+  var rows=[];S.songs.forEach(function(s,i){if((!g||s.genre===g)&&(!q||songNorm((s.title||'')+' '+(s.artist||'')).indexOf(q)>=0))rows.push([s,i]);});
+  $('songN').textContent=S.songs.length?'（'+(rows.length<S.songs.length?rows.length+' / ':'')+S.songs.length+'曲）':'';
+  $('songList').innerHTML=rows.length?rows.slice(0,200).map(function(r){var s=r[0];return '<li><div class="m"><div class="t">'+esc(s.title)+'</div><div class="s">'+esc(s.artist||'')+'</div><select class="gSel" data-i="'+r[1]+'" aria-label="ジャンル" style="height:38px;font-size:14px;margin-top:6px">'+genreOpts(s.genre||'','ジャンルなし')+'</select></div><div class="acts"><button class="btn sub sm" data-del="'+r[1]+'">消す</button></div></li>';}).join('')+(rows.length>200?'<li class="empty">先頭200曲のみ表示しています。探すときは上の絞り込みをご利用ください</li>':''):'<li class="empty">'+(S.songs.length?'条件に合う曲がありません':'まだ曲がありません')+'</li>';
 }
-function saveSongs(){return guard(rpc('ante_save_songs',{p_items:S.songs}),$('bMsg')).then(load);}
-$('bAdd').onclick=function(){
-  var lines=$('bulk').value.split(/\r?\n/).map(function(l){return l.trim();}).filter(Boolean);
-  var add=lines.map(parseLine).filter(function(s){return s.title;});
-  if(!add.length){say($('bMsg'),'追加する曲をご入力ください','err');return;}
-  var have={};S.songs.forEach(function(s){have[(s.title+'|'+(s.artist||'')).toLowerCase()]=1;});
-  var n=0;add.forEach(function(s){var k=(s.title+'|'+s.artist).toLowerCase();if(!have[k]){have[k]=1;S.songs.push(s);n++;}});
-  say($('bMsg'),'保存中…');
-  saveSongs().then(function(){say($('bMsg'),n+'曲を追加しました'+(add.length-n?'（重複'+(add.length-n)+'曲はスキップ）':''),'ok');$('bulk').value='';}).catch(function(){});
+function saveSongs(msgEl){return guard(rpc('ante_save_songs',{p_items:S.songs}),msgEl||$('bMsg')).then(load);}
+/* 追加: いまのリストの後ろに足す（同じ曲名+アーティストは足さない） */
+function addSongs(add,btn,msgEl,onOk){
+  var have={},n=0;S.songs.forEach(function(s){have[songKey(s)]=1;});
+  var before=S.songs.slice();
+  add.forEach(function(s){var k=songKey(s);if(!have[k]){have[k]=1;S.songs.push(s);n++;}});
+  if(!n){say(msgEl,'すでにリストに載っている曲でした（追加なし）');return;}
+  say(msgEl,'保存中…');btn.disabled=true;
+  saveSongs(msgEl).then(function(){say(msgEl,n+'曲を追加しました'+(add.length-n?'（すでにあった'+(add.length-n)+'曲は飛ばしました）':'')+'。まもなくサイトに反映されます','ok');onOk();})
+   .catch(function(){S.songs=before;drawSongs();}).then(function(){btn.disabled=false;});
+}
+$('oneAdd').onclick=function(){
+  var t=$('oneTitle').value.replace(/\u3000/g,' ').trim();
+  if(!t){say($('oneMsg'),'曲名をご入力ください','err');return;}
+  addSongs([{title:t.slice(0,120),artist:$('oneArtist').value.replace(/\u3000/g,' ').trim().slice(0,80),genre:$('oneGenre').value}],$('oneAdd'),$('oneMsg'),function(){$('oneTitle').value='';$('oneArtist').value='';$('oneTitle').focus();});
 };
-$('songList').addEventListener('click',function(e){var b=e.target.closest('[data-del]');if(!b)return;S.songs.splice(+b.dataset.del,1);saveSongs().catch(function(){});});
+$('bulk').addEventListener('input',function(){var p=parseSongs($('bulk').value);$('bPreview').textContent=p.length?p.length+'曲を読み取りました（例：'+p.slice(0,3).map(function(s){return s.title+(s.artist?' / '+s.artist:'');}).join('、')+'）':'';});
+$('bAdd').onclick=function(){
+  var p=parseSongs($('bulk').value);
+  if(!p.length){say($('bMsg'),'追加する曲をご入力ください','err');return;}
+  addSongs(p,$('bAdd'),$('bMsg'),function(){$('bulk').value='';$('bPreview').textContent='';});
+};
+$('bReplace').onclick=function(){
+  var p=parseSongs($('bulk').value);
+  if(!p.length){say($('bMsg'),'入れ替える曲をご入力ください','err');return;}
+  if(!confirm('【注意】今のリストは全部消えて、貼り付けた'+p.length+'曲だけになります。曲を足したいだけなら「貼り付けた曲をリストに追加」を使ってください。本当に入れ替えますか？'))return;
+  var before=S.songs.slice();S.songs=p;say($('bMsg'),'更新中…');
+  saveSongs($('bMsg')).then(function(){say($('bMsg'),'リストを入れ替えました','ok');$('bulk').value='';$('bPreview').textContent='';}).catch(function(){S.songs=before;drawSongs();});
+};
+$('songList').addEventListener('click',function(e){var b=e.target.closest('[data-del]');if(!b)return;var i=+b.dataset.del,rm=S.songs.splice(i,1);saveSongs().catch(function(){S.songs.splice(i,0,rm[0]);drawSongs();});});
+$('songList').addEventListener('change',function(e){var s=e.target.closest('.gSel');if(!s)return;var i=+s.dataset.i,old=S.songs[i].genre||'';S.songs[i].genre=s.value;saveSongs().catch(function(){S.songs[i].genre=old;drawSongs();});});
 $('songQ').addEventListener('input',drawSongs);
-$('songClear').onclick=function(){if(!S.songs.length)return;if(!confirm('曲リストをすべて削除します。よろしいですか？'))return;S.songs=[];saveSongs().catch(function(){});};
+$('songG').addEventListener('change',drawSongs);
 
 /* ---- リクエスト ---- */
 function drawReq(){
