@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20261018q">
+<meta name="build" content="20261018r">
 <meta name="theme-color" content="#2f2a3a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -129,6 +129,13 @@ details.more>summary::-webkit-details-marker{display:none}
 
 [hidden]{display:none!important}
 /* ===== タッチパネル方式 ===== */
+body.menu{background-color:#1c1824;background-image:
+  repeating-linear-gradient(90deg,transparent 0 40px,rgba(217,178,95,.34) 40px 42px,transparent 42px 56px),
+  repeating-linear-gradient(0deg,transparent 0 40px,rgba(217,178,95,.34) 40px 42px,transparent 42px 56px),
+  repeating-linear-gradient(90deg,rgba(232,84,107,.24) 0 16px,transparent 16px 56px),
+  repeating-linear-gradient(0deg,rgba(232,84,107,.24) 0 16px,transparent 16px 56px);background-attachment:fixed}
+body.menu .panelHead{text-shadow:0 2px 10px #1c1824,0 0 4px #1c1824}
+body.menu .panel button{background-color:#2a2433}
 .panelHead{margin-top:26px;font-family:var(--maru);font-weight:700;font-size:20px;letter-spacing:.1em;color:var(--gold-l);text-align:center}
 .panelHead small{display:block;font-family:var(--sans);font-weight:400;font-size:12.5px;letter-spacing:.04em;color:var(--sub);margin-top:2px}
 .panel{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:24px}
@@ -405,11 +412,12 @@ function toggleHide(kind,key,el,redraw){
   return setFlags(function(f){var a=f.hide[kind],i=a.indexOf(key);if(i<0)a.push(key);else a.splice(i,1);},el,nowHid?'サイトに戻しました':'サイトから隠しました（あとで「出す」で戻せます）',redraw);
 }
 
+document.body.classList.add('menu');
 /* tabs */
 var TITLES={sch:'配信予定',song:'歌える曲',cover:'歌ってみた',site:'プロフィール・リンク',news:'お知らせ',req:'リクエスト',post:'Xポスト'};
-function openTab(t){[].forEach.call(document.querySelectorAll('.tab'),function(x){x.classList.toggle('on',x.id==='tab-'+t);});
+function openTab(t){document.body.classList.remove('menu');[].forEach.call(document.querySelectorAll('.tab'),function(x){x.classList.toggle('on',x.id==='tab-'+t);});
   $('panel').hidden=true;$('panelHead').hidden=true;$('backbar').hidden=false;$('backTitle').textContent=TITLES[t]||'';window.scrollTo(0,0);}
-function openPanel(){[].forEach.call(document.querySelectorAll('.tab'),function(x){x.classList.remove('on');});
+function openPanel(){document.body.classList.add('menu');[].forEach.call(document.querySelectorAll('.tab'),function(x){x.classList.remove('on');});
   $('panel').hidden=false;$('panelHead').hidden=false;$('backbar').hidden=true;window.scrollTo(0,0);}
 $('panel').addEventListener('click',function(e){var b=e.target.closest('button');if(b)openTab(b.dataset.t);});
 $('backBtn').onclick=openPanel;
