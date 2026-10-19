@@ -203,10 +203,42 @@ function hsh(s){var h=5381;s=String(s);for(var i=0;i<s.length;i++)h=((h<<5)+h+s.
 function songFk(s){return hsh((String(s.title||'')+'\u0001'+String(s.artist||'')).replace(/[\s\u3000]/g,'').toLowerCase());}
 function newsFk(n){return n.date+':'+hsh(n.body);}
 function isHid(kind,key){var a=FLAGS.hide&&FLAGS.hide[kind];return Array.isArray(a)&&a.indexOf(key)>=0;}
+/* ---------- Utaemo「HPに反映する」連携 ----------
+   Utaemoで「HPに反映する」を押した時点の曲リストを読む(公開・読み取り専用)。
+   ・反映済みデータが無い/連携解除(404) → 従来のSupabaseの曲リストを使う
+   ・通信失敗・応答不正 → 最後に読めた曲リストをこの端末から表示(それも無ければSupabase) */
+var UT_FEED='https://utaeru-api.manabit.workers.dev/api/hp/ante-hp/songs',UT_CACHE='ante_utaemo_songs';
+function utMap(j){
+  if(!j||j.schemaVersion!==1||!Array.isArray(j.songs))return null;
+  return j.songs.filter(function(x){return x&&typeof x.t==='string'&&x.t;}).map(function(x){
+    var g=Array.isArray(x.genres)?x.genres.filter(function(v){return typeof v==='string'&&v;}):[];
+    return {title:x.t,artist:typeof x.a==='string'?x.a:'',genre:g[0]||'',genres:g,reading:((x.y||'')+' '+(x.ty||'')).toLowerCase()};
+  });
+}
+function utSongs(){
+  var cache=function(){try{return utMap(JSON.parse(localStorage.getItem(UT_CACHE)||'null'));}catch(e){return null;}};
+  var ctl=window.AbortController?new AbortController():null,tm=ctl?setTimeout(function(){ctl.abort();},8000):0;
+  return fetch(UT_FEED,{cache:'no-cache',credentials:'omit',signal:ctl?ctl.signal:undefined}).then(function(r){
+    clearTimeout(tm);
+    if(r.status===404){try{localStorage.removeItem(UT_CACHE);}catch(e){}return null;}
+    if(!r.ok)throw new Error('feed');
+    return r.json();
+  }).then(function(j){
+    if(j===null)return null;
+    var m=utMap(j);if(!m)throw new Error('format');
+    try{localStorage.setItem(UT_CACHE,JSON.stringify(j));}catch(e){}
+    return m;
+  }).catch(function(){clearTimeout(tm);return cache();});
+}
 function load(){
   var cached=null;try{cached=JSON.parse(ss('antedata')||'null');}catch(e){}
-  if(cached&&Date.now()-cached.t<45000){apply(cached.d);return Promise.resolve();}
-  return rpc('ante_public').then(function(d){if(!d){subs.forEach(function(f){f();});return;}ss('antedata',JSON.stringify({t:Date.now(),d:d}));apply(d);}).catch(function(){subs.forEach(function(f){f();});});
+  var base=(cached&&Date.now()-cached.t<45000)?Promise.resolve(cached.d):rpc('ante_public').then(function(d){if(d)ss('antedata',JSON.stringify({t:Date.now(),d:d}));return d;}).catch(function(){return null;});
+  return Promise.all([base,utSongs()]).then(function(r){
+    var d=r[0],u=r[1];
+    if(u){d=Object.assign({schedule:CONFIG.schedule,posts:CONFIG.posts,news:[]},d||{},{songs:u});}
+    if(!d){subs.forEach(function(f){f();});return;}
+    apply(d);
+  });
 }
 function apply(d){RAW=d;DATA.schedule=d.schedule||[];DATA.songs=(d.songs||[]).filter(function(s){return !isHid('songs',songFk(s));});DATA.posts=d.posts||[];DATA.news=(d.news||[]).filter(function(n){return !isHid('news',newsFk(n));});DATA.requestOpen=d.request_open!==false;DATA.live=true;subs.forEach(function(f){f();});}
 function ymd(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
@@ -302,10 +334,10 @@ P.schedule=function(){
 P.songs=function(){
   var genre='すべて',q='';
   function draw(){
-    var gs=['すべて'].concat(DATA.songs.map(function(s){return s.genre;}).filter(function(g,i,a){return g&&a.indexOf(g)===i;}));
+    var gs=['すべて'].concat(DATA.songs.reduce(function(o,s){return o.concat(s.genres&&s.genres.length?s.genres:[s.genre]);},[]).filter(function(g,i,a){return g&&a.indexOf(g)===i;}));
     if(gs.indexOf(genre)<0)genre='すべて';
     $('#chips').innerHTML=gs.length>1?gs.map(function(g){return '<button class="chip '+(g===genre?'on':'')+'" data-g="'+esc(g)+'">'+esc(g)+'</button>';}).join(''):'';
-    var list=DATA.songs.filter(function(s){return (genre==='すべて'||s.genre===genre)&&((s.title||'')+(s.artist||'')).toLowerCase().indexOf(q)>=0;});
+    var list=DATA.songs.filter(function(s){return (genre==='すべて'||s.genre===genre||(s.genres&&s.genres.indexOf(genre)>=0))&&((s.title||'')+(s.artist||'')+' '+(s.reading||'')).toLowerCase().indexOf(q)>=0;});
     $('#songN').textContent=DATA.live?DATA.songs.length+'曲':'';
     $('#songList').innerHTML=list.length?list.slice(0,300).map(function(s,i){return '<li><span class="no">'+('0'+(i+1)).slice(-2)+'</span><div class="m"><div class="st">'+esc(s.title)+'</div><div class="sa">'+esc(s.artist||'')+'</div></div>'+(s.genre?'<span class="g">'+esc(s.genre)+'</span>':'')+'<button data-t="'+esc(s.title)+'" data-a="'+esc(s.artist||'')+'">リクエスト</button></li>';}).join('')+(list.length>300?'<li class="empty" style="display:block">先頭300曲を表示しています。検索で絞ってね</li>':''):'<li class="empty" style="display:block">'+(DATA.songs.length?'見つかりませんでした':'曲リストは準備中です')+'</li>';
     $('#reqClosed').hidden=DATA.requestOpen;$('#openReq').hidden=!DATA.requestOpen;
