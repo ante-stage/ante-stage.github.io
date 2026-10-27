@@ -416,6 +416,28 @@ P.news=function(){
 
 /* ---------- 起動 ---------- */
 chrome();updater();autoUpdate();decorate();transitions();opening();
+/* ---------- エモカラ収録曲(ミラティブのカラオケアプリ「エモカラ」で歌える曲の一覧。歌える曲リストとは別データ) ---------- */
+P.emocara=function(){
+  var ALL=[],G=[],genre='すべて',q='',shown=100,STEP=100;
+  function draw(){
+    var chips=['すべて'].concat(G.filter(function(g){return ALL.some(function(s){return s.g.indexOf(g)>=0;});}));
+    $('#chips').innerHTML=chips.map(function(g){return '<button class="chip '+(g===genre?'on':'')+'" data-g="'+esc(g)+'">'+esc(g)+'</button>';}).join('');
+    var list=ALL.filter(function(s){return (genre==='すべて'||s.g.indexOf(genre)>=0)&&s.h.indexOf(q)>=0;});
+    $('#songN').textContent=list.length===ALL.length?ALL.length+'曲':list.length+' / '+ALL.length+'曲';
+    var v=list.slice(0,shown);
+    $('#songList').innerHTML=v.length?v.map(function(s,i){return '<li><span class="no">'+('00'+(i+1)).slice(-3)+'</span><div class="m"><div class="st">'+esc(s.t)+'</div><div class="sa">'+esc(s.a)+'</div></div>'+(s.g[0]?'<span class="g">'+esc(s.g[0])+'</span>':'')+'</li>';}).join(''):'<li class="empty" style="display:block">見つかりませんでした</li>';
+    var more=$('#more');more.hidden=list.length<=shown;more.textContent='もっと見る（残り'+(list.length-shown)+'曲）';
+  }
+  $('#chips').addEventListener('click',function(e){var b=e.target.closest('.chip');if(b){genre=b.dataset.g;shown=STEP;draw();}});
+  $('#q').addEventListener('input',function(e){q=e.target.value.trim().toLowerCase();shown=STEP;draw();});
+  $('#more').addEventListener('click',function(){shown+=STEP;draw();});
+  $('#songList').innerHTML='<li class="empty" style="display:block">読み込み中…</li>';
+  fetch('assets/emocara-songs.json?v=20261027a').then(function(r){if(!r.ok)throw new Error('load');return r.json();}).then(function(j){
+    G=j.genres||[];
+    ALL=(j.songs||[]).map(function(r){var g=(r[4]||[]).map(function(i){return G[i];}).filter(Boolean);return {t:r[0],a:r[1],g:g,h:((r[0]||'')+(r[1]||'')+' '+(r[2]||'')+' '+(r[3]||'')).toLowerCase()};});
+    draw();
+  }).catch(function(){$('#songList').innerHTML='<li class="empty" style="display:block">曲リストを読み込めませんでした。時間をおいて開き直してください</li>';});
+};
 if(P[page])P[page]();
 loadSite();
 fx();lightbox();reveal();
