@@ -418,23 +418,37 @@ P.news=function(){
 chrome();updater();autoUpdate();decorate();transitions();opening();
 /* ---------- エモカラ収録曲(ミラティブのカラオケアプリ「エモカラ」で歌える曲の一覧。歌える曲リストとは別データ) ---------- */
 P.emocara=function(){
-  var ALL=[],G=[],genre='すべて',q='',shown=100,STEP=100;
+  var GYO=[['あ','あいうえお'],['か','かきくけこがぎぐげご'],['さ','さしすせそざじずぜぞ'],['た','たちつてとだぢづでど'],['な','なにぬねの'],['は','はひふへほばびぶべぼぱぴぷぺぽ'],['ま','まみむめも'],['や','やゆよ'],['ら','らりるれろ'],['わ','わをん']];
+  function gyoOf(h){if(!h)return null;for(var i=0;i<GYO.length;i++)if(GYO[i][1].indexOf(h)>=0)return GYO[i][0];return null;}
+  var ALL=[],G=[],genre='すべて',q='',shown=100,STEP=100,mode='artist',gyo='',kana='';
+  function head(s){return mode==='title'?s.tk:s.k;}
+  function sorted(){var key=mode==='title'?'ty':'y';return ALL.slice().sort(function(x,y){return (x[key]||'').localeCompare(y[key]||'','ja')||(x.ty||'').localeCompare(y.ty||'','ja');});}
+  function chip(label,on,attr){return '<button class="chip '+(on?'on':'')+'" '+attr+'>'+esc(label)+'</button>';}
   function draw(){
+    $('#modeTabs').innerHTML=chip('アーティスト名',mode==='artist','data-m="artist"')+chip('曲名',mode==='title','data-m="title"');
+    $('#gyoRow').innerHTML=GYO.map(function(g){return chip(g[0],gyo===g[0],'data-y="'+g[0]+'"');}).join('');
+    var sub=$('#kanaRow');
+    if(gyo){var hs=[];ALL.forEach(function(s){var h=head(s);if(h&&gyoOf(h)===gyo&&hs.indexOf(h)<0)hs.push(h);});hs.sort(function(x,y){return x.localeCompare(y,'ja');});sub.hidden=false;sub.innerHTML=hs.map(function(h){return chip(h,kana===h,'data-k="'+esc(h)+'"');}).join('');}else{sub.hidden=true;sub.innerHTML='';}
     var chips=['すべて'].concat(G.filter(function(g){return ALL.some(function(s){return s.g.indexOf(g)>=0;});}));
-    $('#chips').innerHTML=chips.map(function(g){return '<button class="chip '+(g===genre?'on':'')+'" data-g="'+esc(g)+'">'+esc(g)+'</button>';}).join('');
-    var list=ALL.filter(function(s){return (genre==='すべて'||s.g.indexOf(genre)>=0)&&s.h.indexOf(q)>=0;});
+    $('#chips').innerHTML=chips.map(function(g){return chip(g,g===genre,'data-g="'+esc(g)+'"');}).join('');
+    var list=sorted().filter(function(s){
+      if(gyo){var h=head(s);if(gyoOf(h)!==gyo)return false;if(kana&&h!==kana)return false;}
+      return (genre==='すべて'||s.g.indexOf(genre)>=0)&&s.h.indexOf(q)>=0;});
     $('#songN').textContent=list.length===ALL.length?ALL.length+'曲':list.length+' / '+ALL.length+'曲';
     var v=list.slice(0,shown);
     $('#songList').innerHTML=v.length?v.map(function(s,i){return '<li><span class="no">'+('00'+(i+1)).slice(-3)+'</span><div class="m"><div class="st">'+esc(s.t)+'</div><div class="sa">'+esc(s.a)+'</div></div>'+(s.g[0]?'<span class="g">'+esc(s.g[0])+'</span>':'')+'</li>';}).join(''):'<li class="empty" style="display:block">見つかりませんでした</li>';
     var more=$('#more');more.hidden=list.length<=shown;more.textContent='もっと見る（残り'+(list.length-shown)+'曲）';
   }
+  $('#modeTabs').addEventListener('click',function(e){var b=e.target.closest('.chip');if(b&&b.dataset.m!==mode){mode=b.dataset.m;kana='';shown=STEP;draw();}});
+  $('#gyoRow').addEventListener('click',function(e){var b=e.target.closest('.chip');if(b){gyo=gyo===b.dataset.y?'':b.dataset.y;kana='';shown=STEP;draw();}});
+  $('#kanaRow').addEventListener('click',function(e){var b=e.target.closest('.chip');if(b){kana=kana===b.dataset.k?'':b.dataset.k;shown=STEP;draw();}});
   $('#chips').addEventListener('click',function(e){var b=e.target.closest('.chip');if(b){genre=b.dataset.g;shown=STEP;draw();}});
   $('#q').addEventListener('input',function(e){q=e.target.value.trim().toLowerCase();shown=STEP;draw();});
   $('#more').addEventListener('click',function(){shown+=STEP;draw();});
   $('#songList').innerHTML='<li class="empty" style="display:block">読み込み中…</li>';
-  fetch('assets/emocara-songs.json?v=20261027a').then(function(r){if(!r.ok)throw new Error('load');return r.json();}).then(function(j){
+  fetch('assets/emocara-songs.json?v=20261027c').then(function(r){if(!r.ok)throw new Error('load');return r.json();}).then(function(j){
     G=j.genres||[];
-    ALL=(j.songs||[]).map(function(r){var g=(r[4]||[]).map(function(i){return G[i];}).filter(Boolean);return {t:r[0],a:r[1],g:g,h:((r[0]||'')+(r[1]||'')+' '+(r[2]||'')+' '+(r[3]||'')).toLowerCase()};});
+    ALL=(j.songs||[]).map(function(r){var g=(r[4]||[]).map(function(i){return G[i];}).filter(Boolean);return {t:r[0],a:r[1],ty:r[2]||'',y:r[3]||'',g:g,k:r[5]||'',tk:r[6]||'',h:((r[0]||'')+(r[1]||'')+' '+(r[2]||'')+' '+(r[3]||'')).toLowerCase()};});
     draw();
   }).catch(function(){$('#songList').innerHTML='<li class="empty" style="display:block">曲リストを読み込めませんでした。時間をおいて開き直してください</li>';});
 };
