@@ -927,3 +927,13 @@ html.pt-in::after{bottom:-80px}
 #cvm .x{position:absolute;right:-6px;top:-46px;width:38px;height:38px;border-radius:50%;border:1.5px solid var(--gold);background:#1d1728;color:var(--gold-l);font-size:22px;line-height:1;cursor:pointer}
 #cvm .tt{font-weight:800;font-size:15px;line-height:1.5;margin:12px 0 8px}
 #cvm .yo{font-size:13px;font-weight:800;color:var(--gold-l);text-decoration:underline}
+
+/* 日本語の改行を自然に: 文節の途中で切らない・行頭に小書き文字や句読点を置かない */
+body{word-break:auto-phrase;line-break:strict;overflow-wrap:break-word}
+h1,h2,h3,.btn,.chip{text-wrap:balance}
+p,li,.note,.qmenu a{text-wrap:pretty}
+/* ステージメニューのタイトルを途中で折り返さない(狭い画面では文字サイズで調整) */
+.menu b{white-space:nowrap}
+@media(max-width:420px){.menu b{font-size:clamp(16px,5.2vw,22px)}}
+/* 流れる帯の文字は折り返さない */
+.ticker span{white-space:nowrap;flex:none}
