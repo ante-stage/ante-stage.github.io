@@ -27,8 +27,19 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=M+PLUS+Rounded+1c:wght@500;700;800&family=Cinzel+Decorative:wght@700&display=swap" rel="stylesheet">
 <script>try{if(sessionStorage.getItem('ptin')==='1')document.documentElement.classList.add('pt-in')}catch(e){}</script>
-<link rel="stylesheet" href="assets/site.css?v=20261028b">
-<style>.nb span{display:inline-block}.nb{word-break:auto-phrase;text-wrap:pretty;line-height:1.9}</style>
+<link rel="stylesheet" href="assets/site.css?v=20261028c">
+<style>.nb span{display:inline-block}.nb{word-break:auto-phrase;text-wrap:pretty;line-height:1.9}
+/* 絞り込みの3グループを色とラベルで区別(世界観の赤・金に合わせ、ジャンルだけ舞台照明の紫) */
+.fgrp{margin-top:12px;padding:8px 0 10px 12px;border-left:3px solid var(--gc);display:grid;gap:8px}
+.fgrp .fl{font-size:11px;font-weight:800;letter-spacing:.14em;color:var(--gc)}
+.fg-mode{--gc:#f08a9b;--gt:var(--red)}
+.fg-kana{--gc:var(--gold);--gt:var(--gold)}
+.fg-genre{--gc:#b9a6f5;--gt:#7d63d6}
+.fgrp .chip{border-color:var(--gc);color:var(--gc)}
+.fgrp .chip.on{background:var(--gt);border-color:var(--gt);color:#fff}
+.fg-kana .chip.on{color:#2a2112}
+.fg-mode .chip{font-size:14px;padding:7px 18px}
+</style>
 </head>
 <body data-page="emocara">
 
@@ -39,10 +50,9 @@
     <p class="note nb" style="margin:0 0 12px"><span>ミラティブのカラオケアプリ</span><span>「エモカラ」に収録されている</span><span>曲の一覧です。</span><br><span>あんて｡が歌える曲は</span><span><a href="songs.html">「歌える曲」</a>のページを</span><span>ご覧ください。</span><br><span>このリストは、</span><span><strong>データ提供：真君</strong></span><span>のデータをもとにしています。</span></p>
     <div class="toolbar"><span class="songN" id="songN"></span></div>
     <input class="search" id="q" type="search" placeholder="曲名・アーティストで探す" aria-label="曲を検索">
-    <div class="chips" id="modeTabs" aria-label="五十音の対象"></div>
-    <div class="chips" id="gyoRow" aria-label="五十音"></div>
-    <div class="chips" id="kanaRow" aria-label="五十音 1文字" hidden></div>
-    <div class="chips" id="chips"></div>
+    <div class="fgrp fg-mode"><span class="fl">探す対象</span><div class="chips" id="modeTabs" aria-label="五十音の対象"></div></div>
+    <div class="fgrp fg-kana"><span class="fl">五十音</span><div class="chips" id="gyoRow" aria-label="五十音"></div><div class="chips" id="kanaRow" aria-label="五十音 1文字" hidden></div></div>
+    <div class="fgrp fg-genre"><span class="fl">ジャンル</span><div class="chips" id="chips"></div></div>
     <ul class="songs" id="songList"></ul>
     <div style="text-align:center;margin-top:14px"><button class="btn ghost sm" id="more" hidden>もっと見る</button></div>
   </div>
@@ -50,6 +60,6 @@
   <p style="margin:16px 0 0;text-align:center"><a class="btn ghost" href="songs.html#emocara">← 歌える曲に戻る</a></p>
 </div></main>
 
-<script src="assets/site.js?v=20261028b" defer></script>
+<script src="assets/site.js?v=20261028c" defer></script>
 </body>
 </html>
