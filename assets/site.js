@@ -275,6 +275,7 @@ function mergeSite(s){
     if(typeof p.tagline==='string'&&p.tagline.trim())CONFIG.tagline=p.tagline.trim();
     var rows=[['活動名',p.name],['ジャンル',p.genre],['誕生日',p.birthday],['ファンネーム',p.fanname],['X',p.xid]].filter(function(r){return r[1]&&String(r[1]).trim();});
     if(rows.length)CONFIG.profile=rows;
+    CONFIG.avatar=(typeof p.avatar==='string'&&/^data:image\/jpeg;base64,[A-Za-z0-9+\/=]+$/.test(p.avatar)&&p.avatar.length<120000)?p.avatar:'';
     if(Array.isArray(p.hashtags))CONFIG.hashtags=p.hashtags.filter(Boolean);
     CONFIG.whereTxt={wMirTxt:p.whereMir,wYtTxt:p.whereYt,wTtTxt:p.whereTt};
   }
@@ -288,6 +289,7 @@ function paintSite(){
   var t=$('.hero .tagline');if(t)t.textContent=CONFIG.tagline;
   if($('#liveBtn'))$('#liveBtn').href=CONFIG.liveUrl;
   var pt=$('#pfTag');if(pt)pt.textContent=CONFIG.tagline;
+  var av=$('.pf .av');if(av&&CONFIG.avatar&&av.getAttribute('src')!==CONFIG.avatar)av.src=CONFIG.avatar;
   var dl=$('#pfDl');if(dl)dl.innerHTML=CONFIG.profile.map(function(r){return '<dt>'+esc(r[0])+'</dt><dd>'+esc(r[1])+'</dd>';}).join('');
   var tg=$('#tags');if(tg)tg.innerHTML=CONFIG.hashtags.map(function(x){return '<button class="chip" data-t="'+esc(x)+'">'+esc(x)+'</button>';}).join('');
   links('#links');
