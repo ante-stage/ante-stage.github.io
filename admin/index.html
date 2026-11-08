@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20261019b">
+<meta name="build" content="20261109a">
 <meta name="theme-color" content="#2f2a3a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -156,6 +156,12 @@ body.menu .panel button{background-color:#2a2433}
 .btn.sm{height:42px}
 input,select{height:56px}
 .schF input[type=text]{height:46px}
+
+.avBox{display:grid;justify-items:center;gap:14px;margin-top:6px}
+#avCv{width:100%;max-width:280px;aspect-ratio:1/1;border-radius:50%;border:3px solid var(--gold);box-shadow:0 0 0 4px var(--black-d),0 0 0 7px var(--red);background:var(--field);touch-action:none;cursor:grab}
+#avZ{width:100%;max-width:280px;height:34px;padding:0;border:0;background:transparent;accent-color:var(--red)}
+.avRow{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;width:100%}
+.avRow .btn{flex:1 1 140px}
 </style>
 </head>
 <body>
@@ -321,6 +327,23 @@ input,select{height:56px}
     <p class="hint" style="margin:20px 0 0">直したい項目をタップすると開きます。直したら、その項目の「保存する」を押してください。</p>
     <div class="accs">
     <details class="acc" open>
+      <summary><span class="ttl">アイコン<small>写真の変更・位置と大きさの調整</small></span></summary>
+      <div class="accb">
+        <p class="hint" style="margin:6px 0 0">「写真を選ぶ」でアイコンにしたい写真を選びます。丸の中に表示される部分が、サイトに出ます。指で動かして位置を、スライダーで大きさを調整してください。</p>
+        <div class="avBox">
+          <canvas id="avCv" width="560" height="560" aria-label="アイコンの調整"></canvas>
+          <input id="avZ" type="range" min="100" max="300" value="100" aria-label="大きさ">
+          <div class="avRow">
+            <button class="btn sub" type="button" id="avPick">写真を選ぶ</button>
+            <button class="btn full" type="button" id="avSave">この位置で保存する</button>
+          </div>
+          <input id="avFile" type="file" accept="image/*" hidden>
+          <button class="btn sub sm" type="button" id="avReset">もとのアイコンに戻す</button>
+        </div>
+        <p class="msg" id="avMsg" role="status"></p>
+      </div>
+    </details>
+    <details class="acc">
       <summary><span class="ttl">基本情報<small>キャッチフレーズ・活動名・誕生日など</small></span></summary>
       <div class="accb">
         <label for="pfTagline" style="margin-top:6px">キャッチフレーズ</label><input id="pfTagline" maxlength="60" autocomplete="off">
@@ -736,6 +759,7 @@ function fillSite(){
   $('pfTags').value=(p.hashtags||[]).join('\n');
   $('pfWMir').value=p.whereMir||'';$('pfWYt').value=p.whereYt||'';$('pfWTt').value=p.whereTt||'';
   LMAP.forEach(function(m){$(m[1]).value=l[m[0]]||'';});
+  if(window.avLoad)avLoad(p.avatar||'');
 }
 function loadSiteInfo(){
   return fetch(SB+'ante_site_public',{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:'{}'})
@@ -744,12 +768,50 @@ function loadSiteInfo(){
 }
 function pfDo(btn){var pm=btn.parentNode.querySelector('.msg');
   var tags=$('pfTags').value.split(/\r?\n/).map(function(x){x=x.trim();return x&&x.charAt(0)!=='#'&&x.charAt(0)!=='＃'?'#'+x:x;}).filter(Boolean).slice(0,10);
-  var v={tagline:$('pfTagline').value.trim(),name:$('pfName').value.trim(),genre:$('pfGenre').value.trim(),birthday:$('pfBirth').value.trim(),fanname:$('pfFan').value.trim(),xid:$('pfXid').value.trim(),hashtags:tags,whereMir:$('pfWMir').value.trim(),whereYt:$('pfWYt').value.trim(),whereTt:$('pfWTt').value.trim()}
+  var v={tagline:$('pfTagline').value.trim(),name:$('pfName').value.trim(),genre:$('pfGenre').value.trim(),birthday:$('pfBirth').value.trim(),fanname:$('pfFan').value.trim(),xid:$('pfXid').value.trim(),hashtags:tags,whereMir:$('pfWMir').value.trim(),whereYt:$('pfWYt').value.trim(),whereTt:$('pfWTt').value.trim()};
+  if(S.site&&S.site.profile&&S.site.profile.avatar)v.avatar=S.site.profile.avatar;
   if(!v.tagline){say(pm,'キャッチフレーズをご入力ください','err');return;}
   say(pm,'保存中…');
   guard(rpc('ante_save_site',{p_key:'profile',p_value:v}),pm).then(function(){S.site.profile=v;say(pm,'保存しました。まもなくサイトに反映されます','ok');}).catch(function(){});
 }
 [].forEach.call(document.querySelectorAll('.pfSave'),function(b){b.onclick=function(){pfDo(b);};});
+
+/* ---- アイコンの変更・位置調整 ---- */
+(function(){
+  var cv=$('avCv'),cx=cv.getContext('2d'),Z=$('avZ'),M=$('avMsg'),W=cv.width;
+  var im=null,base=1,z=1,ox=0,oy=0,cur='',dirty=false;
+  function clamp(){var dw=im.width*base*z,dh=im.height*base*z;ox=Math.min(0,Math.max(W-dw,ox));oy=Math.min(0,Math.max(W-dh,oy));}
+  function draw(){cx.clearRect(0,0,W,W);cx.fillStyle='#2a2536';cx.fillRect(0,0,W,W);if(!im)return;clamp();cx.drawImage(im,ox,oy,im.width*base*z,im.height*base*z);}
+  function setImg(img,keep){im=img;base=W/Math.min(img.width,img.height);z=1;Z.value=100;ox=(W-img.width*base)/2;oy=(W-img.height*base)/2;draw();}
+  function loadSrc(src,markDirty){var i=new Image();i.onload=function(){setImg(i);dirty=!!markDirty;};i.onerror=function(){say(M,'写真を読み込めませんでした。別の写真をお試しください','err');};i.src=src;}
+  window.avLoad=function(a){cur=a||'';if(!dirty)loadSrc(a||'../img/face.png',false);};
+  $('avPick').onclick=function(){$('avFile').click();};
+  $('avFile').onchange=function(){var f=this.files&&this.files[0];if(!f)return;
+    if(f.size>25*1024*1024){say(M,'写真が大きすぎます。別の写真をお試しください','err');return;}
+    var u=URL.createObjectURL(f);say(M,'');loadSrc(u,true);this.value='';};
+  Z.oninput=function(){if(!im)return;var nz=Z.value/100,c=W/2,ix=(c-ox)/(base*z),iy=(c-oy)/(base*z);z=nz;ox=c-ix*base*z;oy=c-iy*base*z;dirty=true;draw();};
+  var dr=null;
+  function pt(e){var r=cv.getBoundingClientRect();return {x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*W/r.height};}
+  cv.addEventListener('pointerdown',function(e){if(!im)return;dr={p:pt(e),ox:ox,oy:oy};cv.setPointerCapture(e.pointerId);cv.style.cursor='grabbing';});
+  cv.addEventListener('pointermove',function(e){if(!dr)return;var p=pt(e);ox=dr.ox+(p.x-dr.p.x);oy=dr.oy+(p.y-dr.p.y);dirty=true;draw();});
+  function up(){dr=null;cv.style.cursor='grab';}
+  cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
+  function render(){var o=document.createElement('canvas');o.width=o.height=400;var c=o.getContext('2d'),k=400/W;
+    c.fillStyle='#2a2536';c.fillRect(0,0,400,400);c.drawImage(im,ox*k,oy*k,im.width*base*z*k,im.height*base*z*k);
+    var q=.86,d=o.toDataURL('image/jpeg',q);while(d.length>70000&&q>.4){q-=.08;d=o.toDataURL('image/jpeg',q);}return d;}
+  function verify(d){return fetch(SB+'ante_site_public',{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:'{}'}).then(function(r){return r.ok?r.json():null;}).then(function(j){return !!(j&&j.profile&&j.profile.avatar===d);});}
+  function put(d,msg){
+    S.site=S.site||{};var pf=Object.assign({},SITE_DEF.profile,S.site.profile||{});
+    if(d)pf.avatar=d;else delete pf.avatar;
+    say(M,'保存中…');
+    return guard(rpc('ante_save_site',{p_key:'profile',p_value:pf}),M).then(function(){
+      S.site.profile=pf;cur=d||'';dirty=false;
+      return verify(d||'').then(function(ok){say(M,ok||!d?msg:'保存しましたが、サイトへの反映を確認できませんでした。少し待ってからサイトを開き直してください','ok');});
+    }).catch(function(){});
+  }
+  $('avSave').onclick=function(){if(!im){say(M,'写真を選んでください','err');return;}put(render(),'保存しました。まもなくサイトのアイコンが変わります');};
+  $('avReset').onclick=function(){if(!confirm('もとのアイコンに戻しますか？'))return;dirty=false;put('','もとのアイコンに戻しました。まもなくサイトに反映されます').then(function(){loadSrc('../img/face.png',false);});};
+})();
 /* 項目は1つずつ開く */
 [].forEach.call(document.querySelectorAll('details.acc'),function(d){d.addEventListener('toggle',function(){if(!d.open)return;[].forEach.call(document.querySelectorAll('details.acc'),function(o){if(o!==d)o.open=false;});setTimeout(function(){d.scrollIntoView({behavior:'smooth',block:'start'});},60);});});
 $('lSave').onclick=function(){
