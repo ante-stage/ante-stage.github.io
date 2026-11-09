@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20261109a">
+<meta name="build" content="20261109b">
 <meta name="theme-color" content="#2f2a3a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -157,11 +157,18 @@ body.menu .panel button{background-color:#2a2433}
 input,select{height:56px}
 .schF input[type=text]{height:46px}
 
-.avBox{display:grid;justify-items:center;gap:14px;margin-top:6px}
-#avCv{width:100%;max-width:280px;aspect-ratio:1/1;border-radius:50%;border:3px solid var(--gold);box-shadow:0 0 0 4px var(--black-d),0 0 0 7px var(--red);background:var(--field);touch-action:none;cursor:grab}
-#avZ{width:100%;max-width:280px;height:34px;padding:0;border:0;background:transparent;accent-color:var(--red)}
-.avRow{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;width:100%}
-.avRow .btn{flex:1 1 140px}
+.avBox{display:grid;justify-items:center;gap:6px;margin-top:10px}
+#avCv{width:100%;max-width:280px;aspect-ratio:1/1;border-radius:50%;border:3px solid var(--gold);box-shadow:0 0 0 4px var(--black-d),0 0 0 7px var(--red),0 0 22px rgba(232,84,107,.35);background:var(--field);touch-action:none;cursor:grab;margin:10px 0 14px}
+.avZw{width:100%;max-width:300px;margin-top:6px}
+.avZl{display:flex;justify-content:space-between;font-family:var(--maru);font-size:13px;font-weight:700;letter-spacing:.08em;color:var(--sub);padding:0 2px}
+#avZ{-webkit-appearance:none;appearance:none;display:block;width:100%;height:34px;margin:2px 0 0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none}
+#avZ::-webkit-slider-runnable-track{height:8px;border-radius:4px;background:linear-gradient(90deg,var(--gold),var(--red))}
+#avZ::-webkit-slider-thumb{-webkit-appearance:none;width:30px;height:30px;margin-top:-11px;border-radius:50%;background:var(--ink);border:3px solid var(--gold);box-shadow:0 2px 8px rgba(0,0,0,.55)}
+#avZ::-moz-range-track{height:8px;border-radius:4px;background:linear-gradient(90deg,var(--gold),var(--red))}
+#avZ::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:var(--ink);border:3px solid var(--gold);box-shadow:0 2px 8px rgba(0,0,0,.55)}
+.avBtns{display:grid;gap:14px;width:100%;max-width:340px;margin-top:18px}
+.avBtns .btn{width:calc(100% - 4px);height:54px;margin:0;padding:0 12px;white-space:nowrap;font-size:16px}
+.avBtns .btn.sm{height:46px;font-size:14px}
 </style>
 </head>
 <body>
@@ -332,13 +339,13 @@ input,select{height:56px}
         <p class="hint" style="margin:6px 0 0">「写真を選ぶ」でアイコンにしたい写真を選びます。丸の中に表示される部分が、サイトに出ます。指で動かして位置を、スライダーで大きさを調整してください。</p>
         <div class="avBox">
           <canvas id="avCv" width="560" height="560" aria-label="アイコンの調整"></canvas>
-          <input id="avZ" type="range" min="100" max="300" value="100" aria-label="大きさ">
-          <div class="avRow">
-            <button class="btn sub" type="button" id="avPick">写真を選ぶ</button>
-            <button class="btn full" type="button" id="avSave">この位置で保存する</button>
+          <div class="avZw"><div class="avZl"><span>小さく</span><span>大きく</span></div><input id="avZ" type="range" min="100" max="300" value="100" aria-label="大きさ"></div>
+          <div class="avBtns">
+            <button class="btn sub" type="button" id="avPick">📷 写真を選ぶ</button>
+            <button class="btn" type="button" id="avSave">この位置で保存する</button>
+            <button class="btn sub sm" type="button" id="avReset">もとのアイコンに戻す</button>
           </div>
           <input id="avFile" type="file" accept="image/*" hidden>
-          <button class="btn sub sm" type="button" id="avReset">もとのアイコンに戻す</button>
         </div>
         <p class="msg" id="avMsg" role="status"></p>
       </div>
