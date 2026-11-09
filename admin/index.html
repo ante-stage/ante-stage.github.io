@@ -833,9 +833,17 @@ function pfDo(btn){var pm=btn.parentNode.querySelector('.msg');
   cv.addEventListener('pointermove',function(e){if(!dr)return;var p=pt(e);ox=dr.ox+(p.x-dr.p.x);oy=dr.oy+(p.y-dr.p.y);dirty=true;draw();});
   function up(){dr=null;cv.style.cursor='grab';}
   cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
-  function render(){var o=document.createElement('canvas');o.width=o.height=400;var c=o.getContext('2d'),k=400/W;
-    c.fillStyle='#2a2536';c.fillRect(0,0,400,400);c.drawImage(im,ox*k,oy*k,im.width*base*z*k,im.height*base*z*k);
-    var q=.86,d=o.toDataURL('image/jpeg',q);while(d.length>70000&&q>.4){q-=.08;d=o.toDataURL('image/jpeg',q);}return d;}
+  function render(){
+    /* サーバーの上限に収まるまで、画質→大きさの順で自動的に軽くする(目標は約2万文字) */
+    var LIM=20000,sizes=[400,320,260,200],d='';
+    for(var si=0;si<sizes.length;si++){
+      var S0=sizes[si],o=document.createElement('canvas');o.width=o.height=S0;var c=o.getContext('2d'),k=S0/W;
+      c.fillStyle='#2a2536';c.fillRect(0,0,S0,S0);c.drawImage(im,ox*k,oy*k,im.width*base*z*k,im.height*base*z*k);
+      var q=.8;d=o.toDataURL('image/jpeg',q);
+      while(d.length>LIM&&q>.4){q-=.08;d=o.toDataURL('image/jpeg',q);}
+      if(d.length<=LIM)break;
+    }
+    return d;}
   function verify(d){return fetch(SB+'ante_site_public',{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:'{}'}).then(function(r){return r.ok?r.json():null;}).then(function(j){return !!(j&&j.profile&&j.profile.avatar===d);});}
   function put(d,msg,pos){
     S.site=S.site||{};var pf=Object.assign({},SITE_DEF.profile,S.site.profile||{});
