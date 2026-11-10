@@ -252,6 +252,11 @@ section.sec{margin-top:64px}
 .songs .st{font-weight:800;overflow-wrap:anywhere}
 .songs .sa{font-size:12px;opacity:.75}
 .songs .m{min-width:0}
+.songs .mk{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.songs .mk span{font-size:10px;font-weight:800;line-height:1.5;padding:1px 8px;border-radius:99px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.28)}
+.songs .mk .mk-signature{background:rgba(217,178,95,.22);border-color:rgba(217,178,95,.75);color:var(--gold-l)}
+.songs .mk .mk-favorite{background:rgba(232,84,107,.22);border-color:rgba(232,84,107,.7)}
+.songs .mk .mk-learning{background:rgba(120,200,150,.18);border-color:rgba(120,200,150,.6)}
 .songs button{margin-left:auto;flex:none;font-size:12px;font-weight:800;padding:7px 14px;border-radius:99px;background:var(--red);border:1px solid var(--gold)}
 .songs .g{flex:none;font-size:10px;padding:2px 8px;border-radius:99px;border:1px solid rgba(217,178,95,.6);color:var(--gold-l)}
 .roulette{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
