@@ -208,11 +208,17 @@ function isHid(kind,key){var a=FLAGS.hide&&FLAGS.hide[kind];return Array.isArray
    ・反映済みデータが無い/連携解除(404) → 従来のSupabaseの曲リストを使う
    ・通信失敗・応答不正 → 最後に読めた曲リストをこの端末から表示(それも無ければSupabase) */
 var UT_FEED='https://utaeru-api.manabit.workers.dev/api/hp/ante-hp/songs',UT_CACHE='ante_utaemo_songs';
+var UT_MARKS={signature:'⭐ おはこ',favorite:'❤️ お気に入り',learning:'🔰 練習中'};
+function marksHtml(s){
+  var m=s.marks||[];
+  return m.length?'<div class="mk">'+m.map(function(k){return '<span class="mk-'+k+'">'+esc(UT_MARKS[k])+'</span>';}).join('')+'</div>':'';
+}
 function utMap(j){
   if(!j||j.schemaVersion!==1||!Array.isArray(j.songs))return null;
   return j.songs.filter(function(x){return x&&typeof x.t==='string'&&x.t;}).map(function(x){
     var g=Array.isArray(x.genres)?x.genres.filter(function(v){return typeof v==='string'&&v;}):[];
-    return {title:x.t,artist:typeof x.a==='string'?x.a:'',genre:g[0]||'',genres:g,reading:((x.y||'')+' '+(x.ty||'')).toLowerCase()};
+    var mk=Array.isArray(x.m)?Object.keys(UT_MARKS).filter(function(k){return x.m.indexOf(k)>=0;}):[];
+    return {title:x.t,artist:typeof x.a==='string'?x.a:'',genre:g[0]||'',genres:g,marks:mk,reading:((x.y||'')+' '+(x.ty||'')).toLowerCase()};
   });
 }
 function utSongs(){
@@ -341,7 +347,7 @@ P.songs=function(){
     $('#chips').innerHTML=gs.length>1?gs.map(function(g){return '<button class="chip '+(g===genre?'on':'')+'" data-g="'+esc(g)+'">'+esc(g)+'</button>';}).join(''):'';
     var list=DATA.songs.filter(function(s){return (genre==='すべて'||s.genre===genre||(s.genres&&s.genres.indexOf(genre)>=0))&&((s.title||'')+(s.artist||'')+' '+(s.reading||'')).toLowerCase().indexOf(q)>=0;});
     $('#songN').textContent=DATA.live?DATA.songs.length+'曲':'';
-    $('#songList').innerHTML=list.length?list.slice(0,300).map(function(s,i){return '<li><span class="no">'+('0'+(i+1)).slice(-2)+'</span><div class="m"><div class="st">'+esc(s.title)+'</div><div class="sa">'+esc(s.artist||'')+'</div></div>'+(s.genre?'<span class="g">'+esc(s.genre)+'</span>':'')+'<button data-t="'+esc(s.title)+'" data-a="'+esc(s.artist||'')+'">リクエスト</button></li>';}).join('')+(list.length>300?'<li class="empty" style="display:block">先頭300曲を表示しています。検索で絞ってね</li>':''):'<li class="empty" style="display:block">'+(DATA.songs.length?'見つかりませんでした':'曲リストは準備中です')+'</li>';
+    $('#songList').innerHTML=list.length?list.slice(0,300).map(function(s,i){return '<li><span class="no">'+('0'+(i+1)).slice(-2)+'</span><div class="m"><div class="st">'+esc(s.title)+'</div><div class="sa">'+esc(s.artist||'')+'</div>'+marksHtml(s)+'</div>'+(s.genre?'<span class="g">'+esc(s.genre)+'</span>':'')+'<button data-t="'+esc(s.title)+'" data-a="'+esc(s.artist||'')+'">リクエスト</button></li>';}).join('')+(list.length>300?'<li class="empty" style="display:block">先頭300曲を表示しています。検索で絞ってね</li>':''):'<li class="empty" style="display:block">'+(DATA.songs.length?'見つかりませんでした':'曲リストは準備中です')+'</li>';
     $('#reqClosed').hidden=DATA.requestOpen;$('#openReq').hidden=!DATA.requestOpen;
   }
   $('#chips').addEventListener('click',function(e){var b=e.target.closest('.chip');if(b){genre=b.dataset.g;draw();}});
