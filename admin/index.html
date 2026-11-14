@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20261114b">
+<meta name="build" content="20261114c">
 <meta name="theme-color" content="#2f2a3a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -787,7 +787,7 @@ function fillSite(){
   $('pfTags').value=(p.hashtags||[]).join('\n');
   $('pfWMir').value=p.whereMir||'';$('pfWYt').value=p.whereYt||'';$('pfWTt').value=p.whereTt||'';
   LMAP.forEach(function(m){$(m[1]).value=l[m[0]]||'';});
-  $('lExtra').innerHTML='';(Array.isArray(l.extra)?l.extra:[]).forEach(function(x){addExtra(x.label,x.url,x.icon);});
+  $('lExtra').innerHTML='';(Array.isArray(l.extra)?l.extra:[]).forEach(function(x){var q=String(x.label||'').split('\u2063'),hi=q.length===2;addExtra(hi?q[1]:x.label,x.url,hi?q[0]:x.icon);});
   if(window.avLoad)avLoad(p.avatar||'');
 }
 function loadSiteInfo(){
@@ -873,7 +873,7 @@ $('lAdd').onclick=function(){if(document.querySelectorAll('#lExtra .lx').length>
 $('lSave').onclick=function(){
   var v={},bad='';
   LMAP.forEach(function(m){var u=$(m[1]).value.trim();if(u&&!/^https?:\/\//.test(u))bad=bad||'URLは「https://」から始めてください';v[m[0]]=u;});
-  var ex=[];[].forEach.call(document.querySelectorAll('#lExtra .lx'),function(d){var t=d.querySelector('.lxT').value.trim(),u=d.querySelector('.lxU').value.trim();if(!t&&!u)return;if(!t||!u){bad=bad||'ほかのリンクは、名前とURLの両方を入れてください';return;}if(!/^https?:\/\//.test(u))bad=bad||'URLは「https://」から始めてください';ex.push({label:t.slice(0,30),url:u,icon:d.querySelector('.lxI').value});});
+  var ex=[];[].forEach.call(document.querySelectorAll('#lExtra .lx'),function(d){var t=d.querySelector('.lxT').value.trim(),u=d.querySelector('.lxU').value.trim();if(!t&&!u)return;if(!t||!u){bad=bad||'ほかのリンクは、名前とURLの両方を入れてください';return;}if(!/^https?:\/\//.test(u))bad=bad||'URLは「https://」から始めてください';var ic=d.querySelector('.lxI').value;ex.push({label:ic+'\u2063'+t.slice(0,30),url:u,icon:ic});});
   if(ex.length>12)bad=bad||'ほかのリンクは12個までです';v.extra=ex;
   if(bad){say($('lMsg'),bad,'err');return;}
   say($('lMsg'),'保存中…');
