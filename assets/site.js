@@ -285,8 +285,11 @@ function mergeSite(s){
     if(Array.isArray(p.hashtags))CONFIG.hashtags=p.hashtags.filter(Boolean);
     CONFIG.whereTxt={wMirTxt:p.whereMir,wYtTxt:p.whereYt,wTtTxt:p.whereTt};
   }
-  if(l){LKEYS.forEach(function(k,i){if(typeof l[k]==='string'){var u=l[k].trim();CONFIG.links[i].url=/^https?:\/\//.test(u)?u:'';}});
-    if(CONFIG.links[0].url)CONFIG.liveUrl=CONFIG.links[0].url;}
+  if(l){CONFIG.links=CONFIG.links.slice(0,LKEYS.length);
+    LKEYS.forEach(function(k,i){if(typeof l[k]==='string'){var u=l[k].trim();CONFIG.links[i].url=/^https?:\/\//.test(u)?u:'';}});
+    if(CONFIG.links[0].url)CONFIG.liveUrl=CONFIG.links[0].url;
+    /* 更新ページで追加した「ほかのリンク」 */
+    if(Array.isArray(l.extra))l.extra.slice(0,12).forEach(function(x){if(!x||typeof x.url!=='string')return;var u=x.url.trim(),t=String(x.label||'').trim().slice(0,30);if(t&&/^https?:\/\//.test(u))CONFIG.links.push({label:t,icon:'↗',url:u});});}
   paintSite();
   if(RAW)apply(RAW);
   onSite.forEach(function(f){f();});
