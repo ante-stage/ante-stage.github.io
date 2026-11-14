@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20261111a">
+<meta name="build" content="20261114a">
 <meta name="theme-color" content="#2f2a3a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -404,6 +404,9 @@ input,select{height:56px}
         <label for="lX">X</label><input id="lX" inputmode="url" autocomplete="off" placeholder="https://…">
         <label for="lXi">X（インフォ垢）</label><input id="lXi" inputmode="url" autocomplete="off" placeholder="https://…">
         <label for="lGoods">グッズ（SUZURI）</label><input id="lGoods" inputmode="url" autocomplete="off" placeholder="https://…">
+        <p class="hint" style="margin-top:14px"><b>ほかのリンク</b>（新しいリンクサイトなど、名前とURLを入れて追加できます）</p>
+        <div id="lExtra"></div>
+        <button class="btn sub full" id="lAdd" type="button">＋ リンクを追加する</button>
         <button class="btn full" id="lSave" type="button">保存する</button>
         <p class="msg" id="lMsg" role="status"></p>
       </div>
@@ -773,12 +776,17 @@ var SITE_DEF={profile:{tagline:'雑談×ゲーム｜史上最強のエンジョ�
   links:{mirrativ:'https://www.mirrativ.com/user/102348987',youtube:'https://www.youtube.com/@akumante',tiktok:'https://www.tiktok.com/@antevx_0424',x:'https://x.com/antevx_',xinfo:'https://x.com/subantevx_',goods:'https://suzuri.jp/Ante_'}};
 S.site={};
 var LMAP=[['mirrativ','lMir'],['youtube','lYt'],['tiktok','lTt'],['x','lX'],['xinfo','lXi'],['goods','lGoods']];
+function addExtra(t,u){var d=document.createElement('div');d.className='lx';d.style.cssText='margin-top:10px;padding:10px;border:1px solid rgba(128,128,128,.3);border-radius:12px';
+  d.innerHTML='<input class="lxT" maxlength="30" autocomplete="off" placeholder="名前（例: lit.link）"><input class="lxU" inputmode="url" autocomplete="off" placeholder="https://…" style="margin-top:6px"><button class="btn sub" type="button" style="margin-top:6px">このリンクを外す</button>';
+  d.querySelector('.lxT').value=t||'';d.querySelector('.lxU').value=u||'';
+  d.querySelector('button').onclick=function(){d.remove();};$('lExtra').appendChild(d);}
 function fillSite(){
   var p=Object.assign({},SITE_DEF.profile,S.site.profile||{}),l=Object.assign({},SITE_DEF.links,S.site.links||{});
   $('pfTagline').value=p.tagline||'';$('pfName').value=p.name||'';$('pfGenre').value=p.genre||'';$('pfBirth').value=p.birthday||'';$('pfFan').value=p.fanname||'';$('pfXid').value=p.xid||'';
   $('pfTags').value=(p.hashtags||[]).join('\n');
   $('pfWMir').value=p.whereMir||'';$('pfWYt').value=p.whereYt||'';$('pfWTt').value=p.whereTt||'';
   LMAP.forEach(function(m){$(m[1]).value=l[m[0]]||'';});
+  $('lExtra').innerHTML='';(Array.isArray(l.extra)?l.extra:[]).forEach(function(x){addExtra(x.label,x.url);});
   if(window.avLoad)avLoad(p.avatar||'');
 }
 function loadSiteInfo(){
@@ -860,9 +868,12 @@ function pfDo(btn){var pm=btn.parentNode.querySelector('.msg');
 })();
 /* 項目は1つずつ開く */
 [].forEach.call(document.querySelectorAll('details.acc'),function(d){d.addEventListener('toggle',function(){if(!d.open)return;[].forEach.call(document.querySelectorAll('details.acc'),function(o){if(o!==d)o.open=false;});setTimeout(function(){d.scrollIntoView({behavior:'smooth',block:'start'});},60);});});
+$('lAdd').onclick=function(){if(document.querySelectorAll('#lExtra .lx').length>=12){say($('lMsg'),'ほかのリンクは12個までです','err');return;}addExtra('','');};
 $('lSave').onclick=function(){
   var v={},bad='';
   LMAP.forEach(function(m){var u=$(m[1]).value.trim();if(u&&!/^https?:\/\//.test(u))bad=bad||'URLは「https://」から始めてください';v[m[0]]=u;});
+  var ex=[];[].forEach.call(document.querySelectorAll('#lExtra .lx'),function(d){var t=d.querySelector('.lxT').value.trim(),u=d.querySelector('.lxU').value.trim();if(!t&&!u)return;if(!t||!u){bad=bad||'ほかのリンクは、名前とURLの両方を入れてください';return;}if(!/^https?:\/\//.test(u))bad=bad||'URLは「https://」から始めてください';ex.push({label:t.slice(0,30),url:u});});
+  if(ex.length>12)bad=bad||'ほかのリンクは12個までです';v.extra=ex;
   if(bad){say($('lMsg'),bad,'err');return;}
   say($('lMsg'),'保存中…');
   guard(rpc('ante_save_site',{p_key:'links',p_value:v}),$('lMsg')).then(function(){S.site.links=v;say($('lMsg'),'保存しました。まもなくサイトに反映されます','ok');}).catch(function(){});
