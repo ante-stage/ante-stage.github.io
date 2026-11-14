@@ -289,7 +289,7 @@ function mergeSite(s){
     LKEYS.forEach(function(k,i){if(typeof l[k]==='string'){var u=l[k].trim();CONFIG.links[i].url=/^https?:\/\//.test(u)?u:'';}});
     if(CONFIG.links[0].url)CONFIG.liveUrl=CONFIG.links[0].url;
     /* 更新ページで追加した「ほかのリンク」 */
-    if(Array.isArray(l.extra))l.extra.slice(0,12).forEach(function(x){if(!x||typeof x.url!=='string')return;var u=x.url.trim(),t=String(x.label||'').trim().slice(0,30);if(t&&/^https?:\/\//.test(u))CONFIG.links.push({label:t,icon:'↗',url:u});});}
+    if(Array.isArray(l.extra))l.extra.slice(0,12).forEach(function(x){if(!x||typeof x.url!=='string')return;var u=x.url.trim(),t=String(x.label||'').trim().slice(0,30);if(t&&/^https?:\/\//.test(u))var ic=typeof x.icon==='string'&&x.icon.trim()&&x.icon.trim().length<=2?x.icon.trim():'↗';CONFIG.links.push({label:t,icon:ic,url:u});});}
   paintSite();
   if(RAW)apply(RAW);
   onSite.forEach(function(f){f();});

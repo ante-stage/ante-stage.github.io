@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20261114a">
+<meta name="build" content="20261114b">
 <meta name="theme-color" content="#2f2a3a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -776,9 +776,10 @@ var SITE_DEF={profile:{tagline:'雑談×ゲーム｜史上最強のエンジョ�
   links:{mirrativ:'https://www.mirrativ.com/user/102348987',youtube:'https://www.youtube.com/@akumante',tiktok:'https://www.tiktok.com/@antevx_0424',x:'https://x.com/antevx_',xinfo:'https://x.com/subantevx_',goods:'https://suzuri.jp/Ante_'}};
 S.site={};
 var LMAP=[['mirrativ','lMir'],['youtube','lYt'],['tiktok','lTt'],['x','lX'],['xinfo','lXi'],['goods','lGoods']];
-function addExtra(t,u){var d=document.createElement('div');d.className='lx';d.style.cssText='margin-top:10px;padding:10px;border:1px solid rgba(128,128,128,.3);border-radius:12px';
-  d.innerHTML='<input class="lxT" maxlength="30" autocomplete="off" placeholder="名前（例: lit.link）"><input class="lxU" inputmode="url" autocomplete="off" placeholder="https://…" style="margin-top:6px"><button class="btn sub" type="button" style="margin-top:6px">このリンクを外す</button>';
-  d.querySelector('.lxT').value=t||'';d.querySelector('.lxU').value=u||'';
+var ICONS=['↗','♡','★','☆','♪','▶','✉','✿','✦','◎','🎮','🎤','🛒','📷','🎵','🐦','📺','💬'];
+function addExtra(t,u,ic){var d=document.createElement('div');d.className='lx';d.style.cssText='margin-top:10px;padding:10px;border:1px solid rgba(128,128,128,.3);border-radius:12px';
+  d.innerHTML='<label style="margin:0">左のマーク</label><select class="lxI" style="font-size:18px">'+ICONS.map(function(m){return '<option>'+m+'</option>';}).join('')+'</select><input class="lxT" style="margin-top:6px" maxlength="30" autocomplete="off" placeholder="名前（例: lit.link）"><input class="lxU" inputmode="url" autocomplete="off" placeholder="https://…" style="margin-top:6px"><button class="btn sub" type="button" style="margin-top:6px">このリンクを外す</button>';
+  d.querySelector('.lxI').value=ICONS.indexOf(ic)>=0?ic:'↗';d.querySelector('.lxT').value=t||'';d.querySelector('.lxU').value=u||'';
   d.querySelector('button').onclick=function(){d.remove();};$('lExtra').appendChild(d);}
 function fillSite(){
   var p=Object.assign({},SITE_DEF.profile,S.site.profile||{}),l=Object.assign({},SITE_DEF.links,S.site.links||{});
@@ -786,7 +787,7 @@ function fillSite(){
   $('pfTags').value=(p.hashtags||[]).join('\n');
   $('pfWMir').value=p.whereMir||'';$('pfWYt').value=p.whereYt||'';$('pfWTt').value=p.whereTt||'';
   LMAP.forEach(function(m){$(m[1]).value=l[m[0]]||'';});
-  $('lExtra').innerHTML='';(Array.isArray(l.extra)?l.extra:[]).forEach(function(x){addExtra(x.label,x.url);});
+  $('lExtra').innerHTML='';(Array.isArray(l.extra)?l.extra:[]).forEach(function(x){addExtra(x.label,x.url,x.icon);});
   if(window.avLoad)avLoad(p.avatar||'');
 }
 function loadSiteInfo(){
@@ -872,7 +873,7 @@ $('lAdd').onclick=function(){if(document.querySelectorAll('#lExtra .lx').length>
 $('lSave').onclick=function(){
   var v={},bad='';
   LMAP.forEach(function(m){var u=$(m[1]).value.trim();if(u&&!/^https?:\/\//.test(u))bad=bad||'URLは「https://」から始めてください';v[m[0]]=u;});
-  var ex=[];[].forEach.call(document.querySelectorAll('#lExtra .lx'),function(d){var t=d.querySelector('.lxT').value.trim(),u=d.querySelector('.lxU').value.trim();if(!t&&!u)return;if(!t||!u){bad=bad||'ほかのリンクは、名前とURLの両方を入れてください';return;}if(!/^https?:\/\//.test(u))bad=bad||'URLは「https://」から始めてください';ex.push({label:t.slice(0,30),url:u});});
+  var ex=[];[].forEach.call(document.querySelectorAll('#lExtra .lx'),function(d){var t=d.querySelector('.lxT').value.trim(),u=d.querySelector('.lxU').value.trim();if(!t&&!u)return;if(!t||!u){bad=bad||'ほかのリンクは、名前とURLの両方を入れてください';return;}if(!/^https?:\/\//.test(u))bad=bad||'URLは「https://」から始めてください';ex.push({label:t.slice(0,30),url:u,icon:d.querySelector('.lxI').value});});
   if(ex.length>12)bad=bad||'ほかのリンクは12個までです';v.extra=ex;
   if(bad){say($('lMsg'),bad,'err');return;}
   say($('lMsg'),'保存中…');
