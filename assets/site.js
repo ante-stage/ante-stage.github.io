@@ -83,7 +83,7 @@ function chrome(){
     ui();b.appendChild(bt);
   })();
   b.insertAdjacentHTML('beforeend',
-   '<footer class="ft"><img src="img/logo-gold.png" alt="あんて｡ ロゴ"><nav aria-label="フッター">'+NAV.map(function(n){return '<a href="'+n[0]+'">'+n[2]+'</a>';}).join('')+'</nav><button type="button" class="upd" id="updBtn">↻ 最新版に更新</button><small>© ANTE OFFICIAL STAGE ・ v'+VER+'</small></footer>'+
+   '<footer class="ft"><img src="img/logo-gold.png" alt="あんて｡ ロゴ"><nav aria-label="フッター">'+NAV.map(function(n){return '<a href="'+n[0]+'">'+n[2]+'</a>';}).join('')+'</nav><button type="button" class="upd" id="updBtn">↻ 最新版に更新</button><small>© ANTE OFFICIAL STAGE ・ v'+VER+'</small><small style="display:block;margin:10px 0 56px;font-size:11px;letter-spacing:.08em;opacity:.95;position:relative;z-index:2;text-shadow:0 1px 3px #000,0 0 8px #000"><a href="https://minatohiro-official.github.io/iroha-minto/" target="_blank" rel="noopener" style="color:inherit">Website by イロハミント（湊音ヒロ）</a></small></footer>'+
    '<div class="toast" id="toast" role="status" aria-live="polite"></div><div id="lb" aria-hidden="true"><img alt=""></div>');
 }
 function curFile(){var f=location.pathname.split('/').pop();return f===''?'index.html':f;}
